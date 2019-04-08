@@ -159,7 +159,17 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 
 ## Todo for first release
 
-2. Gateway @RefreshScope with Gateway server configuration
+1. User service as authentication service. Change repo name.
+
+17. Eureka register testing
+
+eureka.instance.leaseRenewalIntervalInSeconds
+
+BUG: slow to clean old instance. still querying old instances even it is down
+
+2. Order service call user-service
+
+2. Gateway @RefreshScope with Gateway server configuration dynamically
 
 1. Spring Cloud Sleuth + Zipkin dashboard integration
 
@@ -169,17 +179,9 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 
 0. Job trigger server
 
-17. Eureka register testing
-
-eureka.instance.leaseRenewalIntervalInSeconds
-
-BUG: slow to clean old instance. still querying old instances even it is down
-
 4. Publish to maven or jcenter
 
-18. Documentation for modules introduced
-
-32. /h2-console docs
+18. Documentation for modules introduced (Discovery client support & Disable, /h2-console)
 
 ## Roadmap Points
 
