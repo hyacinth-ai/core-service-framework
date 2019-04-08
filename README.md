@@ -3,7 +3,7 @@
 ## Overview
 
 Based on latest Spring Cloud version, `Core Service Framework` is a collection of tools and code snippets to quickly implement micro-service architecture.
-Feel free to use it as the base of your project or copy/paste what you like from this repo.
+Feel free to use it as the start of your project or copy/paste what you like from this repo.
 
 License: Apache License 2.0
 
