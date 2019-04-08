@@ -1,0 +1,41 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: configserver
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: file://${user.home}/projects/config-repo
+          refreshRate: 10
+
+encrypt:
+  key: ENCRYPT_KEY
+
+
+#          timeout: 10
+#          searchPaths: development,test,production
+#          searchPaths: {application}
+#          username: trolley
+#          password: strongpassword
+#
+#spring:
+#  cloud:
+#    config:
+#      server:
+#        git:
+#          uri: https://github.com/spring-cloud-samples/config-repo
+#          repos:
+#            development:
+#              pattern:
+#                - '*/development'
+#                - '*/staging'
+#              uri: https://github.com/development/config-repo
+#            staging:
+#              pattern:
+#                - '*/qa'
+#                - '*/production'
+#              uri: https://github.com/staging/config-repo

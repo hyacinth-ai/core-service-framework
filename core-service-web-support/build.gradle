@@ -1,0 +1,12 @@
+dependencies {
+    compile project(':core-service-module')
+    compile project(':core-service-web-common-lib')
+
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-validation'
+
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'io.micrometer:micrometer-registry-prometheus'
+
+    // compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+}

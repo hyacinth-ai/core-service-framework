@@ -1,0 +1,14 @@
+spring:
+  profiles: development
+
+  datasource:
+    url: jdbc:mysql://192.168.99.100:3306/alicedb?characterEncoding=UTF-8&useSSL=false
+    username: alice
+    password: alice-secret
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: ai.hyacinth.core.service.jpa.hibernate.MySQLDialect

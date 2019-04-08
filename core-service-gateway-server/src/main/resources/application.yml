@@ -1,0 +1,104 @@
+spring:
+  application:
+    name: gateway-server
+
+  session:
+    store-type: redis
+    timeout: 1200s
+
+  redis:
+    url: redis://redis:alice-secret@192.168.99.100:6379
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+#      httpclient:
+#        ssl:
+#          useInsecureTrustManager: true
+#          trustedX509Certificates:
+#          - cert1.pem
+#          - cert2.pem
+
+server:
+  port: 9090
+#  ssl:
+#    enabled: true
+#    key-alias: scg
+#    key-store-password: scg1234
+#    key-store: classpath:scg-keystore.p12
+#    key-store-type: PKCS12
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+ai.hyacinth.core.service.gateway.server:
+  security:
+    authenticated-required: true
+    logout-url: /auth-service/api/logout
+  rules:
+  - path: /auth-service/api/login
+    method: POST
+    role: any
+    service: user-service
+    uri: /api/authentication/login
+    post-processing: api
+    authentication-api: true
+  - path: /user-service/api/users/current
+    role: admin, user
+    service: user-service
+    uri: /api/users/current
+  - path: /order-service/api/{*rpc}
+    role: user
+    service: order-service
+    uri: "/api{rpc}"
+    request-parameters:
+      userId: 100
+
+#  - path: /order-service/api/orders
+#    method: GET
+#    service: order-service
+#    uri: /api/orders
+#    request-parameters:
+#      userId: 100
+#    role: any
+#  - path: /order-service/api/orders
+#    method: POST
+#    service: order-service
+#    uri: /api/orders
+#    request-body:
+#      userId: 100
+#    role: user
+
+#  deployment:
+#    - api: "GET /order-service/api/orders"
+#      params:
+#        userId: {userId}
+#      role: USER
+#
+
+#zuul:
+#  host:
+#    maxTotalConnections: 200
+#    maxPerRouteConnections: 30
+#
+#  ignoredServices: '*'
+#
+#  prefix: /api
+#  stripPrefix: false
+#
+#  routes:
+#    user-service:
+#      path: /user-service/**
+#      serviceId: user-service

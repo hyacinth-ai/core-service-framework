@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':core-service-endpoint-support')
+    compile project(':core-service-jpa-support')
+    compile project(':core-service-discovery-support')
+}

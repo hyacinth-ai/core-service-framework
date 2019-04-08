@@ -1,0 +1,48 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+#    healthcheck:
+#      enabled: true
+#  instance:
+#    status-page-url-path: /actuator/info
+#    health-check-url-path: /actuator/health
+#    lease-expiration-duration-in-seconds: 70
+#    lease-renewal-interval-in-seconds: 20
+#  fetch-registry: true
+#  register-with-eureka: true
+#  registry-fetch-interval-seconds: 30
+#    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+  instance:
+    preferIpAddress: true
+
+# eureka.instance.metadataMap.zone = zone1
+# eureka.client.preferSameZoneEureka = true
+
+ribbon:
+  ReadTimeout: 30000
+  SocketTimeout: 10000
+
+spring:
+  cloud:
+    loadbalancer:
+      retry: false
+
+#    inetutils:
+#      ignoredInterfaces:
+#        - docker0
+#        - veth.*
+#      preferredNetworks:
+#        - 192.168
+#        - 10.0
+#     useOnlySiteLocalInterfaces: true
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 30000
+        loggerLevel: basic
+  hystrix:
+    enabled: false

@@ -1,0 +1,16 @@
+spring:
+  output:
+    ansi:
+      enabled: detect
+
+logging:
+  # file: ./log/${spring.application.name}.log
+  pattern:
+    console: "[%d{yyyy-MM-ddTHH:mm:ss.SSS}] [%clr(%-5level)] [%thread] [%logger{40}] [%F:%L] [${PID:- }] [${spring.application.name:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-B3-ParentSpanId:-}] --- %msg%n"
+    file: ${logging.pattern.console}
+  level:
+    root: INFO
+
+logging.file:
+  max-history: 10
+  max-size: 20MB

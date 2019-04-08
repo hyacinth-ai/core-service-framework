@@ -1,0 +1,38 @@
+spring:
+  flyway:
+    enabled: false
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      # 'create', 'create-drop', 'update', 'none' and 'validate'
+    generate-ddl: true
+    open-in-view: false
+  #    properties:
+  #      javax:
+  #        persistence:
+  #          schema-generation:
+  #            create-source: metadata
+  #            scripts:
+  #              action: drop-and-create
+  #              drop-target: drop.sql
+  #              create-target: create.sql
+
+  datasource:
+    initialization-mode: never
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 3
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.tool.hbm2ddl: DEBUG
+
+---
+spring:
+  profiles: production
+  jpa:
+    hibernate:
+      ddl-auto: validate

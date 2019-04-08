@@ -1,0 +1,8 @@
+spring:
+  profiles: development
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true

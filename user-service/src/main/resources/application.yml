@@ -1,0 +1,39 @@
+spring:
+  profiles: development
+
+  datasource:
+    url: jdbc:mysql://192.168.99.100:3306/alicedb?characterEncoding=UTF-8&useSSL=false
+    username: alice
+    password: alice-secret
+  # url: jdbc:h2:mem:testdb
+
+  jpa:
+    #    show-sql: true
+    hibernate:
+      ddl-auto: update # create-drop # update, validate, create-drop
+    properties:
+      hibernate:
+        dialect: ai.hyacinth.core.service.jpa.hibernate.MySQLDialect
+
+test.key: 456
+#test.key2: 999
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+#springfox:
+#  documentation:
+#    swagger:
+#      v2:
+#        path: /swagger/v2/api-docs
+
+---
+spring:
+  profiles: production
+
+  jpa:
+    hibernate:
+      ddl-auto: validate

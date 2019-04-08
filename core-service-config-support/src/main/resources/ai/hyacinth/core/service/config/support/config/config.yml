@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888
+      discovery:
+        enabled: false # true means use discovery mechanism to locate config server
+      fail-fast: true

@@ -1,0 +1,5 @@
+apply from: './build-script.gradle'
+
+allprojects {
+    group 'ai.hyacinth'
+}

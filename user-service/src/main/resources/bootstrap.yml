@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: development
+
+  application:
+    name: user-service
+    version: 1.0
+
+  cloud:
+    inetutils:
+      ignoredInterfaces:
+        - docker0
+        - veth.*
+      preferredNetworks:
+        - 192.168
+        - 10.0
+      # useOnlySiteLocalInterfaces: true
+    config:
+      fail-fast: true
+      uri: http://localhost:8888
+      # enabled: false
+
+  #spring.cloud.config:
+  #  uri: http://localhost:8888
+
+  #http://myconfigserver.com
