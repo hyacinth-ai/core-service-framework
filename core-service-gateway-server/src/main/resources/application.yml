@@ -4,7 +4,7 @@ spring:
 
   session:
     store-type: redis
-    timeout: 1200s
+    timeout: 1800s
 
   redis:
     url: redis://redis:alice-secret@192.168.99.100:6379
