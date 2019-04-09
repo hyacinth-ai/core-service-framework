@@ -30,6 +30,8 @@ task("dotDependencies") {
         file.delete()
         file << "digraph {\n"
         file << "splines=ortho\n"
+        file << "ratio=0.6\n"
+        
         rootProject.childProjects.each { item ->
             def from = item.value
             file << "\"${from.name}\"\n"

@@ -30,10 +30,10 @@ License: Apache License 2.0
 * Spring Reactor (Mono, Flux)
 * Spring WebFlux
 * Spring Boot (Config, BootPackage)
-* Spring Security (on MVC and WebFlux)
+* Spring Security (on both MVC and WebFlux)
 * Spring Cloud (Feign, Config, Eureka, Sleuth)
 * Spring Boot Test and JUnit
-* JPA 2.2 and Spring Data JPA
+* JPA (v2.2) and Spring Data JPA
 * Swagger, Jackson JSON Mapper
 * Gradle
 * git, curl, *httpie*
@@ -44,7 +44,7 @@ License: Apache License 2.0
 
 ### Generate dependency graph for core-services (via DOT)
 
-![project-dependencies](./project-dependencies.png)
+![project-dependencies](./project-dependencies.svg)
 
 Refer to `geenerate-dep.sh` under `tools`.
 
