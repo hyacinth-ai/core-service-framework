@@ -7,6 +7,7 @@ import ai.hyacinth.examples.service.order.domain.Order;
 import ai.hyacinth.examples.service.order.repo.OrderRepo;
 import ai.hyacinth.examples.service.order.service.OrderService;
 import ai.hyacinth.examples.service.order.web.OrderController;
+import ai.hyacinth.examples.service.user.UserApiConfig;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
@@ -16,5 +17,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackageClasses = {OrderRepo.class}) // repo
 @ComponentScan(
     basePackageClasses = {OrderService.class, OrderController.class}) // service and controller
-@Import({EndpointConfig.class, JpaConfig.class, DiscoveryConfig.class}) // support modules
+@Import({EndpointConfig.class, JpaConfig.class, DiscoveryConfig.class, UserApiConfig.class}) // support modules
 public class OrderApplicationConfig {}

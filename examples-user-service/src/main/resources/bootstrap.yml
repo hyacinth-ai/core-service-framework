@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: development
+  application:
+    name: user-service
+    version: 1.0
+  cloud:
+    inetutils:
+      ignoredInterfaces:
+        - docker0
+        - veth.*
+      preferredNetworks:
+        - 192.168
+        - 10.0
+      # useOnlySiteLocalInterfaces: true

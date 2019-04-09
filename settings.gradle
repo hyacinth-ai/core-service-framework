@@ -17,9 +17,8 @@ include 'core-service-gateway-server'
 include 'core-service-config-server'
 include 'core-service-discovery-server'
 
-include 'examples-order-service'
 include 'examples-debug-service'
-
-include 'user-service'
-include 'user-service-api'
+include 'examples-user-service'
+include 'examples-user-service-api'
+include 'examples-order-service'
 
