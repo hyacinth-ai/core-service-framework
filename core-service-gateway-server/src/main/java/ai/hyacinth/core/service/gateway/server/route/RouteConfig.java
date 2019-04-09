@@ -6,7 +6,7 @@ import ai.hyacinth.core.service.gateway.server.payload.ApiSuccessPayload;
 import ai.hyacinth.core.service.gateway.server.security.DefaultAuthentication;
 import ai.hyacinth.core.service.gateway.server.security.DefaultGrantedAuthority;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
-import ai.hyacinth.core.service.web.common.payload.AuthenticationPayload;
+import ai.hyacinth.core.service.web.common.payload.AuthenticationResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
@@ -28,12 +28,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -68,10 +70,9 @@ public class RouteConfig {
                         .filters(
                             f -> {
                               f.setPath(rule.getUri());
-                              //
                               f.filter(rewriteRequestPrincipalHeader());
-                              f.filter(rewriteRequestParams(rule.getRequestParameters()));
-                              f.filter(rewriteRequestBody(rule.getRequestBody()));
+                              f.filter(rewriteRequestParams(rule.getRequestParam()));
+                              f.filter(rewriteRequestBody(rule.getRequestBody(), rule.getRequestBodyJson()));
                               if (rule.getPostProcessing().equals(ResponsePostProcessingType.API)) {
                                 f.modifyResponseBody(
                                     String.class,
@@ -89,30 +90,51 @@ public class RouteConfig {
   private GatewayFilter rewriteRequestPrincipalHeader() {
     return (exchange, chain) ->
         ReactiveSecurityContextHolder.getContext()
-            .map(
-                context ->
-                    context.getAuthentication() != null
-                        ? context.getAuthentication().getName()
-                        : "")
-            .map(
-                pId ->
-                    exchange
-                        .getRequest()
-                        .mutate()
-                        .headers(
-                            headers -> {
-                              headers.remove(ServiceApiConstants.HEADER_NAME_GATEWAY_PRINCIPLE_ID); // remove the header value for security
-                              headers.set(
-                                  ServiceApiConstants.HEADER_NAME_GATEWAY_PRINCIPLE_ID, pId);
-                            })
-                        .build())
-            .flatMap(request -> chain.filter(exchange.mutate().request(request).build()));
+            .map(context -> context.getAuthentication().getName())
+            .map(principleId -> setPrincipleHeader(exchange, principleId))
+            .map(request -> exchange.mutate().request(request).build())
+            .defaultIfEmpty(removePassingInPrincipleHeader(exchange))
+            .flatMap(chain::filter);
+  }
+
+  private ServerWebExchange removePassingInPrincipleHeader(ServerWebExchange exchange) {
+    boolean hacked =
+        exchange.getRequest().getHeaders().get(ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE)
+            != null;
+    if (hacked) {
+      return exchange
+          .mutate()
+          .request(
+              exchange
+                  .getRequest()
+                  .mutate()
+                  .headers(
+                      headers -> {
+                        headers.remove(ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE);
+                      })
+                  .build())
+          .build();
+    } else {
+      return exchange;
+    }
+  }
+
+  private ServerHttpRequest setPrincipleHeader(ServerWebExchange exchange, String principleId) {
+    return exchange
+        .getRequest()
+        .mutate()
+        .headers(
+            headers -> {
+              headers.set(ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE, principleId);
+            })
+        .build();
   }
 
   @SuppressWarnings("unchecked")
-  private GatewayFilter rewriteRequestBody(final Map<String, String> requestBody) {
+  private GatewayFilter rewriteRequestBody(final Map<String, Object> requestBody,
+      @Nullable String requestBodyJson) {
     return (exchange, chain) -> {
-      if (requestBody.size() > 0) {
+      if (requestBody.size() > 0 || requestBodyJson != null) {
         MediaType mediaType = exchange.getRequest().getHeaders().getContentType();
         if (isJsonType(mediaType)) {
           ServerHttpRequestDecorator decorator =
@@ -139,7 +161,7 @@ public class RouteConfig {
                       .flatMap(
                           (df) -> {
                             try {
-                              Map tree =
+                              Map originalBody =
                                   mapper.readValue(
                                       exchange
                                           .getResponse()
@@ -147,8 +169,12 @@ public class RouteConfig {
                                           .join(df)
                                           .asInputStream(),
                                       Map.class);
-                              requestBody.forEach(tree::put);
-                              byte[] content = mapper.writeValueAsBytes(tree);
+                              requestBody.forEach(originalBody::put);
+                              if (requestBodyJson != null) {
+                                Map parsedBodyReplacement = mapper.readValue(requestBodyJson, Map.class);
+                                originalBody.putAll(parsedBodyReplacement);
+                              }
+                              byte[] content = mapper.writeValueAsBytes(originalBody);
                               this.contentLength = content.length;
                               return Mono.just(
                                   exchange.getResponse().bufferFactory().wrap(content));
@@ -166,26 +192,38 @@ public class RouteConfig {
     };
   }
 
+  private static final String PRINCIPAL_PLACEHOLDER_VAR = "${" + ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE + "}";
+
   private GatewayFilter rewriteRequestParams(final Map<String, String> requestParameters) {
     return (exchange, chain) -> {
       if (requestParameters.size() > 0) {
-        MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+        return
+            ReactiveSecurityContextHolder.getContext()
+                .map(context -> context.getAuthentication().getPrincipal())
+                .map(String::valueOf)
+                .defaultIfEmpty("")
+                .map(principal -> {
 
-        LinkedMultiValueMap<String, String> mutatedQueryParams =
-            new LinkedMultiValueMap<>(queryParams);
-        requestParameters.forEach(
-            (key, value) -> {
-              mutatedQueryParams.remove(key);
-              mutatedQueryParams.add(key, value);
-            });
+                  MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+                  LinkedMultiValueMap<String, String> mutatedQueryParams =
+                      new LinkedMultiValueMap<>(queryParams);
 
-        URI mutatedUri =
-            UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
-                .replaceQueryParams(mutatedQueryParams)
-                .build()
-                .toUri();
-        ServerHttpRequest mutatedRequest = exchange.getRequest().mutate().uri(mutatedUri).build();
-        return chain.filter(exchange.mutate().request(mutatedRequest).build());
+                  requestParameters.forEach(
+                      (key, value) -> {
+                        mutatedQueryParams.remove(key);
+                        mutatedQueryParams.add(key, String.valueOf(value).replace(PRINCIPAL_PLACEHOLDER_VAR, principal));
+                      });
+
+                  URI mutatedUri =
+                      UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
+                          .replaceQueryParams(mutatedQueryParams)
+                          .build()
+                          .toUri();
+
+                  return mutatedUri;
+                })
+                .map(mutatedUri -> exchange.getRequest().mutate().uri(mutatedUri).build())
+                .flatMap(mutatedRequest -> chain.filter(exchange.mutate().request(mutatedRequest).build()));
       } else {
         return chain.filter(exchange);
       }
@@ -208,11 +246,12 @@ public class RouteConfig {
 
               if (authenticationPayload) {
 
-                AuthenticationPayload payload = fromJson(input, AuthenticationPayload.class);
+                AuthenticationResult<?> payload = fromJson(input, AuthenticationResult.class);
                 DefaultAuthentication authentication = new DefaultAuthentication();
                 authentication.setAuthenticated(true);
                 authentication.setPrincipal(payload.getPrincipalId());
-                authentication.setName(payload.getPrincipalId());
+                authentication.setName(String.valueOf(payload.getPrincipalId()));
+
                 authentication.setAuthorities(
                     payload.getAuthorities().stream()
                         .map(DefaultGrantedAuthority::new)
@@ -225,7 +264,7 @@ public class RouteConfig {
                         .subscriberContext(
                             ReactiveSecurityContextHolder.withSecurityContext(
                                 Mono.just(securityContext)));
-                response.setData(null); // do not provide authentication details to caller
+                response.setData(null); // omit authentication details from caller
               } else {
                 saveMono = Mono.empty();
                 response.setData(input); // fast-mode raw json string

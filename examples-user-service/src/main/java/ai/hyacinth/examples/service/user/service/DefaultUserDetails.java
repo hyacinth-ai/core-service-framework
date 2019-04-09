@@ -19,7 +19,7 @@ public class DefaultUserDetails implements UserDetails, CredentialsContainer {
   private boolean enabled;
   private String username;
   private String password;
-  private String userId;
+  private Long userId;
   private List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
   public void eraseCredentials() {

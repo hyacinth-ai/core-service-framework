@@ -1,20 +1,19 @@
 package ai.hyacinth.examples.service.user.service.impl;
 
 import ai.hyacinth.core.service.web.common.ServiceApiException;
-import ai.hyacinth.core.service.web.common.payload.AuthenticationPayload;
+import ai.hyacinth.core.service.web.common.payload.AuthenticationResult;
 import ai.hyacinth.examples.service.user.domain.User;
 import ai.hyacinth.examples.service.user.constants.UserType;
 import ai.hyacinth.examples.service.user.dto.UserAuthenticationRequest;
 import ai.hyacinth.examples.service.user.dto.UserCreationRequest;
 import ai.hyacinth.examples.service.user.dto.UserInfo;
 import ai.hyacinth.examples.service.user.repo.UserRepo;
-import ai.hyacinth.examples.service.user.service.UserAuthorityConstants;
+import ai.hyacinth.examples.service.user.service.UserRoleConstants;
 import ai.hyacinth.examples.service.user.service.UserService;
 import ai.hyacinth.examples.service.user.service.DefaultUserDetails;
 import com.google.common.collect.Lists;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.text.html.Option;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService {
     user.setUsername(userBo.getUsername());
     user.setPassword(passwordEncoder.encode(userBo.getPassword()));
     user.setRoles(
-        Lists.newArrayList(UserAuthorityConstants.ROLE_USER, UserAuthorityConstants.ROLE_API));
+        Lists.newArrayList(UserRoleConstants.ROLE_USER, UserRoleConstants.ROLE_API));
     user.setUserType(UserType.PUBLIC);
     user.setBirthDate(userBo.getBirthDate());
     userRepo.save(user);
@@ -121,10 +120,10 @@ public class UserServiceImpl implements UserService {
   @Autowired private AuthenticationManager authenticationManager;
 
   @Override
-  public AuthenticationPayload login(UserAuthenticationRequest userAuthenticationRequest) {
+  public AuthenticationResult<Long> login(UserAuthenticationRequest userAuthenticationRequest) {
     Authentication authentication = this.authenticate(userAuthenticationRequest);
     DefaultUserDetails userDetails = (DefaultUserDetails) authentication.getPrincipal();
-    AuthenticationPayload payload = new AuthenticationPayload();
+    AuthenticationResult<Long> payload = new AuthenticationResult<>();
     payload.setPrincipalId(userDetails.getUserId());
     payload.setAuthorities(
         userDetails.getAuthorities().stream()
@@ -140,8 +139,6 @@ public class UserServiceImpl implements UserService {
           new UsernamePasswordAuthenticationToken(
               userAuthenticationRequest.getUsername(), userAuthenticationRequest.getPassword());
       Authentication authentication = authenticationManager.authenticate(token);
-      //      UserInfo ui = new UserInfo("");
-      //      ui.setUsername(authentication.getName());
       return authentication;
     } catch (AuthenticationException aue) {
       throw new ServiceApiException(UserServiceErrorCode.USER_PASSWORD_MISMATCH);

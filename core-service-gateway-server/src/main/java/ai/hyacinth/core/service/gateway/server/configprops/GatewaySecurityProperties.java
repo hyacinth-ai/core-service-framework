@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GatewaySecurityProperties {
   /**
-   * this switch causes different behavior when the role of a router rule is empty
+   * this switch determines different behavior when the authority of a rule is not specified
    */
   private boolean authenticatedRequired = true;
 

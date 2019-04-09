@@ -15,20 +15,15 @@ spring:
       hibernate:
         dialect: ai.hyacinth.core.service.jpa.hibernate.MySQLDialect
 
-test.key: 456
-#test.key2: 999
+test:
+  key: 456
+  key2: 999
 
 logging:
   level:
     org:
       springframework:
         security: DEBUG
-
-#springfox:
-#  documentation:
-#    swagger:
-#      v2:
-#        path: /swagger/v2/api-docs
 
 ---
 spring:

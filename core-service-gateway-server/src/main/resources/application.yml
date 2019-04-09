@@ -50,43 +50,29 @@ ai.hyacinth.core.service.gateway.server:
   rules:
   - path: /auth-service/api/login
     method: POST
-    role: any
+    authority: any
     service: user-service
     uri: /api/authentication/login
-    post-processing: api
     authentication-api: true
+    post-processing: api
   - path: /user-service/api/users/current
-    role: admin, user
+    authority: admin, user
     service: user-service
     uri: /api/users/current
-  - path: /order-service/api/{*rpc}
-    role: user
+  - path: /order-service/api/orders
+    method: POST
+    authority: user
+    service: debug-service
+    uri: /api/orders
+    request-body:
+      userId: ${X-Principle}
+      otherId: 123
+    request-param:
+      test: ${X-Principle}
+  - path: /order-service/api/{*call}
+    authority: admin, api
     service: order-service
-    uri: "/api{rpc}"
-    request-parameters:
-      userId: 100
-
-#  - path: /order-service/api/orders
-#    method: GET
-#    service: order-service
-#    uri: /api/orders
-#    request-parameters:
-#      userId: 100
-#    role: any
-#  - path: /order-service/api/orders
-#    method: POST
-#    service: order-service
-#    uri: /api/orders
-#    request-body:
-#      userId: 100
-#    role: user
-
-#  deployment:
-#    - api: "GET /order-service/api/orders"
-#      params:
-#        userId: {userId}
-#      role: USER
-#
+    uri: "/api{call}"
 
 #zuul:
 #  host:

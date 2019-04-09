@@ -36,7 +36,7 @@ License: Apache License 2.0
 * JPA 2.2 and Spring Data JPA
 * Swagger, Jackson JSON Mapper
 * Gradle
-* git, curl
+* git, curl, *httpie*
 * MySQL, Redis, RabbitMQ
 * Maven repository
 
@@ -176,15 +176,11 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 
 ## Todo for first release
 
-1. User service as authentication service. Change repo name.
-
 17. Eureka register testing
 
 eureka.instance.leaseRenewalIntervalInSeconds
 
 BUG: slow to clean old instance. still querying old instances even it is down
-
-2. Order service call user-service
 
 2. Gateway @RefreshScope with Gateway server configuration dynamically
 
@@ -478,7 +474,7 @@ org.springframework.orm.hibernate5.SpringBeanContainer
 
 -->
 
-## Curl examples
+## Test examples
 
 ### Using *httpie*
 
@@ -489,6 +485,12 @@ http -v ':8080/api/users' username=ziyang password=12345678 birthDate=1981-10-01
 http -v ':8080/api/users?username=ziyang'
 http -v ':8080/api/users/5'
 http -v --form ':8080/api/users/5/portrait' 'portrait@./project-dependencies.png'
+
+# for user-pass auth:
+http -v ':8080/api/authentication/login' username=ziyang password=12345678
+
+# curl for uploading
+# curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'
 ```
 
 order-service:
@@ -498,11 +500,22 @@ http -v ':7001/api/orders' userId:=5 productId:=1000 quantity:=2
 http -v ':7001/api/orders?userId=5'
 ```
 
-### Using *curl*
+debug-service:
 
-> `curl` file uploading examples:
->
-> `curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'`
+```bash
+
+```
+
+gateway server:
+
+```bash
+http -v ':9090/auth-service/api/login' username=ziyang password=12345678
+http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=7d621269-809b-4fd1-bc19-c30ee735895b'
+http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17'
+http -v ':9090/order-service/api/orders' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17' userId:=4 productId:=1000 quantity:=2
+```
+
+### Using *curl*
 
 Auth:
 

@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AuthenticationPayload implements Serializable {
+public class AuthenticationResult<PrincipalIdType> implements Serializable {
   private static final long serialVersionUID = -214526789160927487L;
 
-  private String principalId;
   private List<String> authorities;
+  private PrincipalIdType principalId;
 }

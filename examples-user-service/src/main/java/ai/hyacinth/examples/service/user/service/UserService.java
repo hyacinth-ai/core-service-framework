@@ -1,6 +1,6 @@
 package ai.hyacinth.examples.service.user.service;
 
-import ai.hyacinth.core.service.web.common.payload.AuthenticationPayload;
+import ai.hyacinth.core.service.web.common.payload.AuthenticationResult;
 import ai.hyacinth.examples.service.user.dto.UserAuthenticationRequest;
 import ai.hyacinth.examples.service.user.dto.UserCreationRequest;
 import ai.hyacinth.examples.service.user.dto.UserInfo;
@@ -14,7 +14,7 @@ public interface UserService {
 
   UserInfo findUserById(Long id);
 
-  AuthenticationPayload login(UserAuthenticationRequest userAuthenticationRequest);
+  AuthenticationResult login(UserAuthenticationRequest userAuthenticationRequest);
 
   Authentication authenticate(UserAuthenticationRequest userAuthenticationRequest);
 

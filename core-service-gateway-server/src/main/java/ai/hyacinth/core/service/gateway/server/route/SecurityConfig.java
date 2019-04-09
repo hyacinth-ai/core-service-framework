@@ -27,9 +27,9 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 
   /**
-   * ANY is artificial role used to be applied on route rules instead of being assigned on a user.
+   * ANY is artificial authority used to be applied on route rules instead of being assigned on a user.
    */
-  private static final String ROLE_ANY = "ANY";
+  private static final String ANY_AUTHORITY = "ANY";
 
   @Bean
   public ServerSecurityContextRepository serverSecurityContextRepository() {
@@ -47,23 +47,23 @@ public class SecurityConfig {
         .getRules()
         .forEach(
             r -> {
-              List<String> ruleRoles =
-                  r.getRole().stream().map(String::toUpperCase).collect(Collectors.toList());
+              List<String> ruleAuthorities =
+                  r.getAuthority().stream().map(String::toUpperCase).collect(Collectors.toList());
               Access xs =
                   r.getMethod() != null
                       ? authExchange.pathMatchers(r.getMethod(), r.getPath())
                       : authExchange.pathMatchers(r.getPath());
-              if (ruleRoles.contains(ROLE_ANY)) {
+              if (ruleAuthorities.contains(ANY_AUTHORITY)) {
                 xs.permitAll();
               } else {
-                if (ruleRoles.isEmpty()) {
+                if (ruleAuthorities.isEmpty()) {
                   if (securityProperties.isAuthenticatedRequired()) {
                     xs.authenticated();
                   } else {
                     xs.permitAll();
                   }
-                } else if (ruleRoles.size() == 1) {
-                  xs.hasRole(ruleRoles.get(0));
+                } else if (ruleAuthorities.size() == 1) {
+                  xs.hasAuthority(ruleAuthorities.get(0));
                 } else {
                   xs.access(
                       (authentication, e) ->
@@ -71,7 +71,7 @@ public class SecurityConfig {
                               .filter(Authentication::isAuthenticated)
                               .flatMapIterable(Authentication::getAuthorities)
                               .map(GrantedAuthority::getAuthority)
-                              .filter(ruleRoles::contains)
+                              .filter(ruleAuthorities::contains)
                               .hasElements()
                               .map(AuthorizationDecision::new)
                               .defaultIfEmpty(new AuthorizationDecision(false)));

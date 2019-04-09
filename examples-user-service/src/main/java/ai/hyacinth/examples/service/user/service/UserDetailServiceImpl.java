@@ -26,11 +26,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     DefaultUserDetails userDetails = new DefaultUserDetails();
-    userDetails.setUserId(String.valueOf(user.getId()));
+    userDetails.setUserId(user.getId());
     userDetails.setUsername(user.getUsername());
     userDetails.setPassword(user.getPassword());
-    userDetails.setAccountNonExpired(!ifExpired(user.getAccountExpirationDate()));
-    userDetails.setCredentialsNonExpired(!ifExpired((user.getCredentialExpirationDate())));
+    userDetails.setAccountNonExpired(ifNonExpired(user.getAccountExpirationDate()));
+    userDetails.setCredentialsNonExpired(ifNonExpired((user.getCredentialExpirationDate())));
     userDetails.setAccountNonLocked(!user.isLocked());
     userDetails.setEnabled(!user.isDisabled());
     userDetails.setAuthorities(
@@ -39,7 +39,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     return userDetails;
   }
 
-  private boolean ifExpired(Date expiration) {
-    return expiration != null && expiration.before(new Date());
+  private boolean ifNonExpired(Date expiration) {
+    return expiration == null || expiration.after(new Date());
   }
 }

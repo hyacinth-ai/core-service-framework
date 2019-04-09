@@ -1,6 +1,6 @@
 package ai.hyacinth.examples.service.user.service;
 
-public interface UserAuthorityConstants {
+public interface UserRoleConstants {
   String ROLE_USER = "USER";
   String ROLE_API = "API";
 }

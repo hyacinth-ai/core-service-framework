@@ -22,23 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DebugController {
   @Autowired private DebugService debugService;
 
-  @RequestMapping(value = {"/call", "/call/**"})
-  public ApiCall debug(
-      @RequestBody(required = false) Object requestBody,
-      HttpServletRequest request,
-      @RequestHeader Map<?, ?> httpHeaders) {
-    ApiCall apiCall = new ApiCall();
-    apiCall.setRequestMethod(request.getMethod());
-    apiCall.setPath(request.getRequestURI());
-    apiCall.setRequestParameters(request.getParameterMap());
-    apiCall.setRequestHeaders(httpHeaders);
-    apiCall.setRequestTime(new Date());
-    apiCall.setRequestBody(requestBody);
-    log.info("Api call received: {}", apiCall);
-    debugService.recordCallHistory(apiCall);
-    return apiCall;
-  }
-
   @GetMapping("/history")
   public List<ApiCall> history() {
     return debugService.findCallHistory();
@@ -53,5 +36,22 @@ public class DebugController {
   public Map<?, ?> echo(
       @RequestBody(required = false) Map<?, ?> requestBody) {
     return requestBody;
+  }
+
+  @RequestMapping(value = {"/call", "/call/**", "/**"})
+  public ApiCall debug(
+      @RequestBody(required = false) Object requestBody,
+      HttpServletRequest request,
+      @RequestHeader Map<?, ?> httpHeaders) {
+    ApiCall apiCall = new ApiCall();
+    apiCall.setRequestMethod(request.getMethod());
+    apiCall.setPath(request.getRequestURI());
+    apiCall.setRequestParameters(request.getParameterMap());
+    apiCall.setRequestHeaders(httpHeaders);
+    apiCall.setRequestTime(new Date());
+    apiCall.setRequestBody(requestBody);
+    log.info("Api call received: {}", apiCall);
+    debugService.recordCallHistory(apiCall);
+    return apiCall;
   }
 }
