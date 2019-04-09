@@ -1,5 +1,7 @@
 package ai.hyacinth.examples.service.debug.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Date;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -17,7 +19,10 @@ public class ApiCall {
   String path;
   String requestMethod;
   Map<String, ?> requestParameters;
+
+  @JsonInclude(Include.NON_NULL)
   Object requestBody;
+
   Object requestHeaders;
   Date requestTime;
 }

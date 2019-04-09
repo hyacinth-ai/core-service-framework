@@ -95,6 +95,23 @@ Peer #2:
 SPRING_PROFILES_ACTIVE=peer SERVER_PORT=8762 EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://localhost:8761/eureka/ java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
 ```
 
+### Service Discovery Support (Eureka Client)
+
+Using `core-service-discovery-support` as dependency with overriding the following properties:
+
+```yaml
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+```
+
+Environment variable can be set to disable service discovery:
+
+```bash
+EUREKA_CLIENT_ENABLED=false java -jar debug-service.jar
+```
+
 ### Cache
 
 `Redis` is default cache provider with dependency `core-service-cache-support`:
