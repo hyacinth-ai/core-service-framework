@@ -176,6 +176,10 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 
 ## Todo for first release
 
+15. Gateway URL replacement by PrincipleID
+
+SetPathGatewayFilterFactory
+
 17. Eureka register testing
 
 eureka.instance.leaseRenewalIntervalInSeconds
@@ -185,12 +189,6 @@ BUG: slow to clean old instance. still querying old instances even it is down
 2. Gateway @RefreshScope with Gateway server configuration dynamically
 
 1. Spring Cloud Sleuth + Zipkin dashboard integration
-
-0. Spring Cloud Stream
-
-0. Spring Cloud Bus
-
-0. Job trigger server
 
 4. Publish to maven or jcenter
 
@@ -202,7 +200,9 @@ TL;DR (commented, only shown in source file)
 
 <!--
 
-30. JWT authentication
+0. Spring Cloud Stream
+0. Spring Cloud Bus
+0. Job trigger server
 
 31. Flyway
 
@@ -212,11 +212,7 @@ TL;DR (commented, only shown in source file)
 
   Rewrite URL by Session Key
 
-  Request Parameters rewrite by UID
-
-  Request Body rewrite by UID
-
-  JWT token
+  JWT token authentication
 
   Dangerous header removing: X-Forwarded-For
   
@@ -512,9 +508,10 @@ gateway server:
 http -v ':9090/auth-service/api/login' username=ziyang password=12345678
 http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=7d621269-809b-4fd1-bc19-c30ee735895b'
 http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17'
-http -v ':9090/order-service/api/orders' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17' userId:=4 productId:=1000 quantity:=2
+http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
 ```
 
+<!--
 ### Using *curl*
 
 Auth:
@@ -558,3 +555,4 @@ curl -v -H 'Content-Type:application/json' 'localhost:9090/user-service/users?na
 curl -v -H 'Expect:' -F "portrait=@settings.gradle" http://localhost:9090/api/user-service/users/1000/portrait
 ```
 
+-->
