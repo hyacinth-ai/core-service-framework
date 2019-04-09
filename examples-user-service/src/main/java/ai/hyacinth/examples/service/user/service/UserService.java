@@ -19,4 +19,6 @@ public interface UserService {
   Authentication authenticate(UserAuthenticationRequest userAuthenticationRequest);
 
   ListenableFuture<Long> countingUsers();
+
+  UserInfo setUserPortrait(Long userId, byte[] portrait);
 }

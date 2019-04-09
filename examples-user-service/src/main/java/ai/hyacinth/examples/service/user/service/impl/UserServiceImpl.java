@@ -14,6 +14,7 @@ import ai.hyacinth.examples.service.user.service.DefaultUserDetails;
 import com.google.common.collect.Lists;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.swing.text.html.Option;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +46,12 @@ public class UserServiceImpl implements UserService {
     if (StringUtils.isEmpty(userBo.getPassword())) {
       throw new ServiceApiException(UserServiceErrorCode.EMPTY_PASSWORD);
     }
-    if (userRepo.findByUsername(userBo.getName()) != null) {
+    if (userRepo.findByUsername(userBo.getUsername()) != null) {
       throw new ServiceApiException(UserServiceErrorCode.USER_EXISTS);
     }
 
     User user = new User();
-    user.setUsername(userBo.getName());
+    user.setUsername(userBo.getUsername());
     user.setPassword(passwordEncoder.encode(userBo.getPassword()));
     user.setRoles(
         Lists.newArrayList(UserAuthorityConstants.ROLE_USER, UserAuthorityConstants.ROLE_API));
@@ -102,6 +103,14 @@ public class UserServiceImpl implements UserService {
     }
     log.info("in async numUsers: {}", numUsers);
     return new AsyncResult<Long>(numUsers);
+  }
+
+  @Override
+  @Transactional
+  public UserInfo setUserPortrait(Long userId, byte[] portrait) {
+    User user = userRepo.getOne(userId);
+    user.setPortrait(portrait);
+    return toUserInfo(user);
   }
 
   private UserInfo getUser(Long userId) {

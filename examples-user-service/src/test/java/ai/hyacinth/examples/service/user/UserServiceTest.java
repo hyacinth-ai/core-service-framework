@@ -38,7 +38,7 @@ public class UserServiceTest {
   public void createUser() {
     UserCreationRequest request = new UserCreationRequest("tommy", "123", LocalDate.now());
     UserInfo c = userService.createUser(request);
-    Assert.assertEquals(c.getUsername(), request.getName());
+    Assert.assertEquals(c.getUsername(), request.getUsername());
   }
 
   @Test

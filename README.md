@@ -480,6 +480,30 @@ org.springframework.orm.hibernate5.SpringBeanContainer
 
 ## Curl examples
 
+### Using *httpie*
+
+user-service:
+
+```bash
+http -v ':8080/api/users' username=ziyang password=12345678 birthDate=1981-10-01
+http -v ':8080/api/users?username=ziyang'
+http -v ':8080/api/users/5'
+http -v --form ':8080/api/users/5/portrait' 'portrait@./project-dependencies.png'
+```
+
+order-service:
+
+```bash
+http -v ':7001/api/orders' userId:=5 productId:=1000 quantity:=2
+http -v ':7001/api/orders?userId=5'
+```
+
+### Using *curl*
+
+> `curl` file uploading examples:
+>
+> `curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'`
+
 Auth:
 
 ```bash
@@ -491,10 +515,6 @@ curl -v -XPOST -H'Cookie: SESSION=c941581e-d01b-490f-a2bc-72c91dc13aa1' 'localho
 User service:
 
 ```bash
-curl -v -F "portrait=@settings.gradle" 'http://localhost:8080/api/users/1000/portrait'
-curl -v -H'Content-Type:application/json' 'localhost:8080/api/users?name=tommyxxx'
-curl -v -H'Content-Type:application/json' 'localhost:7070/api/users/4'
-curl -v -H'Content-Type:application/json' 'localhost:8080/api/users' -d'{"name":"amanda","password":"123445678","birthDate":"1981-10-01"}'
 curl -v -H'Content-Type:application/json' 'localhost:7777/api/authentication/login' -d'{"username":"amanda","password":"123445678"}'
 ```
 

@@ -1,7 +1,9 @@
 package ai.hyacinth.examples.service.user.web;
 
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
+import ai.hyacinth.core.service.web.common.ServiceApiException;
 import ai.hyacinth.core.service.web.common.payload.AuthenticationPayload;
+import ai.hyacinth.core.service.web.support.errorhandler.ServiceApiCommonErrorCode;
 import ai.hyacinth.examples.service.user.api.UserApi;
 import ai.hyacinth.examples.service.user.dto.UserAuthenticationRequest;
 import ai.hyacinth.examples.service.user.dto.UserCreationRequest;
@@ -29,7 +31,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
 @Api(value = "User Api")
 public class UserController implements UserApi {
 
@@ -79,21 +80,17 @@ public class UserController implements UserApi {
   }
 
   @PostMapping("/users/{userId}/portrait")
-  public Map<String, Object> setUserPortrait(@PathVariable String userId, @RequestParam("portrait") MultipartFile file) {
+  public UserInfo setUserPortrait(@PathVariable Long userId, @RequestParam("portrait") MultipartFile file) {
     String name = file.getName();
     String originalFilename = file.getOriginalFilename();
     long fileSize = file.getSize();
-    long realSize = 0;
+    byte[] content = null;
     try {
-      byte[] content = file.getBytes();
-      realSize = content.length;
+      content = file.getBytes();
     } catch (IOException e) {
-      log.error("cannot get portrait content");
+      throw new ServiceApiException(ServiceApiCommonErrorCode.NETWORK_ERROR, "cannot read portrait content");
     }
-    log.info("set user portrait, name: {} = {} of {}", originalFilename, fileSize, realSize);
-    Map<String, Object> map = new HashMap<>();
-    map.put("name", originalFilename);
-    map.put("size", fileSize);
-    return map;
+    log.info("set user portrait, {} {} = {}", file, originalFilename, fileSize);
+    return userService.setUserPortrait(userId, content);
   }
 }

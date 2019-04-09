@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class UserCreationRequest {
   @NotNull
-  private String name;
+  private String username;
 
   @NotNull
   @Size(min = 8, max = 16)
