@@ -5,19 +5,18 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: none
-      # 'create', 'create-drop', 'update', 'none' and 'validate'
+      ddl-auto: none # 'create', 'create-drop', 'update', 'none' and 'validate'
     generate-ddl: true
     open-in-view: false
-  #    properties:
-  #      javax:
-  #        persistence:
-  #          schema-generation:
-  #            create-source: metadata
-  #            scripts:
-  #              action: drop-and-create
-  #              drop-target: drop.sql
-  #              create-target: create.sql
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: none # drop-and-create, create, drop
+              create-target: "${spring.application.name}.create.sql"
+              drop-target: "${spring.application.name}.drop.sql"
 
   datasource:
     initialization-mode: never

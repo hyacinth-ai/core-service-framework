@@ -174,9 +174,23 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 > However, sending request directly to a service works properly.
 > Most browsers don't use that header.
 
+### Generate JPA SQL script
+
+Enable SQL script generation by the following configuration. Refer to `jpa-support` module.
+
+```yaml
+spring:
+  jpa:
+    javax:
+      persistence:
+        schema-generation:
+          scripts:
+            action: drop-and-create # default is "none"
+```
+
 ## Todo for first release
 
-31. Flyway
+31. Flyway, generate sql docs
 
 17. Eureka register testing
 

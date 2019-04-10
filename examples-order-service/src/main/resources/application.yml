@@ -11,4 +11,9 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: ai.hyacinth.core.service.jpa.hibernate.MySQLDialect
+        dialect: ai.hyacinth.core.service.jpa.hibernate.dialect.MySQLDialect
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: drop-and-create

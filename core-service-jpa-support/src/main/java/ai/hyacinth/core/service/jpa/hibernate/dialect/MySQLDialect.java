@@ -1,4 +1,4 @@
-package ai.hyacinth.core.service.jpa.hibernate;
+package ai.hyacinth.core.service.jpa.hibernate.dialect;
 
 import org.hibernate.dialect.MySQL57Dialect;
 

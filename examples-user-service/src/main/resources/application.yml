@@ -13,7 +13,7 @@ spring:
       ddl-auto: update # create-drop # update, validate, create-drop
     properties:
       hibernate:
-        dialect: ai.hyacinth.core.service.jpa.hibernate.MySQLDialect
+        dialect: ai.hyacinth.core.service.jpa.hibernate.dialect.MySQLDialect
 
 test:
   key: 456
