@@ -15,8 +15,8 @@ spring:
             create-source: metadata
             scripts:
               action: none # drop-and-create, create, drop
-              create-target: "${spring.application.name}.create.sql"
-              drop-target: "${spring.application.name}.drop.sql"
+              create-target: "V1__${spring.application.name}.create.sql"
+              drop-target: "V1__${spring.application.name}.drop.sql"
 
   datasource:
     initialization-mode: never

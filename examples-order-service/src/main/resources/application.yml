@@ -17,6 +17,3 @@ spring:
           schema-generation:
             scripts:
               action: drop-and-create
-
-  flyway:
-    enabled: false

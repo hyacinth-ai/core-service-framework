@@ -17,6 +17,7 @@ public abstract class AbstractJsonConverter<T> implements AttributeConverter<T, 
   @Autowired
   private ObjectMapper objectMapper;
 
+  @SuppressWarnings("unchecked")
   protected Class<T> targetClass = (Class<T>) Map.class;
 
   public AbstractJsonConverter(Class<T> targetClass) {

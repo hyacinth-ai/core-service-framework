@@ -186,12 +186,47 @@ spring:
         persistence:
           schema-generation:
             scripts:
-              action: drop-and-create # default is "none"
+              action: drop-and-create # default is "none" which means no generation
 ```
 
-## Todo for first release
+### Flyway Database Migration on Startup
 
-31. Flyway
+Put SQL scripts (naming like `V1__init_schema.sql`) under `classpath:db/migration` or `classpath:db/migration/mysql`.
+
+Enable flyway by:
+
+```yaml
+spring.flyway.enabled: true
+```
+
+If database is not empty, baseline operation is required:
+
+```yaml
+spring.flyway.baseline-on-migrate: true
+spring.flyway.baseline-version: 1
+```
+
+> Startup migration is not suggested for production due to different user/pass, priviledges
+> used between `admin` who executes DDL and `user` who execute DML.
+> Database migration could be an independent job before starting a service.
+
+### Flyway Database Migration by Gradle
+
+```bash
+export FLYWAY_URL="jdbc:mysql://user:pass@db-host:3306/database?characterEncoding=UTF-8&useSSL=false"
+gradle flywayinfo
+gradle flywaymigrate
+# gradle -Pflyway.user=user -Pflyway.password=password -Pflyway.url=... flywayvalidate
+
+# for non-empty database
+gralde -Pflyway.baselineOnMigrate=true -Pflyway.baselineVersion=0 flywaymigrate
+```
+
+> Dangerous `flywayclean` is disabled as default in `build-script.gradle`.
+
+Refer to [flyway by gradle](https://flywaydb.org/documentation/gradle/) for more information.
+
+## Todo for first release
 
 17. Eureka register testing
 
