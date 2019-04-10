@@ -106,7 +106,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 ```
 
-Environment variable can be set to disable service discovery:
+To disable service discovery, set `eureka.client.enabled` or environment variable as follow:
 
 ```bash
 EUREKA_CLIENT_ENABLED=false java -jar debug-service.jar
@@ -250,8 +250,25 @@ TL;DR (commented, only shown in source file)
 <!--
 
 0. Spring Cloud Stream
+
+1. RabbitMQ integration (AmqpTemplate / AmqpAdmin)
+
+spring-boot-starter-amqp
+
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=admin
+spring.rabbitmq.password=secret
+spring.rabbitmq.template.retry.enabled=true
+spring.rabbitmq.template.retry.initial-interval=2s
+
+@RabbitListener(queues = "someQueue") // containerFactory="myFactory"
+public void processMessage(String content) {
+
 0. Spring Cloud Bus
 0. Job trigger server
+
+11. Login challenge
 
 1. Gateway Feature
 
@@ -324,20 +341,6 @@ encrypt:
 		String path = getFilePath(request, name, profile, label);
 		return retrieve(request, name, profile, label, path, resolvePlaceholders);
 	}
-
-1. RabbitMQ integration (AmqpTemplate / AmqpAdmin)
-
-spring-boot-starter-amqp
-
-spring.rabbitmq.host=localhost
-spring.rabbitmq.port=5672
-spring.rabbitmq.username=admin
-spring.rabbitmq.password=secret
-spring.rabbitmq.template.retry.enabled=true
-spring.rabbitmq.template.retry.initial-interval=2s
-
-@RabbitListener(queues = "someQueue") // containerFactory="myFactory"
-public void processMessage(String content) {
 
 4. WebSocket: spring-boot-starter-websocket
 
@@ -489,7 +492,7 @@ private final ApplicationContextRunner contextRunner = new ApplicationContextRun
 
 79.3 Customize the Jackson ObjectMapper
 
-11. Login challenge
+80. Webflux Security
 
 ServerHttpSecurity
 ServerWebExchangeMatchers
@@ -512,8 +515,6 @@ public class SwaggerWebFilterServlet extends HttpServlet {
 27. Converter
 
 org.springframework.orm.hibernate5.SpringBeanContainer
-
-28. Disable discovery
 
 -->
 
