@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 
 @ConfigurationProperties("ai.hyacinth.core.service.gateway.server")
 @Data

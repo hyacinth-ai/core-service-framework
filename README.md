@@ -176,14 +176,13 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 
 ## Todo for first release
 
-15. Gateway URL replacement by PrincipleID
-
-SetPathGatewayFilterFactory
+31. Flyway
 
 17. Eureka register testing
 
 eureka.instance.leaseRenewalIntervalInSeconds
 
+BUG: slow to register
 BUG: slow to clean old instance. still querying old instances even it is down
 
 2. Gateway @RefreshScope with Gateway server configuration dynamically
@@ -203,8 +202,6 @@ TL;DR (commented, only shown in source file)
 0. Spring Cloud Stream
 0. Spring Cloud Bus
 0. Job trigger server
-
-31. Flyway
 
 1. Gateway Feature
 
@@ -506,7 +503,8 @@ gateway server:
 
 ```bash
 http -v ':9090/auth-service/api/login' username=ziyang password=12345678
-http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=7d621269-809b-4fd1-bc19-c30ee735895b'
+http -v ':9090/user-service/api/users/me' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
+http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
 http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17'
 http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
 ```

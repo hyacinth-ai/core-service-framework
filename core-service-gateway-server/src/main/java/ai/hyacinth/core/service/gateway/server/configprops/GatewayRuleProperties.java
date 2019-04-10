@@ -2,6 +2,7 @@ package ai.hyacinth.core.service.gateway.server.configprops;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.validation.constraints.NotNull;
@@ -33,9 +34,9 @@ public class GatewayRuleProperties {
   /** security-related api hint */
   private boolean authenticationApi;
 
-  /** response rewrite */
-  private ResponsePostProcessingType postProcessing = ResponsePostProcessingType.NONE;
+  /** response rewrite with http status reset */
+  private List<ResponsePostProcessingType> postProcessing = new LinkedList<>();
 
-  /** secure headers is always implemented by spring-security instead of gateway */
+  /** no effect on current implementation. secure headers is achieved by spring-security instead of gateway filter */
   private boolean secureHttpHeaders = true;
 }

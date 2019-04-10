@@ -53,12 +53,18 @@ ai.hyacinth.core.service.gateway.server:
     authority: any
     service: user-service
     uri: /api/authentication/login
-    authentication-api: true
-    post-processing: api
+    post-processing:
+      - authentication
+      - api
   - path: /user-service/api/users/current
     authority: admin, user
     service: user-service
     uri: /api/users/current
+  - path: /user-service/api/users/me
+    authority: user
+    service: user-service
+    uri: /api/users/${X-Principle}
+    post-processing: api
   - path: /order-service/api/orders
     method: POST
     authority: user

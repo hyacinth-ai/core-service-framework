@@ -1,5 +1,7 @@
 package ai.hyacinth.core.service.gateway.server.route;
 
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+
 import ai.hyacinth.core.service.gateway.server.configprops.GatewayServerProperties;
 import ai.hyacinth.core.service.gateway.server.configprops.ResponsePostProcessingType;
 import ai.hyacinth.core.service.gateway.server.payload.ApiSuccessPayload;
@@ -11,6 +13,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +26,7 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Builder;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -38,6 +44,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -70,17 +77,18 @@ public class RouteConfig {
                         .path(rule.getPath())
                         .filters(
                             f -> {
-                              f.setPath(rule.getUri());
+                              f.filter(
+                                  rewriteRequestPath(rule.getUri())); // setPath(rule.getUri());
                               f.filter(rewriteRequestPrincipalHeader());
                               f.filter(rewriteRequestParams(rule.getRequestParam()));
                               f.filter(
                                   rewriteRequestBody(
                                       rule.getRequestBody(), rule.getRequestBodyJson()));
-                              if (rule.getPostProcessing().equals(ResponsePostProcessingType.API)) {
+                              if (rule.getPostProcessing().size() > 0) {
                                 f.modifyResponseBody(
                                     String.class,
                                     String.class,
-                                    rewriteSuccessPayload(rule.isAuthenticationApi()));
+                                    rewriteSuccessPayload(rule.getPostProcessing()));
                               }
                               return f;
                             })
@@ -88,6 +96,37 @@ public class RouteConfig {
                   });
             });
     return routes.build();
+  }
+
+  private GatewayFilter rewriteRequestPath(final String uriTemplateText) {
+    // please refer to class SetPathGatewayFilterFactory
+    return (exchange, chain) ->
+        ReactiveSecurityContextHolder.getContext()
+            .map(context -> context.getAuthentication().getPrincipal())
+            .defaultIfEmpty("")
+            .map(String::valueOf)
+            .map(
+                principal -> {
+                  ServerHttpRequest req = exchange.getRequest();
+                  ServerWebExchangeUtils.addOriginalRequestUrl(exchange, req.getURI());
+
+                  final UriTemplate uriTemplate =
+                      new UriTemplate(
+                          uriTemplateText.replace(PRINCIPAL_PLACEHOLDER_VAR, principal));
+
+                  Map<String, String> uriVariables =
+                      ServerWebExchangeUtils.getUriTemplateVariables(exchange);
+                  URI uri = uriTemplate.expand(uriVariables);
+
+                  exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, uri);
+                  String newPath = uri.getRawPath();
+
+                  return req.mutate().path(newPath).build();
+                })
+            .flatMap(
+                request -> {
+                  return chain.filter(exchange.mutate().request(request).build());
+                });
   }
 
   private GatewayFilter rewriteRequestPrincipalHeader() {
@@ -256,7 +295,10 @@ public class RouteConfig {
   }
 
   private RewriteFunction<String, String> rewriteSuccessPayload(
-      final boolean authenticationPayload) {
+      final List<ResponsePostProcessingType> processingList) {
+    boolean authenticationPayload = processingList.contains(ResponsePostProcessingType.AUTHENTICATION);
+    boolean apiWrapping = processingList.contains(ResponsePostProcessingType.API);
+
     return (exchange, input) -> {
       HttpStatus statusCode = exchange.getResponse().getStatusCode();
       if (statusCode.is2xxSuccessful()) {
@@ -264,13 +306,12 @@ public class RouteConfig {
         MediaType contentType = headers.getContentType();
         if (isJsonType(contentType)) {
           if (input.length() > 0) {
-            ApiSuccessPayload response = new ApiSuccessPayload();
 
             try {
               Mono<Void> saveMono;
 
+              String data = input; // fast-mode raw json string
               if (authenticationPayload) {
-
                 AuthenticationResult<?> payload = fromJson(input, AuthenticationResult.class);
                 DefaultAuthentication authentication = new DefaultAuthentication();
                 authentication.setAuthenticated(true);
@@ -289,14 +330,18 @@ public class RouteConfig {
                         .subscriberContext(
                             ReactiveSecurityContextHolder.withSecurityContext(
                                 Mono.just(securityContext)));
-                response.setData(null); // omit authentication details from caller
+                data = null; // omit authentication details from caller
               } else {
                 saveMono = Mono.empty();
-                response.setData(input); // fast-mode raw json string
               }
 
-              String wrappedPayload = mapper.writeValueAsString(response);
-              return saveMono.then(Mono.just(wrappedPayload));
+              if (apiWrapping) {
+                ApiSuccessPayload response = new ApiSuccessPayload();
+                response.setData(data);
+                data = mapper.writeValueAsString(response);
+              }
+
+              return saveMono.then(Mono.just(data));
 
             } catch (JsonProcessingException e) {
               log.error("error while wrapping successful response payload: {}", input);
