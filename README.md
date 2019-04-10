@@ -16,7 +16,7 @@ License: Apache License 2.0
 
 ### Runtime Environment
 
-* Java SDK 10 or 11
+* Java SDK 10 / 11
 * Preferred charset: `UTF-8`
 
 ### IDE
@@ -79,7 +79,9 @@ spring:
 
 #### Standalone Mode
 
+```bash
 java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
+```
 
 #### Peer Mode
 
@@ -122,7 +124,7 @@ EUREKA_CLIENT_ENABLED=false java -jar debug-service.jar
 spring.cache.type: redis
 ```
 
-and overriding following properties:
+and overriding following properties before activating thie cache:
 
 ```yaml
 spring:
@@ -152,12 +154,17 @@ Validation error processing is implemented in web support module. Error response
 
 ```json
 {
-  "status":"error",
-  "code":"900001",
-  "message":"REQUEST_VALIDATION_ERROR",
-  "data":"Validation error on field: password",
-  "timestamp":"2019-03-29T15:33:44.462+0000",
-  "path":"/api/users"
+    "code": "E80100",
+    "data": {
+        "field": [
+            "username"
+        ]
+    },
+    "message": "REQUEST_VALIDATION_FAILED",
+    "path": "/api/users",
+    "service": "user-service",
+    "status": "error",
+    "timestamp": "2019-04-10T14:24:34.033+0000"
 }
 ```
 
@@ -165,7 +172,9 @@ Validation error processing is implemented in web support module. Error response
 
 ```java
 @PostMapping("/users/{userId}/portrait")
-public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @RequestParam("portrait") MultipartFile file) {
+public Map<String, Object> uploadUserPortrait(
+  @PathVariable String userId, 
+  @RequestParam("portrait") MultipartFile file) {
   // ...
 }
 ```
@@ -174,6 +183,7 @@ public Map<String, Object> uploadUserPortrait(@PathVariable String userId, @Requ
 >
 > Http header `Expect: 100-continue` is not supported when a multipart request passes through the gateway server due to a bug in Spring Cloud Gateway.
 > However, sending request directly to a service works properly.
+>
 > Most browsers don't use that header.
 
 ### Generate JPA SQL script
@@ -210,40 +220,42 @@ spring.flyway.baseline-version: 1
 
 > Startup migration is not suggested for production due to different user/pass, priviledges
 > used between `admin` who executes DDL and `user` who execute DML.
+>
 > Database migration could be an independent job before starting a service.
 
 ### Flyway Database Migration by Gradle
 
 ```bash
 export FLYWAY_URL="jdbc:mysql://user:pass@db-host:3306/database?characterEncoding=UTF-8&useSSL=false"
+
 gradle flywayinfo
-gradle flywaymigrate
 # gradle -Pflyway.user=user -Pflyway.password=password -Pflyway.url=... flywayvalidate
+gradle flywaymigrate
 
 # for non-empty database
 gralde -Pflyway.baselineOnMigrate=true -Pflyway.baselineVersion=0 flywaymigrate
 ```
 
-> Dangerous `flywayclean` is disabled as default in `build-script.gradle`.
+> Dangerous `flywayclean` task is disabled in `build-script.gradle`.
 
-Refer to [flyway by gradle](https://flywaydb.org/documentation/gradle/) for more information.
+Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for advanced usage.
 
 ## Todo for first release
 
-17. Eureka register testing
+* Eureka register testing
 
 eureka.instance.leaseRenewalIntervalInSeconds
 
 BUG: slow to register
 BUG: slow to clean old instance. still querying old instances even it is down
 
-2. Gateway @RefreshScope with Gateway server configuration dynamically
+* Gateway @RefreshScope with Gateway server configuration dynamically
 
-1. Spring Cloud Sleuth + Zipkin dashboard integration
+* Spring Cloud Sleuth + Zipkin dashboard integration
 
-4. Publish to maven or jcenter
+* Publish to maven or jcenter
 
-18. Documentation for modules introduced (Discovery client support & Disable, /h2-console)
+* Documentation for modules introduced (Discovery client support & Disable, /h2-console)
 
 ## Roadmap Points
 
