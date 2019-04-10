@@ -181,16 +181,17 @@ Enable SQL script generation by the following configuration. Refer to `jpa-suppo
 ```yaml
 spring:
   jpa:
-    javax:
-      persistence:
-        schema-generation:
-          scripts:
-            action: drop-and-create # default is "none"
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: drop-and-create # default is "none"
 ```
 
 ## Todo for first release
 
-31. Flyway, generate sql docs
+31. Flyway
 
 17. Eureka register testing
 
@@ -488,8 +489,8 @@ org.springframework.orm.hibernate5.SpringBeanContainer
 user-service:
 
 ```bash
-http -v ':8080/api/users' username=ziyang password=12345678 birthDate=1981-10-01
-http -v ':8080/api/users?username=ziyang'
+http -v ':8080/api/users' username=ziyangx password=12345678 birthDate=1981-10-01
+http -v ':8080/api/users?username=ziyangx'
 http -v ':8080/api/users/5'
 http -v --form ':8080/api/users/5/portrait' 'portrait@./project-dependencies.png'
 

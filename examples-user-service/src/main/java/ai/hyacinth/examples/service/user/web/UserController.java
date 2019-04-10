@@ -33,7 +33,7 @@ public class UserController implements UserApi {
   @Autowired private UserService userService;
 
   @Override
-  public UserInfo createUser(@Validated @RequestBody UserCreationRequest userCreationRequest) {
+  public UserInfo createUser(UserCreationRequest userCreationRequest) {
     userService
         .countingUsers()
         .addCallback(
@@ -66,12 +66,12 @@ public class UserController implements UserApi {
   }
 
   @Override
-  public UserInfo findUserByName(String username) {
-    return userService.findUserByName(username);
+  public UserInfo findUserByUsername(String username) {
+    return userService.findUserByUsername(username);
   }
 
   @Override
-  public UserInfo findUserById(@PathVariable Long userId) {
+  public UserInfo findUserById(Long userId) {
     return userService.findUserById(userId);
   }
 

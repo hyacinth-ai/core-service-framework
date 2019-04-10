@@ -97,8 +97,8 @@ subprojects {
         maven { url 'https://repo.spring.io/libs-milestone' }
     }
 
-    sourceCompatibility = org.gradle.api.JavaVersion.VERSION_1_10
-    targetCompatibility = org.gradle.api.JavaVersion.VERSION_1_10
+    sourceCompatibility = JavaVersion.VERSION_1_10
+    targetCompatibility = JavaVersion.VERSION_1_10
 
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'

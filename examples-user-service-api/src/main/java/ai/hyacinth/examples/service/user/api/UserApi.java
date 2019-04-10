@@ -19,7 +19,7 @@ public interface UserApi {
   UserInfo createUser(@Validated @RequestBody UserCreationRequest userCreationRequest);
 
   @RequestMapping(value = "/users", method = RequestMethod.GET)
-  UserInfo findUserByName(@RequestParam String name);
+  UserInfo findUserByUsername(@RequestParam String username);
 
   @RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
   UserInfo findUserById(@PathVariable Long userId);

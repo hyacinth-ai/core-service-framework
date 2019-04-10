@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Cacheable("user")
   @Transactional(readOnly = true)
-  public UserInfo findUserByName(String name) {
+  public UserInfo findUserByUsername(String name) {
     return toUserInfo(userRepo.findByUsername(name));
   }
 

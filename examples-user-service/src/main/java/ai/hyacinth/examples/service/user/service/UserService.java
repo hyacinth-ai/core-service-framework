@@ -10,7 +10,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 public interface UserService {
   UserInfo createUser(UserCreationRequest userBo);
 
-  UserInfo findUserByName(String name);
+  UserInfo findUserByUsername(String name);
 
   UserInfo findUserById(Long id);
 

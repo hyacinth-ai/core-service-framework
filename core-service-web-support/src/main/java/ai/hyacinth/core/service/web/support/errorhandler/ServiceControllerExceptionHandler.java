@@ -18,6 +18,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,17 @@ public class ServiceControllerExceptionHandler {
       HttpRequestMethodNotSupportedException ex, HttpServletRequest servletRequest) {
     return toResponseEntity(
         new ServiceApiException(ServiceApiCommonErrorCode.METHOD_NOT_ALLOWED), servletRequest);
+  }
+
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  public ResponseEntity<ServiceApiErrorResponse> handle(
+      MissingServletRequestParameterException ex, HttpServletRequest servletRequest
+  ) {
+    Map<String, Object> errorDetails = new LinkedHashMap<>();
+    errorDetails.put("parameter", ex.getParameterName());
+    return toResponseEntity(
+        new ServiceApiException(ServiceApiCommonErrorCode.REQUEST_VALIDATION_FAILED, errorDetails),
+        servletRequest);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
