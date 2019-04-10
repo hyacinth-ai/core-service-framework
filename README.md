@@ -32,12 +32,14 @@ License: Apache License 2.0
 * Spring Boot (Config, BootPackage)
 * Spring Security (on both MVC and WebFlux)
 * Spring Cloud (Feign, Config, Eureka, Sleuth)
-* Spring Boot Test and JUnit
-* JPA (v2.2) and Spring Data JPA
-* Swagger, Jackson JSON Mapper
+* JUnit and Spring Boot Test
+* JPA v2.2 and Spring Data JPA
+* Jackson JSON Mapper
+* Swagger
 * Gradle
 * git, curl, *httpie*
-* MySQL, Redis, RabbitMQ
+* MySQL, Redis
+* RabbitMQ
 * Maven repository
 
 ## Modules Reference
