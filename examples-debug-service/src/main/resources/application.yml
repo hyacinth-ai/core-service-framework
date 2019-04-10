@@ -6,3 +6,5 @@ spring:
   h2:
     console:
       enabled: true
+
+  # default h2 embed-db url: jdbc:h2:mem:testdb

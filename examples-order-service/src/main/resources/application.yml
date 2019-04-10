@@ -16,4 +16,4 @@ spring:
         persistence:
           schema-generation:
             scripts:
-              action: drop-and-create
+              action: none # drop-and-create
