@@ -46,6 +46,11 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    restart:
+      enabled: true
 
 ai.hyacinth.core.service.gateway.server:
   security:
@@ -90,6 +95,9 @@ ai.hyacinth.core.service.gateway.server:
   - path: /ping
     authority: any
     uri: /api/ping
+  - path: /actuator/{*call}
+    authority: any
+    uri: "{call}"
 
 #zuul:
 #  host:

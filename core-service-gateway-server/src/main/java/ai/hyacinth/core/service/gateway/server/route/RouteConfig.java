@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -62,6 +63,7 @@ public class RouteConfig {
   @Autowired private ServerSecurityContextRepository securityContextRepository;
 
   @Bean
+  @RefreshScope
   public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
     Builder routes = builder.routes();
     gatewayConfig

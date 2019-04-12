@@ -278,7 +278,7 @@ Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for adv
 
 ## Todo for first release
 
-* Gateway @RefreshScope with Gateway server configuration dynamically
+* Gateway @RefreshScope with Gateway server configuration dynamically with Spring Cloud Config server
 
 * Spring Cloud Sleuth + Zipkin dashboard integration
 
@@ -309,6 +309,7 @@ spring.rabbitmq.template.retry.initial-interval=2s
 public void processMessage(String content) {
 
 0. Spring Cloud Bus
+
 0. Job trigger server
 
 11. Login challenge
@@ -337,6 +338,8 @@ configuration-items: async query interval
 (DONE, ASYNC_STATUS, ABORT, REVERT, REVIEW_REQUIRED)
 
 15. Nginx default configuration
+
+42. @KafkaListener(topics = "someTopic") @EnableKafkaStreams
 
 3. spring-boot-starter-data-mongodb with MongoTemplate
 
@@ -373,17 +376,17 @@ encrypt:
     password: letmein
     alias: mytestkey
     secret: changeme
-    
+
 2. Config server - plain resource
 
-	@RequestMapping("/{name}/{profile}/{label}/**")
-	public String retrieve(@PathVariable String name, @PathVariable String profile,
-			@PathVariable String label, ServletWebRequest request,
-			@RequestParam(defaultValue = "true") boolean resolvePlaceholders)
-			throws IOException {
-		String path = getFilePath(request, name, profile, label);
-		return retrieve(request, name, profile, label, path, resolvePlaceholders);
-	}
+@RequestMapping("/{name}/{profile}/{label}/**")
+public String retrieve(@PathVariable String name, @PathVariable String profile,
+    @PathVariable String label, ServletWebRequest request,
+    @RequestParam(defaultValue = "true") boolean resolvePlaceholders)
+    throws IOException {
+  String path = getFilePath(request, name, profile, label);
+  return retrieve(request, name, profile, label, path, resolvePlaceholders);
+}
 
 4. WebSocket: spring-boot-starter-websocket
 
@@ -495,8 +498,6 @@ d for days
 
 38. Spring Boot supports auto-configuration of an in-memory LDAP server from UnboundID.
 
-42. @KafkaListener(topics = "someTopic") @EnableKafkaStreams
-
 43. RestTemplateBuilder restTemplateBuilder => .build() to create RestTemplate
 
 45. Hazelcast？
@@ -569,10 +570,9 @@ org.springframework.orm.hibernate5.SpringBeanContainer
 
 RemoveNonProxyHeaders
 
-
 -->
 
-## Test examples
+## Test url examples
 
 ### Using *httpie*
 
@@ -587,8 +587,8 @@ http -v --form ':8080/api/users/5/portrait' 'portrait@./project-dependencies.png
 # for user-pass auth:
 http -v ':8080/api/authentication/login' username=ziyang password=12345678
 
-# curl for uploading
-# curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'
+# curl examples for uploading
+curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'
 ```
 
 order-service:
