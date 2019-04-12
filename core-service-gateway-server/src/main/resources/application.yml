@@ -5,7 +5,6 @@ spring:
   session:
     store-type: redis
     timeout: 1800s
-
   redis:
     url: redis://redis:alice-secret@192.168.99.100:6379
 
@@ -24,12 +23,17 @@ spring:
 
 server:
   port: 9090
-#  ssl:
+  ssl:
+    enabled: false
+    key-alias: tomcat
+    key-store-password: password
+    key-store: ./tomcat.ks # or classpath:keystore.p12
+    # key-store-type: PKCS12
+#  http2:
 #    enabled: true
-#    key-alias: scg
-#    key-store-password: scg1234
-#    key-store: classpath:scg-keystore.p12
-#    key-store-type: PKCS12
+
+security:
+  require-ssl: ${server.ssl.enabled}
 
 logging:
   level:
@@ -79,6 +83,13 @@ ai.hyacinth.core.service.gateway.server:
     authority: admin, api
     service: order-service
     uri: "/api{call}"
+  - path: /debug-service/{*call}
+    authority: any
+    service: debug-service
+    uri: "{call}"
+  - path: /ping
+    authority: any
+    uri: /api/ping
 
 #zuul:
 #  host:

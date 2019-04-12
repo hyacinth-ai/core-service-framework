@@ -1,3 +1,4 @@
 dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+    compile project(':core-service-logging-support')
 }

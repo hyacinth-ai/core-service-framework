@@ -42,6 +42,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriTemplate;
@@ -65,6 +66,8 @@ public class RouteConfig {
     Builder routes = builder.routes();
     gatewayConfig
         .getRules()
+        .stream()
+//        .filter(rule -> !StringUtils.isEmpty(rule.getService()))
         .forEach(
             rule -> {
               routes.route(
@@ -92,7 +95,7 @@ public class RouteConfig {
                               }
                               return f;
                             })
-                        .uri("lb://" + rule.getService());
+                        .uri(StringUtils.isEmpty(rule.getService()) ? "forward:///" : "lb://" + rule.getService());
                   });
             });
     return routes.build();

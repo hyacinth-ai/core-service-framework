@@ -10,8 +10,11 @@ server:
 eureka:
   instance:
     preferIpAddress: true
-#  server:
-#    eviction-interval-timer-in-ms: 1000
+  server:
+    enable-self-preservation: false # true default
+    eviction-interval-timer-in-ms: 30000 # 60000 default
+  client:
+    registry-fetch-interval-seconds: 20 # 30 default
 
 ---
 spring:

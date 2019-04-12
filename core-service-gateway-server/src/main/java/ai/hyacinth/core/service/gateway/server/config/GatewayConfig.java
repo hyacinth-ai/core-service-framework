@@ -5,6 +5,7 @@ import ai.hyacinth.core.service.gateway.server.configprops.GatewayServerProperti
 import ai.hyacinth.core.service.gateway.server.configprops.ResponsePostProcessingType;
 import ai.hyacinth.core.service.gateway.server.route.RouteConfig;
 import ai.hyacinth.core.service.gateway.server.route.SecurityConfig;
+import ai.hyacinth.core.service.gateway.server.web.GatewayController;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Configuration
 @Import({DiscoveryConfig.class, RouteConfig.class, SecurityConfig.class})
-@ComponentScan(basePackageClasses = {GatewayConfig.class})
+@ComponentScan(basePackageClasses = {GatewayConfig.class, GatewayController.class})
 @EnableConfigurationProperties({GatewayServerProperties.class})
 public class GatewayConfig {
 }
