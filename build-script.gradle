@@ -93,6 +93,9 @@ subprojects {
             dependency 'io.springfox:springfox-swagger-ui:2.9.2'
             dependency 'com.google.code.findbugs:jsr305:3.0.0'
             dependency 'com.vladmihalcea:hibernate-types-52:2.4.3'
+            dependency 'io.jsonwebtoken:jjwt-api:0.10.6'
+            dependency 'io.jsonwebtoken:jjwt-impl:0.10.6'
+            dependency 'io.jsonwebtoken:jjwt-jackson:0.10.6'
         }
     }
 

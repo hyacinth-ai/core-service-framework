@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
     Authentication authentication = this.authenticate(userAuthenticationRequest);
     DefaultUserDetails userDetails = (DefaultUserDetails) authentication.getPrincipal();
     AuthenticationResult<Long> payload = new AuthenticationResult<>();
-    payload.setPrincipalId(userDetails.getUserId());
+    payload.setPrincipal(userDetails.getUserId());
     payload.setAuthorities(
         userDetails.getAuthorities().stream()
             .map(SimpleGrantedAuthority::getAuthority)

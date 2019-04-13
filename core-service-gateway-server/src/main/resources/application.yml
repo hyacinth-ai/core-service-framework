@@ -53,6 +53,11 @@ management:
       enabled: true
 
 ai.hyacinth.core.service.gateway.server:
+  jwt:
+    enabled: true
+    signing-key: utWVSlUPfb3be0npL0JN41vuKJpFehpVZZKzJz5mWWllpT0X5v6IDFQhn51atRVxsaOqbxK1o2nJdQ2gKsKLPgIxaN0wLYiuWfFBS83zo53+d7VoZrJDMqDN7rpTsdERZjoAaAVQ6iGb3UzWYz0aC1H9SDSJHL/M4FUhU9R3V4g=
+#    signing-key-file: file:keys/sym_keyfile.key
+    expiration: 2h
   security:
     authenticated-required: true
     logout-url: /auth-service/api/logout
@@ -63,7 +68,8 @@ ai.hyacinth.core.service.gateway.server:
     service: user-service
     uri: /api/authentication/login
     post-processing:
-      - authentication
+      - authentication-jwt
+      - authentication-cookie
       - api
   - path: /user-service/api/users/current
     authority: admin, user

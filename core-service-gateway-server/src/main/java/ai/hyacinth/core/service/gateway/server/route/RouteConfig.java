@@ -11,12 +11,17 @@ import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.core.service.web.common.payload.AuthenticationResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +35,8 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Build
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -54,7 +61,8 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class RouteConfig {
 
-  private static final String GATEWAY_API_PREFIX = "/api";
+  private static final String JWT_CLAIM_AUTHORITIES = "authority";
+  private static final String JWT_CLAIM_PRINCIPAL = "principal";
 
   @Autowired private ObjectMapper mapper;
 
@@ -65,11 +73,11 @@ public class RouteConfig {
   @Bean
   @RefreshScope
   public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    Key signingKey = loadJwtSigningKey();
+
     Builder routes = builder.routes();
-    gatewayConfig
-        .getRules()
-        .stream()
-//        .filter(rule -> !StringUtils.isEmpty(rule.getService()))
+    gatewayConfig.getRules().stream()
+        //        .filter(rule -> !StringUtils.isEmpty(rule.getService()))
         .forEach(
             rule -> {
               routes.route(
@@ -93,14 +101,39 @@ public class RouteConfig {
                                 f.modifyResponseBody(
                                     String.class,
                                     String.class,
-                                    rewriteSuccessPayload(rule.getPostProcessing()));
+                                    rewriteSuccessPayload(rule.getPostProcessing(), signingKey));
                               }
                               return f;
                             })
-                        .uri(StringUtils.isEmpty(rule.getService()) ? "forward:///" : "lb://" + rule.getService());
+                        .uri(
+                            StringUtils.isEmpty(rule.getService())
+                                ? "forward:///"
+                                : "lb://" + rule.getService());
                   });
             });
     return routes.build();
+  }
+
+  private Key loadJwtSigningKey() {
+    if (gatewayConfig.getJwt().isEnabled()) {
+      String key = gatewayConfig.getJwt().getSigningKey();
+      if (!StringUtils.isEmpty(key)) {
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(key));
+      }
+
+      String keyLocation = gatewayConfig.getJwt().getSigningKeyFile();
+      if (!StringUtils.isEmpty(keyLocation)) {
+        Resource resource = resourceLoader.getResource(keyLocation);
+        try {
+          byte[] content = resource.getInputStream().readAllBytes();
+          return Keys.hmacShaKeyFor(content);
+        } catch (IOException e) {
+          log.error("cannot read jwt signing key", e);
+          throw new RuntimeException(e);
+        }
+      }
+    }
+    return null;
   }
 
   private GatewayFilter rewriteRequestPath(final String uriTemplateText) {
@@ -300,9 +333,12 @@ public class RouteConfig {
   }
 
   private RewriteFunction<String, String> rewriteSuccessPayload(
-      final List<ResponsePostProcessingType> processingList) {
-    boolean authenticationPayload = processingList.contains(ResponsePostProcessingType.AUTHENTICATION);
+      final List<ResponsePostProcessingType> processingList, Key jwtSigningKey) {
+    boolean authCookie = processingList.contains(ResponsePostProcessingType.AUTHENTICATION_COOKIE);
+    boolean authJwt = processingList.contains(ResponsePostProcessingType.AUTHENTICATION_JWT);
     boolean apiWrapping = processingList.contains(ResponsePostProcessingType.API);
+
+    boolean payloadAsAuth = authCookie || authJwt;
 
     return (exchange, input) -> {
       HttpStatus statusCode = exchange.getResponse().getStatusCode();
@@ -313,31 +349,48 @@ public class RouteConfig {
           if (input.length() > 0) {
 
             try {
-              Mono<Void> saveMono;
-
+              Mono<Void> saveMono = Mono.empty();
               String data = input; // fast-mode raw json string
-              if (authenticationPayload) {
+
+              if (payloadAsAuth) {
+
                 AuthenticationResult<?> payload = fromJson(input, AuthenticationResult.class);
+
                 DefaultAuthentication authentication = new DefaultAuthentication();
                 authentication.setAuthenticated(true);
-                authentication.setPrincipal(payload.getPrincipalId());
-                authentication.setName(String.valueOf(payload.getPrincipalId()));
-
+                authentication.setPrincipal(payload.getPrincipal());
+                authentication.setName(String.valueOf(payload.getPrincipal()));
                 authentication.setAuthorities(
                     payload.getAuthorities().stream()
                         .map(DefaultGrantedAuthority::new)
                         .collect(Collectors.toList()));
 
-                SecurityContext securityContext = new SecurityContextImpl(authentication);
-                saveMono =
-                    securityContextRepository
-                        .save(exchange, securityContext)
-                        .subscriberContext(
-                            ReactiveSecurityContextHolder.withSecurityContext(
-                                Mono.just(securityContext)));
-                data = null; // omit authentication details from caller
-              } else {
-                saveMono = Mono.empty();
+                if (authCookie) {
+                  SecurityContext securityContext = new SecurityContextImpl(authentication);
+                  saveMono =
+                      securityContextRepository
+                          .save(exchange, securityContext)
+                          .subscriberContext(
+                              ReactiveSecurityContextHolder.withSecurityContext(
+                                  Mono.just(securityContext)));
+                  data = null; // clear authentication details
+                }
+
+                if (authJwt) {
+                  String token =
+                      Jwts.builder()
+                          .signWith(jwtSigningKey, gatewayConfig.getJwt().getSignatureAlgorithm())
+                          .setHeaderParam("typ", "JWT")
+                          .setSubject(authentication.getName())
+                          .setExpiration(
+                              new Date(
+                                  System.currentTimeMillis()
+                                      + gatewayConfig.getJwt().getExpiration().toMillis()))
+                          .claim(JWT_CLAIM_AUTHORITIES, payload.getAuthorities())
+                          .claim(JWT_CLAIM_PRINCIPAL, authentication.getPrincipal())
+                          .compact();
+                  data = String.format("{\"token\":\"%s\"}", token);
+                }
               }
 
               if (apiWrapping) {
@@ -364,6 +417,8 @@ public class RouteConfig {
       return Mono.just(input);
     };
   }
+
+  @Autowired private ResourceLoader resourceLoader;
 
   private <T> T fromJson(String input, Class<T> inputClass) {
     try {

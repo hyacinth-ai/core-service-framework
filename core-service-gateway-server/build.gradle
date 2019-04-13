@@ -12,6 +12,10 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-redis'
     compile 'org.springframework.session:spring-session-data-redis'
 
+    compile 'io.jsonwebtoken:jjwt-api'
+    compile 'io.jsonwebtoken:jjwt-impl'
+    compile 'io.jsonwebtoken:jjwt-jackson'
+
     compile 'io.micrometer:micrometer-registry-prometheus'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
 }

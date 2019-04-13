@@ -222,6 +222,40 @@ server:
 
 > If a HTTP/2 connection goes through Spring Cloud Gateway, the routed service should be able to serve this HTTP/2 request.
 
+### JWT
+
+Enabled the following properties on `core-service-gateway-server` by:
+
+```yaml
+ai.hyacinth.core.service.gateway.server:
+  jwt:
+    enabled: true
+    signing-key-file: file:keys/sym_keyfile.key
+    # or set base64 string of the key:
+    # signing-key: utWVSlUPfb3be0npL0JN41vuKJpFehpVZZKzJz5...
+    expiration: 2h
+```
+
+Signing key file is a >64-bytes file which represents a secret key. Try generating like this:
+
+```bash
+openssl rand 128 > sym_keyfile.key
+
+# print base64 string if "signing-key" is used.
+base64 -i ./keys/sym_keyfile.key
+```
+
+One JWT token is automatically generated on any authentication payload returned from configured backend service like this:
+
+```json
+{
+    "data": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNTU1MTc0NzQ5LCJhdXRob3JpdHkiOlsiVVNFUiIsIkFQSSJdLCJwcmluY2lwYWwiOjF9.nXrJIh4GRYkFDe-i4RrOpZXENn_-hfIYRa3QYBbQ1FaJVGOcwVqn-IDqBHbytW8GaOgrGt2CUFm6-LB-TW1bgg"
+    },
+    "status": "success"
+}
+```
+
 ### Generate JPA SQL script
 
 Enable SQL script generation by the following configuration. Refer to `jpa-support` module.
@@ -278,6 +312,8 @@ Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for adv
 
 ## Todo for first release
 
+* JWT token authentication
+
 * Gateway @RefreshScope with Gateway server configuration dynamically with Spring Cloud Config server
 
 * Spring Cloud Sleuth + Zipkin dashboard integration
@@ -319,8 +355,6 @@ public void processMessage(String content) {
   Response-to-Session Mapping
 
   Rewrite URL by Session Key
-
-  JWT token authentication
 
   Dangerous header removing: X-Forwarded-For
   
