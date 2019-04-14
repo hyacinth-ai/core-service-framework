@@ -245,7 +245,20 @@ openssl rand 128 > sym_keyfile.key
 base64 -i ./keys/sym_keyfile.key
 ```
 
-One JWT token is automatically generated on any authentication payload returned from configured backend service like this:
+One JWT token is automatically generated on everytime an `Authentication` payload returned from configured backend service like this:
+
+```yaml
+  - path: /auth-service/api/login
+    method: POST
+    authority: any
+    service: user-service
+    uri: /api/authentication/login
+    post-processing:
+      - authentication-jwt
+      - api
+```
+
+The JWT token returns as:
 
 ```json
 {
