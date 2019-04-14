@@ -35,11 +35,10 @@ server:
 security:
   require-ssl: ${server.ssl.enabled}
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+#logging:
+#  level:
+#    org:
+#      springframework: DEBUG
 
 management:
   endpoints:
@@ -58,6 +57,7 @@ ai.hyacinth.core.service.gateway.server:
     signing-key: utWVSlUPfb3be0npL0JN41vuKJpFehpVZZKzJz5mWWllpT0X5v6IDFQhn51atRVxsaOqbxK1o2nJdQ2gKsKLPgIxaN0wLYiuWfFBS83zo53+d7VoZrJDMqDN7rpTsdERZjoAaAVQ6iGb3UzWYz0aC1H9SDSJHL/M4FUhU9R3V4g=
 #    signing-key-file: file:keys/sym_keyfile.key
     expiration: 2h
+    token-version: 1
   security:
     authenticated-required: true
     logout-url: /auth-service/api/logout

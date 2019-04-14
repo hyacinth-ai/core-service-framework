@@ -18,6 +18,7 @@ public class GatewayRuleProperties {
   @NotNull private String path;
 
   @Nullable private HttpMethod method; // empty means no restriction
+
   private List<String> authority = new ArrayList<>();
 
   /** route */
@@ -29,14 +30,16 @@ public class GatewayRuleProperties {
   private Map<String, String> requestParam = new LinkedHashMap<>();
 
   private Map<String, Object> requestBody = new LinkedHashMap<>();
-  private String requestBodyJson;
 
-  /** security-related api hint */
-  private boolean authenticationApi;
+  /** not implemented. request body json inject. */
+  private String requestBodyJson;
 
   /** response rewrite with http status reset */
   private List<ResponsePostProcessingType> postProcessing = new LinkedList<>();
 
-  /** no effect on current implementation. secure headers is achieved by spring-security instead of gateway filter */
+  /**
+   * no effect on current implementation. secure headers is achieved by spring-security instead of
+   * gateway filter.
+   */
   private boolean secureHttpHeaders = true;
 }

@@ -1,14 +1,17 @@
-package ai.hyacinth.core.service.gateway.server.route;
+package ai.hyacinth.core.service.gateway.server.config;
 
 import ai.hyacinth.core.service.gateway.server.configprops.GatewaySecurityProperties;
 import ai.hyacinth.core.service.gateway.server.configprops.GatewayServerProperties;
+import ai.hyacinth.core.service.gateway.server.jwt.JwtAuthenticationWebFilter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec;
 import org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec.Access;
@@ -27,7 +30,8 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 
   /**
-   * ANY is artificial authority used to be applied on route rules instead of being assigned on a user.
+   * ANY is artificial authority used to be applied on route rules instead of being assigned on a
+   * user.
    */
   private static final String ANY_AUTHORITY = "ANY";
 
@@ -39,8 +43,14 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain configureSecurityFilterChain(
       ServerHttpSecurity http,
+      ApplicationContext applicationContext,
       ServerSecurityContextRepository serverSecurityContextRepository,
       GatewayServerProperties gatewayServerProperties) {
+
+    JwtAuthenticationWebFilter jwtAuthenticationWebFilter = new JwtAuthenticationWebFilter();
+    applicationContext.getAutowireCapableBeanFactory().autowireBean(jwtAuthenticationWebFilter);
+    http.addFilterAt(jwtAuthenticationWebFilter, SecurityWebFiltersOrder.HTTP_BASIC);
+
     AuthorizeExchangeSpec authExchange = http.authorizeExchange();
     final GatewaySecurityProperties securityProperties = gatewayServerProperties.getSecurity();
     gatewayServerProperties

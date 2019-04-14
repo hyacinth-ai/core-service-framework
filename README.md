@@ -312,8 +312,6 @@ Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for adv
 
 ## Todo for first release
 
-* JWT token authentication
-
 * Gateway @RefreshScope with Gateway server configuration dynamically with Spring Cloud Config server
 
 * Spring Cloud Sleuth + Zipkin dashboard integration
@@ -327,6 +325,10 @@ Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for adv
 TL;DR (commented, only shown in source file)
 
 <!--
+
+1. Gateway features:
+  
+  request limit (redis)
 
 0. Spring Cloud Stream
 
@@ -357,8 +359,8 @@ public void processMessage(String content) {
   Rewrite URL by Session Key
 
   Dangerous header removing: X-Forwarded-For
-  
-  Gateway request limit (redis)
+
+  Difference between access denied payload / login required payload
 
 29. OAuth2 for WX
 
@@ -641,11 +643,15 @@ http -v ':8080/api/call'
 gateway server:
 
 ```bash
-http -v ':9090/auth-service/api/login' username=ziyang password=12345678
+http -v ':9090/auth-service/api/login' username=ziyangx password=12345678
 http -v ':9090/user-service/api/users/me' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
 http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
 http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17'
 http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
+
+# jwt
+http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MjU0MDI3LCJleHAiOjE1NTUyNjEyMjcsImF1dGhvcml0eSI6WyJVU0VSIiwiQVBJIl0sInByaW5jaXBhbCI6MSwidmVyc2lvbiI6MX0.JHLwa4NKnwV15AcGQzJYqv-OzXP6r_3O487Hhd5nxV5VKdPW6lCQVMAdpE2Tf4LssPdxW9tts0y3GWy2iJCZCg'
+
 ```
 
 <!--

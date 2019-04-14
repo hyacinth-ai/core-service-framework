@@ -1,4 +1,4 @@
-package ai.hyacinth.core.service.gateway.server.config;
+package ai.hyacinth.core.service.gateway.server.support;
 
 import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
