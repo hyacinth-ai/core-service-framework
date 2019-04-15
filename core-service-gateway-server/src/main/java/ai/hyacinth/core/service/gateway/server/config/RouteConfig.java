@@ -56,15 +56,15 @@ public class RouteConfig {
 
   @Autowired private ObjectMapper mapper;
 
-  @Autowired private GatewayServerProperties gatewayConfig;
-
   @Autowired private ServerSecurityContextRepository securityContextRepository;
 
   @Autowired private JwtService jwtService;
 
+  @Autowired private ResourceLoader resourceLoader;
+
   @Bean
   @RefreshScope
-  public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+  public RouteLocator customRouteLocator(RouteLocatorBuilder builder, GatewayServerProperties gatewayConfig) {
     Builder routes = builder.routes();
     gatewayConfig.getRules().stream()
         //        .filter(rule -> !StringUtils.isEmpty(rule.getService()))
@@ -362,8 +362,6 @@ public class RouteConfig {
       return Mono.just(input);
     };
   }
-
-  @Autowired private ResourceLoader resourceLoader;
 
   private <T> T fromJson(String input, Class<T> inputClass) {
     try {

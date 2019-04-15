@@ -6,6 +6,7 @@ import ai.hyacinth.core.service.gateway.server.jwt.JwtAuthenticationWebFilter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,7 @@ public class SecurityConfig {
   }
 
   @Bean
+  @RefreshScope
   public SecurityWebFilterChain configureSecurityFilterChain(
       ServerHttpSecurity http,
       ApplicationContext applicationContext,

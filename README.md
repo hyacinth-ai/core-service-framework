@@ -37,9 +37,10 @@ License: Apache License 2.0
 * Jackson JSON Mapper
 * Swagger
 * Gradle
-* git, curl, *httpie*
+* git, curl, *httpie*, openssl
 * MySQL, Redis
 * RabbitMQ
+* JWT
 * Maven repository
 
 ## Modules Reference
@@ -182,7 +183,7 @@ Validation error processing is implemented in web support module. Error response
 ```java
 @PostMapping("/users/{userId}/portrait")
 public Map<String, Object> uploadUserPortrait(
-  @PathVariable String userId, 
+  @PathVariable String userId,
   @RequestParam("portrait") MultipartFile file) {
   // ...
 }
@@ -333,6 +334,8 @@ Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for adv
 
 * Documentation for modules introduced (Discovery client support & Disable, /h2-console)
 
+* Files backup
+
 ## Roadmap Points
 
 TL;DR (commented, only shown in source file)
@@ -377,12 +380,14 @@ public void processMessage(String content) {
 
 29. OAuth2 for WX
 
+30. ELK Stack
+
 17. Saga
 
 spring state machine
 
 State (name, entering, do, getDoingStatus, undo, getUndoingStatus, exiting)
-configuration-items: async query interval 
+configuration-items: async query interval
 
 (DONE, ASYNC_STATUS, ABORT, REVERT, REVIEW_REQUIRED)
 
@@ -663,7 +668,7 @@ http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-
 http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
 
 # jwt
-http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MjU0MDI3LCJleHAiOjE1NTUyNjEyMjcsImF1dGhvcml0eSI6WyJVU0VSIiwiQVBJIl0sInByaW5jaXBhbCI6MSwidmVyc2lvbiI6MX0.JHLwa4NKnwV15AcGQzJYqv-OzXP6r_3O487Hhd5nxV5VKdPW6lCQVMAdpE2Tf4LssPdxW9tts0y3GWy2iJCZCg'
+http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MzE4NzQ5LCJleHAiOjE1NTUzMjU5NDksImF1dGhvcml0eSI6WyJVU0VSIiwiQVBJIl0sInByaW5jaXBhbCI6MSwidmVyc2lvbiI6MX0.exLOBUSKEgxRw9fyRQLLi3dx258vPRtTdBL2-3Z1EoVnKgq9E-5-CBfAuf6ZsLupZYI9YOtVUU5PzJUfo9FH-A'
 
 ```
 
