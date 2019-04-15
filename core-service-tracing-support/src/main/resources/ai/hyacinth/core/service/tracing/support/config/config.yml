@@ -1,0 +1,14 @@
+spring:
+  zipkin:
+    discovery-client-enabled: false
+    enabled: false
+    base-url: http://localhost:9411/
+  sleuth:
+    sampler:
+      # either "rate" or "probability" is effective
+      # probability: 0.1 # default
+      rate: 3 # limit to N requests per second
+
+#logging:
+#  level:
+#    org.springframework.cloud.sleuth: DEBUG

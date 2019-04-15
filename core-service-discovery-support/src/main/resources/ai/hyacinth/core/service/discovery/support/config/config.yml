@@ -14,10 +14,10 @@ eureka:
     healthcheck:
       enabled: false # false default
 
-logging:
-  com:
-    netflix:
-      discovery: DEBUG
+#logging:
+#  com:
+#    netflix:
+#      discovery: DEBUG
 
 #  fetch-registry: true
 #  register-with-eureka: true

@@ -120,7 +120,7 @@ eureka:
       enabled: true
 ```
 
-To disable service discovery / registration, set `eureka.client.enabled` or environment variable as follow:
+To disable service discovery and instance registration, set `eureka.client.enabled` property or using environment variable as follow:
 
 ```bash
 EUREKA_CLIENT_ENABLED=false java -jar debug-service.jar
@@ -133,6 +133,33 @@ Triggering endpoint `/actuator/refresh` causes configuration (yaml, properties) 
 `@RefreshScope` can also be applied on the beans which need re-initialization after rebinding of configuration properties.
 
 > `core-service-gateway-server` module is a working example that shows the ability of dynamic re-building api routes from the configurations pulled from config server via `core-service-config-support`.
+
+### Distributed Tracing (Sleuth)
+
+Use module `core-service-tracing-support`.
+
+As a result, a tracing information section like `[<Service>,<TraceId>,<SpanId>,<Exportable>]` could be found for every log line.
+
+```text
+[2019-04-15 20:40:38,960] [INFO ] ... [gateway-server,80adb541045a0103,80adb541045a0103,true] ...
+```
+
+Additionally, if `zipkin` is used, try the following config:
+
+```yaml
+spring:
+  zipkin:
+    enabled: true
+    base-url: http://zipkin-host:9411/
+  sleuth:
+    sampler:
+      # either "rate" or "probability" is effective
+      # probability: 0.1 # default
+      rate: 3 # limit to N requests per second
+```
+
+> Zipkin server (in-memory storage) can be started by
+> `docker run -d -p 9411:9411 openzipkin/zipkin`
 
 ### Cache
 
@@ -278,6 +305,10 @@ The JWT token returns as:
 }
 ```
 
+### H2 In-Memory Database
+
+With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`. (user: `sa`, password: *empty (no password)*)
+
 ### Generate JPA SQL script
 
 Enable SQL script generation by the following configuration. Refer to `jpa-support` module.
@@ -332,7 +363,7 @@ gralde -Pflyway.baselineOnMigrate=true -Pflyway.baselineVersion=0 flywaymigrate
 
 Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for advanced usage.
 
-## Test url examples
+## Test URL examples
 
 ### Using *httpie*
 
@@ -374,17 +405,19 @@ http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-
 http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
 
 # jwt
-http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MzE4NzQ5LCJleHAiOjE1NTUzMjU5NDksImF1dGhvcml0eSI6WyJVU0VSIiwiQVBJIl0sInByaW5jaXBhbCI6MSwidmVyc2lvbiI6MX0.exLOBUSKEgxRw9fyRQLLi3dx258vPRtTdBL2-3Z1EoVnKgq9E-5-CBfAuf6ZsLupZYI9YOtVUU5PzJUfo9FH-A'
+http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MzMxMzI4LCJpc3MiOiJnYXRld2F5LWlzc3VlciIsImV4cCI6MTU1NTMzODUyOCwiYXV0aG9yaXR5IjpbIlVTRVIiLCJBUEkiXSwicHJpbmNpcGFsIjoxLCJ2ZXJzaW9uIjoxfQ.PecZ75gJBO8VeqlARx473OjeBJiugTccdNugSAsWkbPvBbH-JraFewXTynixpXK66niJAEfjoiBrjtgdGE-8vg'
 
 ```
 
 ## Todo for first release
 
-* Spring Cloud Sleuth + Zipkin dashboard integration
+* Spring Cloud Bus
+
+* Domain register
 
 * Publish to maven or jcenter
 
-* Documentation for modules introduced (Discovery client support & Disable, /h2-console)
+* Documentation for modules introduced
 
 * Files backup
 
@@ -418,7 +451,6 @@ spring.rabbitmq.template.retry.initial-interval=2s
 @RabbitListener(queues = "someQueue") // containerFactory="myFactory"
 public void processMessage(String content) {
 
-0. Spring Cloud Bus
 
 0. Job trigger server
 
