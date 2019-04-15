@@ -126,6 +126,14 @@ To disable service discovery / registration, set `eureka.client.enabled` or envi
 EUREKA_CLIENT_ENABLED=false java -jar debug-service.jar
 ```
 
+### Dynamic Configuration Reloading
+
+Triggering endpoint `/actuator/refresh` causes configuration (yaml, properties) reloading and `@ConfigurationProperties` rebinding.
+
+`@RefreshScope` can also be applied on the beans which need re-initialization after rebinding of configuration properties.
+
+> `core-service-gateway-server` module is a working example that shows the ability of dynamic re-building api routes from the configurations pulled from config server via `core-service-config-support`.
+
 ### Cache
 
 `Redis` is default cache provider with dependency `core-service-cache-support`:
@@ -324,9 +332,53 @@ gralde -Pflyway.baselineOnMigrate=true -Pflyway.baselineVersion=0 flywaymigrate
 
 Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for advanced usage.
 
-## Todo for first release
+## Test url examples
 
-* Gateway @RefreshScope with Gateway server configuration dynamically with Spring Cloud Config server
+### Using *httpie*
+
+user-service:
+
+```bash
+http -v ':8080/api/users' username=ziyangx password=12345678 birthDate=1981-10-01
+http -v ':8080/api/users?username=ziyangx'
+http -v ':8080/api/users/5'
+http -v --form ':8080/api/users/5/portrait' 'portrait@./project-dependencies.png'
+
+# for user-pass auth:
+http -v ':8080/api/authentication/login' username=ziyang password=12345678
+
+# curl examples for uploading
+curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'
+```
+
+order-service:
+
+```bash
+http -v ':7001/api/orders' userId:=5 productId:=1000 quantity:=2
+http -v ':7001/api/orders?userId=5'
+```
+
+debug-service:
+
+```bash
+http -v ':8080/api/call'
+```
+
+gateway server:
+
+```bash
+http -v ':9090/auth-service/api/login' username=ziyangx password=12345678
+http -v ':9090/user-service/api/users/me' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
+http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
+http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17'
+http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
+
+# jwt
+http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MzE4NzQ5LCJleHAiOjE1NTUzMjU5NDksImF1dGhvcml0eSI6WyJVU0VSIiwiQVBJIl0sInByaW5jaXBhbCI6MSwidmVyc2lvbiI6MX0.exLOBUSKEgxRw9fyRQLLi3dx258vPRtTdBL2-3Z1EoVnKgq9E-5-CBfAuf6ZsLupZYI9YOtVUU5PzJUfo9FH-A'
+
+```
+
+## Todo for first release
 
 * Spring Cloud Sleuth + Zipkin dashboard integration
 
@@ -345,6 +397,10 @@ TL;DR (commented, only shown in source file)
 1. Gateway features:
   
   request limit (redis)
+
+2. Spring Cloud Server
+
+testing git-repo pull
 
 0. Spring Cloud Stream
 
@@ -625,52 +681,6 @@ org.springframework.orm.hibernate5.SpringBeanContainer
 RemoveNonProxyHeaders
 
 -->
-
-## Test url examples
-
-### Using *httpie*
-
-user-service:
-
-```bash
-http -v ':8080/api/users' username=ziyangx password=12345678 birthDate=1981-10-01
-http -v ':8080/api/users?username=ziyangx'
-http -v ':8080/api/users/5'
-http -v --form ':8080/api/users/5/portrait' 'portrait@./project-dependencies.png'
-
-# for user-pass auth:
-http -v ':8080/api/authentication/login' username=ziyang password=12345678
-
-# curl examples for uploading
-curl -v -F "portrait=@./project-dependencies.png" 'http://localhost:8080/api/users/5/portrait'
-```
-
-order-service:
-
-```bash
-http -v ':7001/api/orders' userId:=5 productId:=1000 quantity:=2
-http -v ':7001/api/orders?userId=5'
-```
-
-debug-service:
-
-```bash
-http -v ':8080/api/call'
-```
-
-gateway server:
-
-```bash
-http -v ':9090/auth-service/api/login' username=ziyangx password=12345678
-http -v ':9090/user-service/api/users/me' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
-http -v ':9090/user-service/api/users/current' 'Cookie:SESSION=788161d1-4d1e-445e-9823-a1a0e7037b44'
-http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-4d9a-a512-dfb9dce78e17'
-http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
-
-# jwt
-http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MzE4NzQ5LCJleHAiOjE1NTUzMjU5NDksImF1dGhvcml0eSI6WyJVU0VSIiwiQVBJIl0sInByaW5jaXBhbCI6MSwidmVyc2lvbiI6MX0.exLOBUSKEgxRw9fyRQLLi3dx258vPRtTdBL2-3Z1EoVnKgq9E-5-CBfAuf6ZsLupZYI9YOtVUU5PzJUfo9FH-A'
-
-```
 
 <!--
 ### Using *curl*

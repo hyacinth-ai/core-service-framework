@@ -6,7 +6,6 @@ dependencies {
     compile project(':core-service-discovery-support')
 
     compile 'org.springframework.cloud:spring-cloud-starter-gateway'
-    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
     compile 'org.springframework.boot:spring-boot-starter-security'
 
     compile 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -18,4 +17,6 @@ dependencies {
 
     compile 'io.micrometer:micrometer-registry-prometheus'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
 }

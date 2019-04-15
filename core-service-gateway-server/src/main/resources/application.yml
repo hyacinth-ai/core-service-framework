@@ -20,6 +20,8 @@ spring:
 #          trustedX509Certificates:
 #          - cert1.pem
 #          - cert2.pem
+  zipkin:
+    baseUrl: http://192.168.99.100:9411/
 
 server:
   port: 9090
@@ -119,3 +121,7 @@ ai.hyacinth.core.service.gateway.server:
 #    user-service:
 #      path: /user-service/**
 #      serviceId: user-service
+
+logging:
+  level:
+    org.springframework.cloud.sleuth: DEBUG
