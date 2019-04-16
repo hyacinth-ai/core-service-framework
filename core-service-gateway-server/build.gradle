@@ -18,4 +18,6 @@ dependencies {
 
     compile 'io.micrometer:micrometer-registry-prometheus'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    compile 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 }

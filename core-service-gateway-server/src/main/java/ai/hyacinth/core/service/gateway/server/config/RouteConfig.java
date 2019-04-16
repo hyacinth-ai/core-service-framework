@@ -64,7 +64,8 @@ public class RouteConfig {
 
   @Bean
   @RefreshScope
-  public RouteLocator customRouteLocator(RouteLocatorBuilder builder, GatewayServerProperties gatewayConfig) {
+  public RouteLocator customRouteLocator(
+      RouteLocatorBuilder builder, GatewayServerProperties gatewayConfig) {
     Builder routes = builder.routes();
     gatewayConfig.getRules().stream()
         //        .filter(rule -> !StringUtils.isEmpty(rule.getService()))
@@ -217,7 +218,9 @@ public class RouteConfig {
             .map(
                 (tuple) -> {
                   try {
-                    Map originalBody = mapper.readValue(tuple.getT1(), Map.class);
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> originalBody = mapper.readValue(tuple.getT1(), Map.class);
+
                     requestBody.forEach(
                         (key, value) -> {
                           Object jsonValue = value;

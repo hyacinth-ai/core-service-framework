@@ -14,11 +14,6 @@ License: Apache License 2.0
 * Using Unix LF (\n)
 * Java code format by Google Code Format (no "import ...*")
 
-### Runtime Environment
-
-* Java SDK 10 / 11
-* Preferred charset: `UTF-8`
-
 ### IDE
 
 * IntelliJ IDEA (Lombok, Google-Code-format, GenSerializeID)
@@ -42,6 +37,19 @@ License: Apache License 2.0
 * RabbitMQ
 * JWT
 * Maven repository
+
+## Runtime Environment
+
+* Java SDK 10 / 11
+* Preferred charset: `UTF-8`
+
+## Build from Source
+
+With `Grade` 5.x,
+
+```bash
+gradle buildAll
+```
 
 ## Modules Reference
 

@@ -14,8 +14,6 @@ jpa:
       hibernate:
         dialect: ai.hyacinth.core.service.jpa.hibernate.dialect.MySQLDialect
 
-#spring.zipkin.service.name: my-special-service
-
 test:
   key: 456
   key2: 999
