@@ -52,6 +52,9 @@ management:
       enabled: true
 
 ai.hyacinth.core.service.gateway.server:
+  rate-limiter:
+    replenish-period: 1m
+    replenish-rate: 20
   jwt:
     enabled: true
     signing-key: utWVSlUPfb3be0npL0JN41vuKJpFehpVZZKzJz5mWWllpT0X5v6IDFQhn51atRVxsaOqbxK1o2nJdQ2gKsKLPgIxaN0wLYiuWfFBS83zo53+d7VoZrJDMqDN7rpTsdERZjoAaAVQ6iGb3UzWYz0aC1H9SDSJHL/M4FUhU9R3V4g=
@@ -75,6 +78,9 @@ ai.hyacinth.core.service.gateway.server:
     authority: admin, user
     service: user-service
     uri: /api/users/current
+    rate-limiter:
+      replenish-period: 1m
+      replenish-rate: 2
   - path: /user-service/api/users/me
     authority: user
     service: user-service

@@ -19,6 +19,8 @@ public class GatewayRuleProperties {
 
   @Nullable private HttpMethod method; // empty means no restriction
 
+  private GatewayRateLimiterProperties rateLimiter = new GatewayRateLimiterProperties();
+
   private List<String> authority = new ArrayList<>();
 
   /** route */

@@ -2,10 +2,12 @@ package ai.hyacinth.core.service.gateway.server.config;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
+import ai.hyacinth.core.service.gateway.server.configprops.GatewayRateLimiterProperties;
 import ai.hyacinth.core.service.gateway.server.configprops.GatewayServerProperties;
 import ai.hyacinth.core.service.gateway.server.configprops.ResponsePostProcessingType;
 import ai.hyacinth.core.service.gateway.server.jwt.JwtService;
 import ai.hyacinth.core.service.gateway.server.payload.ApiSuccessPayload;
+import ai.hyacinth.core.service.gateway.server.ratelimiter.SimpleRateLimiter;
 import ai.hyacinth.core.service.gateway.server.security.DefaultAuthentication;
 import ai.hyacinth.core.service.gateway.server.security.DefaultGrantedAuthority;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
@@ -27,6 +29,7 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder.Builder;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
@@ -62,10 +65,15 @@ public class RouteConfig {
 
   @Autowired private ResourceLoader resourceLoader;
 
+  @Autowired private ApplicationContext applicationContext;
+
   @Bean
   @RefreshScope
   public RouteLocator customRouteLocator(
       RouteLocatorBuilder builder, GatewayServerProperties gatewayConfig) {
+
+    final SimpleRateLimiter globalRateLimiter = buildRateLimiter(gatewayConfig.getRateLimiter(), true);
+
     Builder routes = builder.routes();
     gatewayConfig.getRules().stream()
         //        .filter(rule -> !StringUtils.isEmpty(rule.getService()))
@@ -81,8 +89,22 @@ public class RouteConfig {
                         .path(rule.getPath())
                         .filters(
                             f -> {
-                              f.filter(
-                                  rewriteRequestPath(rule.getUri())); // setPath(rule.getUri());
+                              final SimpleRateLimiter ruleRateLimiter = buildRateLimiter(rule.getRateLimiter(), false);
+                              if (ruleRateLimiter != null) {
+                                f.requestRateLimiter((config) -> {
+                                  config.setRateLimiter(ruleRateLimiter);
+                                });
+                              }
+
+                              if (globalRateLimiter != null) {
+                                f.requestRateLimiter((config) -> {
+                                  config.setRateLimiter(globalRateLimiter);
+                                  config.setDenyEmptyKey(false);
+                                });
+                              }
+
+                              f.filter(rewriteRequestPath(rule.getUri()));
+                              // setPath(rule.getUri());
                               f.filter(removeSensitiveHttpHeaders());
                               f.filter(rewriteRequestHeader());
                               f.filter(rewriteRequestParams(rule.getRequestParam()));
@@ -104,6 +126,17 @@ public class RouteConfig {
                   });
             });
     return routes.build();
+  }
+
+  private SimpleRateLimiter buildRateLimiter(GatewayRateLimiterProperties rateLimiterProperties, boolean global) {
+    SimpleRateLimiter rateLimiter = null;
+    if (rateLimiterProperties.getReplenishRate() != null) {
+      rateLimiter = applicationContext.getBean(SimpleRateLimiter.class);
+      rateLimiter.setGlobal(global);
+      rateLimiter.setReplenishPeriod(rateLimiterProperties.getReplenishPeriod());
+      rateLimiter.setReplenishRate(rateLimiterProperties.getReplenishRate());
+    }
+    return rateLimiter;
   }
 
   private GatewayFilter rewriteRequestPath(final String uriTemplateText) {

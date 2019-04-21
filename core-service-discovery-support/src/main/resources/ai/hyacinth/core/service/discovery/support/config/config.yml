@@ -32,7 +32,8 @@ ribbon:
 spring:
   cloud:
     loadbalancer:
-      retry: false
+      retry:
+        enabled: false
 
 #    inetutils:
 #      ignoredInterfaces:

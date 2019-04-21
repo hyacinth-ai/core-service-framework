@@ -13,4 +13,5 @@ public class GatewayServerProperties {
   private GatewaySecurityProperties security = new GatewaySecurityProperties();
   private GatewayJwtProperties jwt = new GatewayJwtProperties();
   private List<GatewayRuleProperties> rules = new ArrayList<>();
+  private GatewayRateLimiterProperties rateLimiter = new GatewayRateLimiterProperties();
 }

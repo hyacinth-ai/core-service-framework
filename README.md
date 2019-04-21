@@ -313,6 +313,19 @@ The JWT token returns as:
 }
 ```
 
+### Rate Limiter
+
+API rate limiter could be configured below:
+
+```yaml
+ai.hyacinth.core.service.gateway.server:
+  rate-limiter:
+    replenish-period: 1m
+    replenish-rate: 20
+```
+
+Only *authenticated* user is restricted. It has no effect on public API (*anonymous* access).
+
 ### H2 In-Memory Database
 
 With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`. (user: `sa`, password: *empty (no password)*)
@@ -413,7 +426,7 @@ http -v ':9090/order-service/api/orders?userId=5' 'Cookie:SESSION=90dd2087-278a-
 http -v ':9090/order-service/api/orders' 'Cookie:SESSION=9bf96fb0-752e-4659-9511-bcdeeaa925be' userId:=4 productId:=1000 quantity:=2
 
 # jwt
-http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1MzMxMzI4LCJpc3MiOiJnYXRld2F5LWlzc3VlciIsImV4cCI6MTU1NTMzODUyOCwiYXV0aG9yaXR5IjpbIlVTRVIiLCJBUEkiXSwicHJpbmNpcGFsIjoxLCJ2ZXJzaW9uIjoxfQ.PecZ75gJBO8VeqlARx473OjeBJiugTccdNugSAsWkbPvBbH-JraFewXTynixpXK66niJAEfjoiBrjtgdGE-8vg'
+http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTU1ODU5MTQyLCJpc3MiOiJnYXRld2F5LWlzc3VlciIsImV4cCI6MTU1NTg2NjM0MiwiYXV0aG9yaXR5IjpbIlVTRVIiLCJBUEkiXSwicHJpbmNpcGFsIjoxLCJ2ZXJzaW9uIjoxfQ.RJag7ZRn0P-ohz3k6xYah5unr4AmecO4EpayrJ6dAqAH4LAg2kp_DIgU-8Zk6n6Hc4Cu7Pzzb1pbrlJQ9OOX2Q'
 
 ```
 
@@ -427,21 +440,21 @@ http -v ':9090/user-service/api/users/current' 'Authorization: Bearer eyJ0eXAiOi
 
 * Documentation for modules introduced
 
-* Files backup
-
 ## Roadmap Points
 
 TL;DR (commented, only shown in source file)
 
 <!--
 
-1. Gateway features:
-  
-  request limit (redis)
+0. Job trigger server
 
 2. Spring Cloud Server
 
 testing git-repo pull
+
+1. Gateway features:
+  
+  request limit (redis) on anonymous accessible API (public API)
 
 0. Spring Cloud Stream
 
@@ -458,9 +471,6 @@ spring.rabbitmq.template.retry.initial-interval=2s
 
 @RabbitListener(queues = "someQueue") // containerFactory="myFactory"
 public void processMessage(String content) {
-
-
-0. Job trigger server
 
 11. Login challenge
 
@@ -577,10 +587,12 @@ $ java -jar myproject.jar --spring.config.location=classpath:/default.properties
 
 13. @ConfigurationProperties(prefix="my")
 
+```
 my:
   servers:
-	- dev.example.com
-	- another.example.com
+  - dev.example.com
+  - another.example.com
+```
 
 @Configuration
 @EnableConfigurationProperties(AcmeProperties.class)
@@ -675,8 +687,7 @@ com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
 @ConditionalOnMissingClass
 @ConditionalOnProperty
 
-private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-		.withConfiguration(AutoConfigurations.of(UserServiceAutoConfiguration.class));
+private final ApplicationContextRunner contextRunner = new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(UserServiceAutoConfiguration.class));
 
 55. ZK
   cloud:
