@@ -1,5 +1,6 @@
 package ai.hyacinth.examples.service.debug.web;
 
+import ai.hyacinth.core.service.bus.support.service.BusService;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.examples.service.debug.dto.ApiCall;
 import ai.hyacinth.examples.service.debug.service.DebugService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ServiceApiConstants.API_PREFIX)
 public class DebugController {
   @Autowired private DebugService debugService;
+  @Autowired private BusService busService;
 
   @GetMapping("/history")
   public List<ApiCall> history() {
@@ -36,6 +38,13 @@ public class DebugController {
   public Map<?, ?> echo(
       @RequestBody(required = false) Map<?, ?> requestBody) {
     return requestBody;
+  }
+
+  @PostMapping("/event")
+  public String event(@RequestBody(required = false) Map<?, ?> eventPayload) {
+    busService.publish(BusService.ALL_SERVICES, "debug", eventPayload);
+    busService.publish(BusService.ALL_SERVICES, "test", new TestBean("object"));
+    return "ok";
   }
 
   @RequestMapping(value = {"/call", "/call/**", "/**"})

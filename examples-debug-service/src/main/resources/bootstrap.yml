@@ -5,8 +5,15 @@ spring:
     name: debug-service
     version: 1.0
 
+  rabbitmq:
+    host: docker.hyacinth.services
+    port: 5672
+    username: alice
+    password: alice-secret
+
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
     enabled: true
+

@@ -8,8 +8,7 @@ dependencies {
     compile project(':core-service-tracing-support')
 
     compile project(':examples-user-service-api')
-    compile 'org.springframework.boot:spring-boot-starter-security'
     
-    compile 'org.springframework.boot:spring-boot-devtools'
+    compile 'org.springframework.boot:spring-boot-starter-security'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }

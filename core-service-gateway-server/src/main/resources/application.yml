@@ -2,6 +2,12 @@ spring:
   application:
     name: gateway-server
 
+  rabbitmq:
+    host: docker.hyacinth.services
+    port: 5672
+    username: alice
+    password: alice-secret
+
   session:
     store-type: redis
     timeout: 1800s
@@ -39,6 +45,7 @@ security:
 #  level:
 #    org:
 #      springframework: DEBUG
+
 
 management:
   endpoints:

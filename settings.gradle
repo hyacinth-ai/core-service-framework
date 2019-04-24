@@ -13,6 +13,7 @@ include 'core-service-config-support'
 include 'core-service-endpoint-support'
 include 'core-service-discovery-support'
 include 'core-service-tracing-support'
+include 'core-service-bus-support'
 
 include 'core-service-gateway-server'
 include 'core-service-config-server'
