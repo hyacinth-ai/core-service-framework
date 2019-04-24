@@ -40,6 +40,9 @@ public class BusServiceImpl implements BusService {
 
   @EventListener
   public void logBusEvent(BusEvent<?> busEvent) {
-    log.info("Bus event received: {}, sent-by-me: {}", busEvent, busEvent.getOriginService().equals(busProperties.getId()));
+    log.info(
+        "Bus event received: {}, sent-by-me: {}",
+        busEvent,
+        busEvent.getOriginService().equals(busProperties.getId()));
   }
 }
