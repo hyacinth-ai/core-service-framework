@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: configserver
+    name: core-service-config-server
 
   cloud:
     config:
@@ -12,9 +12,8 @@ spring:
           uri: file://${user.home}/projects/config-repo
           refreshRate: 10
 
-encrypt:
-  key: ENCRYPT_KEY
-
+#encrypt:
+#  key: ENCRYPT_KEY
 
 #          timeout: 10
 #          searchPaths: development,test,production

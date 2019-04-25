@@ -99,13 +99,15 @@ Examples:
 Peer #1:
 
 ```sh
-SPRING_PROFILES_ACTIVE=peer SERVER_PORT=8761 EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://localhost:8762/eureka/ java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
+SPRING_PROFILES_ACTIVE=peer SERVER_PORT=8761 EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://localhost:8762/eureka/ \
+java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
 ```
 
 Peer #2:
 
 ```sh
-SPRING_PROFILES_ACTIVE=peer SERVER_PORT=8762 EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://localhost:8761/eureka/ java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
+SPRING_PROFILES_ACTIVE=peer SERVER_PORT=8762 EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://localhost:8761/eureka/ \
+java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
 ```
 
 ### Service Discovery Support (Eureka Client)
@@ -384,6 +386,37 @@ gralde -Pflyway.baselineOnMigrate=true -Pflyway.baselineVersion=0 flywaymigrate
 
 Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for advanced usage.
 
+### Spring Cloud Bus and ServiceBus Event
+
+With module `core-service-bus-support` and configuration importing of `BusConfig`,
+`Spring Cloud Bus` can be enabled by configuring `RabbitMQ` properties:
+
+```yaml
+spring:
+  rabbitmq:
+    # addresses: host1:port1,host2:port2
+    host: docker.hyacinth.services
+    port: 5672
+    username: alice
+    password: alice-secret
+```
+
+Send user-defined event by:
+
+```java
+  @Autowired private BusService busService;
+
+  public void broadcast() {
+    busService.publish(BusService.ALL_SERVICES, "MyEventType", eventPayload);
+  }
+
+  @EventListener
+  public void handleBusEvent(BusEvent<?> busEvent) {
+    // busEvent.getEventType();
+    // ...
+  }
+```
+
 ## Test URL examples
 
 ### Using *httpie*
@@ -432,13 +465,11 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 
 ## Todo for first release
 
-* Spring Cloud Bus
+* Documentation for modules introduced
 
 * Domain register
 
 * Publish to maven or jcenter
-
-* Documentation for modules introduced
 
 ## Roadmap Points
 
@@ -448,12 +479,12 @@ TL;DR (commented, only shown in source file)
 
 0. Job trigger server
 
-2. Spring Cloud Server
+2. Spring Config Server
 
 testing git-repo pull
 
 1. Gateway features:
-  
+
   request limit (redis) on anonymous accessible API (public API)
 
 0. Spring Cloud Stream
@@ -529,7 +560,7 @@ spring.task.execution.pool.keep-alive=10s
 keytool -genkeypair -alias mytestkey -keyalg RSA \
   -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
   -keypass changeme -keystore server.jks -storepass letmein
-  
+
 encrypt:
   keyStore:
     location: classpath:/server.jks

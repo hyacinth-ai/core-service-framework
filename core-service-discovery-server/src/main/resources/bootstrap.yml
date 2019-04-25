@@ -10,15 +10,11 @@ server:
 eureka:
   instance:
     preferIpAddress: true
-  server:
-    enable-self-preservation: false # true default
-    eviction-interval-timer-in-ms: 30000 # 60000 default
-  client:
-    registry-fetch-interval-seconds: 20 # 30 default
 
 ---
 spring:
   profiles: standalone
+
 eureka:
   instance:
     hostname: localhost
@@ -27,10 +23,15 @@ eureka:
     register-with-eureka: false
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    registry-fetch-interval-seconds: 20 # 30 default
+  server:
+    enable-self-preservation: false # true default
+    eviction-interval-timer-in-ms: 30000 # 60000 default
 
 ---
 spring:
   profiles: peer
+  
 eureka:
   client:
     serviceUrl:

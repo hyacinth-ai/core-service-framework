@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: gateway-server
-
   rabbitmq:
     host: docker.hyacinth.services
     port: 5672
@@ -11,6 +8,7 @@ spring:
   session:
     store-type: redis
     timeout: 1800s
+
   redis:
     url: redis://redis:alice-secret@192.168.99.100:6379
 
@@ -40,12 +38,6 @@ server:
 
 security:
   require-ssl: ${server.ssl.enabled}
-
-#logging:
-#  level:
-#    org:
-#      springframework: DEBUG
-
 
 management:
   endpoints:
