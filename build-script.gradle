@@ -55,7 +55,7 @@ task("buildAll") {
 
 subprojects {
 
-    version = '1.0.0.RELEASE' // default version
+    version = '1.0.0' // default version
 
     apply plugin: 'java'
     apply plugin: 'idea'

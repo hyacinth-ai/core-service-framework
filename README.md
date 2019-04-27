@@ -136,6 +136,9 @@ To disable service discovery and instance registration, set `eureka.client.enabl
 EUREKA_CLIENT_ENABLED=false java -jar debug-service.jar
 ```
 
+> "Config First Bootstrap" is used instead of "Discovery First Bootstrap".
+> That means that the application could pull discovery configuration from the configuration server **before** starting the discovery client.
+
 ### Dynamic Configuration Reloading
 
 Triggering endpoint `/actuator/refresh` causes configuration (yaml, properties) reloading and `@ConfigurationProperties` rebinding.
@@ -417,6 +420,8 @@ Send user-defined event by:
   }
 ```
 
+> Refer to `org.springframework.cloud.bus.BusAutoconfiguration` for internal implementation of `Spring Cloud Bus`.
+
 ## Test URL examples
 
 ### Using *httpie*
@@ -465,6 +470,12 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 
 ## Todo for first release
 
+* Port unified so docker images can be unified. (need doc)
+
+* Spring Config Server
+
+testing git-repo pull
+
 * Documentation for modules introduced
 
 * Domain register
@@ -477,11 +488,9 @@ TL;DR (commented, only shown in source file)
 
 <!--
 
+1. Promethues + Grafana
+
 0. Job trigger server
-
-2. Spring Config Server
-
-testing git-repo pull
 
 1. Gateway features:
 

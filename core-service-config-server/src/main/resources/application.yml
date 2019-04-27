@@ -1,0 +1,49 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+#          uri: file://${user.home}/projects/config-repo # use local directory
+          uri: http://docker.hyacinth.services:3000/tommy/config-repo.git
+          # username: trolley
+          # password: strongpassword
+          refreshRate: 10 # refresh every 10 seconds instead of default value "0" which means updating for every request
+          searchPaths:
+            - '{application}'
+            - '{application}/resources'
+            - development
+            - production
+            - stage
+            - test
+            - resources
+
+#          timeout: 10
+#          ignoreLocalSshSettings: true
+#          hostKey: someHostKey
+#          hostKeyAlgorithm: ssh-rsa
+#          strictHostKeyChecking: false
+#          knownHostsFile: .known_hosts
+#          preferredAuthentications: publickey
+#          privateKey: # ...
+
+#spring:
+#  cloud:
+#    config:
+#      server:
+#        git:
+#          uri: https://github.com/spring-cloud-samples/config-repo
+#          repos:
+#            development:
+#              pattern:
+#                - '*/development'
+#                - '*/staging'
+#              uri: https://github.com/development/config-repo
+#            staging:
+#              pattern:
+#                - '*/qa'
+#                - '*/production'
+#              uri: https://github.com/staging/config-repo
+
+
+#encrypt:
+#  key: ENCRYPT_KEY
