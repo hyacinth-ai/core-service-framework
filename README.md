@@ -1,5 +1,41 @@
 # Core Service Framework
 
+<!-- toc -->
+* [Overview](#overview)
+* [Development](#development)
+  * [Code Standard](#code-standard)
+  * [IDE](#ide)
+* [Related Framework, Technology and Tools](#related-framework-technology-and-tools)
+* [Runtime Environment](#runtime-environment)
+* [Build from Source](#build-from-source)
+* [Modules Reference](#modules-reference)
+  * [Dependency Graph of Subprojects](#dependency-graph-of-subprojects)
+  * [Config server](#config-server)
+  * [Config client](#config-client)
+  * [Service Discovery Server (Eureka Server)](#service-discovery-server-eureka-server)
+    * [Standalone Mode](#standalone-mode)
+    * [Peer Mode](#peer-mode)
+  * [Service Discovery Support (Eureka Client)](#service-discovery-support-eureka-client)
+  * [Dynamic Configuration Reloading](#dynamic-configuration-reloading)
+  * [Distributed Tracing (Sleuth)](#distributed-tracing-sleuth)
+  * [Cache](#cache)
+  * [Web Request Validation](#web-request-validation)
+  * [File uploading](#file-uploading)
+  * [SSL Server](#ssl-server)
+  * [HTTP/2](#http2)
+  * [JWT](#jwt)
+  * [Rate Limiter](#rate-limiter)
+  * [H2 In-Memory Database](#h2-in-memory-database)
+  * [Generate JPA SQL script](#generate-jpa-sql-script)
+  * [Flyway Database Migration on Startup](#flyway-database-migration-on-startup)
+  * [Flyway Database Migration by Gradle](#flyway-database-migration-by-gradle)
+  * [Spring Cloud Bus and ServiceBus Event](#spring-cloud-bus-and-servicebus-event)
+* [Test URL examples](#test-url-examples)
+  * [Using *httpie*](#using-httpie)
+* [Todo for first release](#todo-for-first-release)
+* [Roadmap Points](#roadmap-points)
+<!-- toc end -->
+
 ## Overview
 
 Based on latest Spring Cloud version, *Core Service Framework* is a collection of tools and code snippets to quickly implement micro-service architecture.
@@ -53,7 +89,7 @@ gradle buildAll
 
 ## Modules Reference
 
-### Generate dependency graph for core-services (via DOT)
+### Dependency Graph of Subprojects
 
 ![project-dependencies](./project-dependencies.svg)
 
@@ -786,7 +822,7 @@ RemoveNonProxyHeaders
 -->
 
 <!--
-### Using *curl*
+Using *curl*
 
 Auth:
 
