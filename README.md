@@ -69,8 +69,20 @@ spring:
     config:
       server:
         git:
-          uri: file://${user.home}/projects/config-repo
-          refreshRate: 10
+          uri: http://docker.hyacinth.services:3000/user/config-repo.git
+          # uri: file://${user.home}/projects/config-repo # use local directory
+```
+
+Default service port is 8888.
+
+Testing urls are like:
+
+```shell
+http :8888/user-service/development/master
+# match properties files: user-service-development.yml, user-service.yml, application-development.yml, application.yml ...
+
+http :8888/resources/development/master/ssh_config
+# match plain resource files: ssh_config-development, ssh_config ...
 ```
 
 ### Config client
