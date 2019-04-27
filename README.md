@@ -10,8 +10,8 @@
 * [Build from Source](#build-from-source)
 * [Modules Reference](#modules-reference)
   * [Dependency Graph of Subprojects](#dependency-graph-of-subprojects)
-  * [Config server](#config-server)
-  * [Config client](#config-client)
+  * [Config Server](#config-server)
+  * [Config Client](#config-client)
   * [Service Discovery Server (Eureka Server)](#service-discovery-server-eureka-server)
     * [Standalone Mode](#standalone-mode)
     * [Peer Mode](#peer-mode)
@@ -20,19 +20,19 @@
   * [Distributed Tracing (Sleuth)](#distributed-tracing-sleuth)
   * [Cache](#cache)
   * [Web Request Validation](#web-request-validation)
-  * [File uploading](#file-uploading)
+  * [File Uploading](#file-uploading)
   * [SSL Server](#ssl-server)
   * [HTTP/2](#http2)
   * [JWT](#jwt)
   * [Rate Limiter](#rate-limiter)
   * [H2 In-Memory Database](#h2-in-memory-database)
-  * [Generate JPA SQL script](#generate-jpa-sql-script)
+  * [Generate JPA SQL Script](#generate-jpa-sql-script)
   * [Flyway Database Migration on Startup](#flyway-database-migration-on-startup)
-  * [Flyway Database Migration by Gradle](#flyway-database-migration-by-gradle)
+  * [Flyway Database Migration](#flyway-database-migration)
   * [Spring Cloud Bus and ServiceBus Event](#spring-cloud-bus-and-servicebus-event)
-* [Test URL examples](#test-url-examples)
+* [Test URL Examples](#test-url-examples)
   * [Using *httpie*](#using-httpie)
-* [Todo for first release](#todo-for-first-release)
+* [Todo for First Release](#todo-for-first-release)
 * [Roadmap Points](#roadmap-points)
 <!-- toc end -->
 
@@ -95,7 +95,7 @@ gradle buildAll
 
 Refer to `geenerate-dep.sh` under `tools`.
 
-### Config server
+### Config Server
 
 Run `core-service-config-server` with overriding following properties:
 
@@ -121,7 +121,7 @@ http :8888/resources/development/master/ssh_config
 # match plain resource files: ssh_config-development, ssh_config ...
 ```
 
-### Config client
+### Config Client
 
 Add `core-service-config-support` as dependency with overriding following properties:
 
@@ -274,7 +274,7 @@ Validation error processing is implemented in web support module. Error response
 }
 ```
 
-### File uploading
+### File Uploading
 
 ```java
 @PostMapping("/users/{userId}/portrait")
@@ -383,7 +383,7 @@ Only *authenticated* user is restricted. It has no effect on public API (*anonym
 
 With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`. (user: `sa`, password: *empty (no password)*)
 
-### Generate JPA SQL script
+### Generate JPA SQL Script
 
 Enable SQL script generation by the following configuration. Refer to `jpa-support` module.
 
@@ -420,7 +420,9 @@ spring.flyway.baseline-version: 1
 >
 > Database migration could be an independent job before starting a service.
 
-### Flyway Database Migration by Gradle
+### Flyway Database Migration
+
+Use `gradle` tasks.
 
 ```bash
 export FLYWAY_URL="jdbc:mysql://user:pass@db-host:3306/database?characterEncoding=UTF-8&useSSL=false"
@@ -470,7 +472,7 @@ Send user-defined event by:
 
 > Refer to `org.springframework.cloud.bus.BusAutoconfiguration` for internal implementation of `Spring Cloud Bus`.
 
-## Test URL examples
+## Test URL Examples
 
 ### Using *httpie*
 
@@ -516,7 +518,7 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 
 ```
 
-## Todo for first release
+## Todo for First Release
 
 * Port unified so docker images can be unified. (need doc)
 
