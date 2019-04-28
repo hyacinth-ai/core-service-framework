@@ -1,5 +1,6 @@
-package ai.hyacinth.core.service.web.support.errorhandler;
+package ai.hyacinth.core.service.endpoint.support.errorhandler;
 
+import ai.hyacinth.core.service.endpoint.support.error.ServiceApiCommonErrorCode;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.core.service.web.common.ServiceApiErrorResponse;
 import ai.hyacinth.core.service.web.common.ServiceApiException;
@@ -11,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -27,7 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(ServiceApiConstants.API_PREFIX)
 public class ServiceControllerExceptionHandler {
 
-  private static Logger logger = LoggerFactory.getLogger(ServiceControllerExceptionHandler.class);
+  private static Logger logger = LoggerFactory.getLogger(
+      ServiceControllerExceptionHandler.class);
 
   @ExceptionHandler(ServiceApiException.class)
   public ResponseEntity<ServiceApiErrorResponse> handle(

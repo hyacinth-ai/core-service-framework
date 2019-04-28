@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: default
+  application:
+    name: core-service-admin-server
+
+  boot:
+    admin:
+      notify:
+        slack:
+          # ignore-changes:
+          webhook-url: https://hooks.slack.com/services/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
+        mail:
+          enabled: false
+          # ignore-changes:
+          to: some-user@mail.com
+
+  mail:
+#    host: smtp.gmail.com
+    port: 587
+    username: username-here
+    password: password-here
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+      mail.smtp.ssl.enabled: true
+      mail.smtp.auth: true
+      mail.debug: true

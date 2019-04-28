@@ -18,6 +18,7 @@ include 'core-service-bus-support'
 include 'core-service-gateway-server'
 include 'core-service-config-server'
 include 'core-service-discovery-server'
+include 'core-service-admin-server'
 
 include 'examples-debug-service'
 include 'examples-user-service'

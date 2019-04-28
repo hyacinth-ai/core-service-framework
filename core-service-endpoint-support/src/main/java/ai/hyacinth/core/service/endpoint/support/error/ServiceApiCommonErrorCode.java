@@ -1,4 +1,4 @@
-package ai.hyacinth.core.service.web.support.errorhandler;
+package ai.hyacinth.core.service.endpoint.support.error;
 
 import ai.hyacinth.core.service.web.common.ServiceApiErrorCode;
 import lombok.AllArgsConstructor;

@@ -8,6 +8,10 @@ spring:
       # either "rate" or "probability" is effective
       # probability: 0.1 # default
       rate: 3 # limit to N requests per second
+    web:
+      additionalSkipPattern: /|\S*/actuator/\S*|/prometheus|/health|/logfile
+#    scheduled:
+#      enabled: false
 
 #logging:
 #  level:

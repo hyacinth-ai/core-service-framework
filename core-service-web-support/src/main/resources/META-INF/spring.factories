@@ -1,2 +1,2 @@
 # Environment Post Processors
-org.springframework.boot.env.EnvironmentPostProcessor=ai.hyacinth.core.service.web.support.config.WebConfigLoader
+org.springframework.boot.env.EnvironmentPostProcessor=ai.hyacinth.core.service.web.support.config.DefaultConfigLoader

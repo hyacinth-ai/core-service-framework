@@ -1,11 +1,11 @@
-package ai.hyacinth.core.service.web.support.errorhandler;
+package ai.hyacinth.core.service.endpoint.support.errorhandler;
 
+import ai.hyacinth.core.service.endpoint.support.error.ServiceApiCommonErrorCode;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
-import java.lang.StackWalker.Option;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -13,10 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-
-import java.util.Map;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Component

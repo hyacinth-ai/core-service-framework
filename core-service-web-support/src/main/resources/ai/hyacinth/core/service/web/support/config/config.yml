@@ -1,19 +1,9 @@
-server:
-  port: 8080
-
 spring:
-  sleuth:
-    web:
-      additionalSkipPattern: /|\S*/actuator/\S*|/prometheus|/health|/logfile
-    scheduled:
-      enabled: false
-
   servlet:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
       file-size-threshold: 5MB
-
   #  mvc:
   #    static-path-pattern: /resources/**
 
