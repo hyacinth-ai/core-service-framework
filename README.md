@@ -472,6 +472,17 @@ Send user-defined event by:
 
 > Refer to `org.springframework.cloud.bus.BusAutoconfiguration` for internal implementation of `Spring Cloud Bus`.
 
+### Service Admin Server
+
+Based on `Spring Boot Admin Server`, the admin server use discovery mechanism to find all services registered on the discovery server.
+
+Default port is 8080.
+
+Configuration properties:
+
+* Setting `spring.boot.admin.notify.slack.webhook-url` enables Slack notification
+* Setting `spring.boot.admin.notify.mail.enabled=true` and `spring.mail.host (port, username, password, ...)` enables Email notification (tested on Gmail using app password)
+
 ## Test URL Examples
 
 ### Using *httpie*
