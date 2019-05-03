@@ -1,10 +1,4 @@
 spring:
-  rabbitmq:
-    host: docker.hyacinth.services
-    port: 5672
-    username: alice
-    password: alice-secret
-
   session:
     store-type: redis
     timeout: 1800s
@@ -26,7 +20,7 @@ spring:
 #          - cert2.pem
 
 server:
-  port: 9090
+#  port: 9090
   ssl:
     enabled: false
     key-alias: tomcat
@@ -49,6 +43,26 @@ management:
       enabled: true
     restart:
       enabled: true
+
+#zuul:
+#  host:
+#    maxTotalConnections: 200
+#    maxPerRouteConnections: 30
+#
+#  ignoredServices: '*'
+#
+#  prefix: /api
+#  stripPrefix: false
+#
+#  routes:
+#    user-service:
+#      path: /user-service/**
+#      serviceId: user-service
+
+
+---
+spring:
+  profiles: rule-testing
 
 ai.hyacinth.core.service.gateway.server:
   rate-limiter:
@@ -109,18 +123,3 @@ ai.hyacinth.core.service.gateway.server:
   - path: /actuator/{*call}
     authority: any
     uri: "{call}"
-
-#zuul:
-#  host:
-#    maxTotalConnections: 200
-#    maxPerRouteConnections: 30
-#
-#  ignoredServices: '*'
-#
-#  prefix: /api
-#  stripPrefix: false
-#
-#  routes:
-#    user-service:
-#      path: /user-service/**
-#      serviceId: user-service

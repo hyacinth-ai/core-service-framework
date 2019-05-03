@@ -1,6 +1,5 @@
 package ai.hyacinth.core.service.gateway.server.config;
 
-import ai.hyacinth.core.service.bus.support.config.BusConfig;
 import ai.hyacinth.core.service.discovery.support.config.DiscoveryConfig;
 import ai.hyacinth.core.service.gateway.server.configprops.GatewayServerProperties;
 import ai.hyacinth.core.service.gateway.server.jwt.JwtService;
@@ -12,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({DiscoveryConfig.class, RouteConfig.class, SecurityConfig.class, BusConfig.class})
+@Import({DiscoveryConfig.class, RouteConfig.class, SecurityConfig.class})
 @ComponentScan(
     basePackageClasses = {
       GatewayConfig.class,

@@ -63,6 +63,7 @@ License: Apache License 2.0
 * Spring Boot (Config, BootPackage)
 * Spring Security (on both MVC and WebFlux)
 * Spring Cloud (Feign, Config, Eureka, Sleuth)
+* Zipkin
 * JUnit and Spring Boot Test
 * JPA v2.2 and Spring Data JPA
 * Jackson JSON Mapper
@@ -139,6 +140,8 @@ spring:
 ```bash
 java -jar build/libs/core-service-discovery-server-1.0.0.RELEASE-boot.jar
 ```
+
+Default service port is `8761`.
 
 #### Peer Mode
 
@@ -533,13 +536,7 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 
 ## Todo for First Release
 
-* Port unified so docker images can be unified. (need doc)
-
-* Spring Config Server
-
-testing git-repo pull
-
-* Documentation for modules introduced
+* Documentation for modules introduced (Config class)
 
 * Domain register
 
