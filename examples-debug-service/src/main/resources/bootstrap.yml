@@ -10,10 +10,10 @@ spring:
     port: 5672
     username: alice
     password: alice-secret
+    requested-heartbeat: 35s
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
     enabled: true
-

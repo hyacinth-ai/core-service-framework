@@ -21,8 +21,11 @@ public class SwaggerConfig {
   @Value("${spring.application.name}")
   private String applicationName;
 
-  @Value("${spring.application.version}")
-  private String serviceVersion;
+  @Value("${spring.application.version:}")
+  private String applicationVersion;
+
+  @Value("${spring.application.description:}")
+  private String applicationDescription;
 
   @Bean
   public Docket api() {
@@ -41,11 +44,11 @@ public class SwaggerConfig {
   private ApiInfo createApiInfo() {
     return new ApiInfoBuilder()
         .title(applicationName)
-        .description("")
+        .description(applicationDescription)
         .termsOfServiceUrl("")
         .license("")
         .licenseUrl("")
-        .version(serviceVersion)
+        .version(applicationVersion)
         .build();
   }
 }

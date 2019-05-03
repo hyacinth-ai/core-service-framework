@@ -172,6 +172,9 @@ subprojects {
 
         generateGitProperties { enabled = new File('.git').exists() }
 
+    }
+
+    if (project.name.endsWith('service')) {
         springBoot {
             buildInfo {
                 properties { additional = System.properties }

@@ -2,7 +2,9 @@ dependencies {
     compile project(':core-service-web-common-lib')
 
     compile 'io.swagger:swagger-annotations'
+    
     compile 'org.springframework.boot:spring-boot-starter-validation'
     compile 'org.springframework.boot:spring-boot-starter-json'
+    
     compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }

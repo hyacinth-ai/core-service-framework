@@ -14,7 +14,8 @@ public enum ServiceApiCommonErrorCode implements ServiceApiErrorCode {
 
   UNKNOWN_ERROR(HttpStatus.BAD_REQUEST, "E80000"),
   REQUEST_VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "E80100"),
-  NETWORK_ERROR(HttpStatus.BAD_GATEWAY, "E80200")
+  NETWORK_ERROR(HttpStatus.BAD_GATEWAY, "E80200"),
+  NAMING_CONFLICT(HttpStatus.CONFLICT, "E80300"),
   ;
 
   private HttpStatus httpStatus;

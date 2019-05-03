@@ -2,6 +2,10 @@ spring:
   flyway:
     enabled: false
 
+  h2:
+    console:
+      enabled: true
+
   jpa:
     show-sql: false
     hibernate:

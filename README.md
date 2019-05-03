@@ -381,7 +381,9 @@ Only *authenticated* user is restricted. It has no effect on public API (*anonym
 
 ### H2 In-Memory Database
 
-With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`. (user: `sa`, password: *empty (no password)*)
+With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`.
+
+Try using in-memory h2 jdbc-url `jdbc:h2:mem:testdb` (user: `sa`, password: *empty (no password)*) when log in.
 
 ### Generate JPA SQL Script
 

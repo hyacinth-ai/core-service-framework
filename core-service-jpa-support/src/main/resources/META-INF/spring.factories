@@ -1,2 +1,2 @@
 # Environment Post Processors
-org.springframework.boot.env.EnvironmentPostProcessor=ai.hyacinth.core.service.jpa.config.JpaConfigLoader
+org.springframework.boot.env.EnvironmentPostProcessor=ai.hyacinth.core.service.jpa.config.DefaultConfigLoader

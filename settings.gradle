@@ -15,6 +15,7 @@ include 'core-service-discovery-support'
 include 'core-service-tracing-support'
 include 'core-service-bus-support'
 
+include 'core-service-trigger-server'
 include 'core-service-gateway-server'
 include 'core-service-config-server'
 include 'core-service-discovery-server'

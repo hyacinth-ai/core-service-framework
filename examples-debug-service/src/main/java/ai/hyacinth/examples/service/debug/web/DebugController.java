@@ -48,7 +48,7 @@ public class DebugController {
   }
 
   @RequestMapping(value = {"/call", "/call/**", "/**"})
-  public ApiCall debug(
+  public ApiCall call(
       @RequestBody(required = false) Object requestBody,
       HttpServletRequest request,
       @RequestHeader Map<?, ?> httpHeaders) {
