@@ -82,7 +82,7 @@ License: Apache License 2.0
 
 ## Build from Source
 
-With `Grade` 5.x,
+With Gradle 5.x,
 
 ```bash
 gradle buildAll
@@ -223,17 +223,18 @@ spring:
 ```
 
 > Zipkin server (in-memory storage) can be started by
+>
 > `docker run -d -p 9411:9411 openzipkin/zipkin`
 
 ### Cache
 
-`Redis` is default cache provider with dependency `core-service-cache-support`:
+`Redis` is default cache provider with dependency `core-service-cache-support` configured as:
 
 ```yaml
 spring.cache.type: redis
 ```
 
-and overriding following properties before activating thie cache:
+Overriding redis properties is required before activating thie cache:
 
 ```yaml
 spring:
@@ -241,7 +242,7 @@ spring:
     url: redis://redis:alice-secret@192.168.99.100:6379
 ```
 
-Java code for spring-cache:
+Java code example for using spring-cache:
 
 ```java
 @Cacheable("piDecimals")
@@ -257,7 +258,7 @@ That means the returning object that is thrown into cache should implement `java
 
 ### Web Request Validation
 
-`@Validated` / `@Valid` on RequestDocument class with constraints like `@Size(min = 8, max = 10)` or `@NotNull`
+`@Validated` / `@Valid` on request body method argument with constraints on fields like `@Size(min = 8, max = 10)` or `@NotNull`.
 
 Validation error processing is implemented in web support module. Error response could be like:
 
@@ -322,9 +323,9 @@ server:
 
 > If a HTTP/2 connection goes through Spring Cloud Gateway, the routed service should be able to serve this HTTP/2 request.
 
-### JWT
+### JWT on Gateway
 
-Enabled the following properties on `core-service-gateway-server` by:
+Configure the following properties on `core-service-gateway-server` by:
 
 ```yaml
 ai.hyacinth.core.service.gateway.server:
@@ -345,7 +346,7 @@ openssl rand 128 > sym_keyfile.key
 base64 -i ./keys/sym_keyfile.key
 ```
 
-One JWT token is automatically generated on everytime an `Authentication` payload returned from configured backend service like this:
+A JWT token is auto-generated each time an `Authentication` payload returned from configured backend service like this:
 
 ```yaml
   - path: /auth-service/api/login
@@ -358,7 +359,7 @@ One JWT token is automatically generated on everytime an `Authentication` payloa
       - api
 ```
 
-The JWT token returns as:
+The final response wrapping JWT token returns as:
 
 ```json
 {
@@ -369,7 +370,7 @@ The JWT token returns as:
 }
 ```
 
-### Rate Limiter
+### API Rate Limiter on Gateway
 
 API rate limiter could be configured below:
 
@@ -386,7 +387,7 @@ Only *authenticated* user is restricted. It has no effect on public API (*anonym
 
 With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`.
 
-Try using in-memory h2 jdbc-url `jdbc:h2:mem:testdb` (user: `sa`, password: *empty (no password)*) when log in.
+Try using in-memory h2 jdbc-url `jdbc:h2:mem:testdb` (user: `sa`, password: *empty (no password)*) when log into the console.
 
 ### Generate JPA SQL Script
 
@@ -423,9 +424,9 @@ spring.flyway.baseline-version: 1
 > Startup migration is not suggested for production due to different user/pass, priviledges
 > used between `admin` who executes DDL and `user` who execute DML.
 >
-> Database migration could be an independent job before starting a service.
+> Database migration could be an independent job before starting a service. Read below.
 
-### Flyway Database Migration
+### Flyway Database Migration by Gradle
 
 Use `gradle` tasks.
 
@@ -440,13 +441,13 @@ gradle flywaymigrate
 gralde -Pflyway.baselineOnMigrate=true -Pflyway.baselineVersion=0 flywaymigrate
 ```
 
-> Dangerous `flywayclean` task is disabled in `build-script.gradle`.
+Dangerous `flywayclean` task is disabled in `build-script.gradle`.
 
-Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for advanced usage.
+> Refer to [Flyway via gradle](https://flywaydb.org/documentation/gradle/) for advanced usage.
 
-### Spring Cloud Bus and ServiceBus Event
+### Spring Cloud Bus and Bus-Event
 
-With module `core-service-bus-support` and configuration importing of `BusConfig`,
+With module `core-service-bus-support` and importing of `BusConfig`,
 `Spring Cloud Bus` can be enabled by configuring `RabbitMQ` properties:
 
 ```yaml
@@ -459,7 +460,7 @@ spring:
     password: alice-secret
 ```
 
-Send user-defined event by:
+Send user-defined event by `BusEvent`:
 
 ```java
   @Autowired private BusService busService;
@@ -479,14 +480,14 @@ Send user-defined event by:
 
 ### Service Admin Server
 
-Based on `Spring Boot Admin Server`, the admin server use discovery mechanism to find all services registered on the discovery server.
+Based on `Spring Boot Admin Server`, the admin server uses discovery mechanism to find all services registered.
 
 Default port is 8080.
 
 Configuration properties:
 
 * Setting `spring.boot.admin.notify.slack.webhook-url` enables Slack notification
-* Setting `spring.boot.admin.notify.mail.enabled=true` and `spring.mail.host (port, username, password, ...)` enables Email notification (tested on Gmail using app password)
+* Setting `spring.boot.admin.notify.mail.enabled=true` and `spring.mail.host (port, username, password, ...)` enables Email notification (tested on Gmail using Gmail app-password)
 
 ## Test URL Examples
 

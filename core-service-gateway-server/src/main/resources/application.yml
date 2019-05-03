@@ -20,7 +20,7 @@ spring:
 #          - cert2.pem
 
 server:
-#  port: 9090
+  port: 9090
   ssl:
     enabled: false
     key-alias: tomcat
