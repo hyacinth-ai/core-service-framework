@@ -1,19 +1,7 @@
 allprojects {
     group 'ai.hyacinth.core.service'
     description "Core Service Framework component"
-    version = '0.3.1'
-
-    project.ext.PUBLISHING_ENABLED = true
-    project.ext.PUBLISHING_SCM="https://github.com/tommyxu/core-service-framework"
-    project.ext.PUBLISHING_DEVELOPER_ID="tommyxu"
-    project.ext.PUBLISHING_DEVELOPER_NAME="Xu Yijun"
-    project.ext.PUBLISHING_DEVELOPER_EMAIL="xuyijun@gmail.com"
-    project.ext.PUBLISHING_LICENSE = 'Apache-2.0'
-    project.ext.PUBLISHING_LICENSE_URL = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-    project.ext.BINTRAY_USER = "tommyxu"
-    // project.ext.BINTRAY_API_KEY = "" // by environment ORG_GRADLE_PROJECT_BINTRAY_API_KEY="xxxxx"
-    project.ext.BINTRAY_REPO = "core-service-framework"
-    project.ext.BINTRAY_ORG = ""
+    version = '0.3.5'
 }
 
 apply from: './build-script.gradle'

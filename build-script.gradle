@@ -215,6 +215,7 @@ subprojects {
         bintray {
             user = project.BINTRAY_USER
             key = project.BINTRAY_API_KEY
+            publish = project.BINTRAY_PUBLISH
             pkg {
                 repo = project.BINTRAY_REPO
                 name = "${project.group}:${project.name}"
