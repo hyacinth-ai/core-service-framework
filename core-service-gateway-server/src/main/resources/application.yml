@@ -1,16 +1,16 @@
 spring:
-  session:
-    store-type: redis
-    timeout: 1800s
-
-  redis:
-    url: redis://redis:alice-secret@192.168.99.100:6379
-
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
+
+  redis:
+    url: redis://redis:alice-secret@docker.hyacinth.services:6379
+
+  session:
+    store-type: redis
+    timeout: 1800s
 
 #      httpclient:
 #        ssl:
@@ -43,22 +43,6 @@ management:
       enabled: true
     restart:
       enabled: true
-
-#zuul:
-#  host:
-#    maxTotalConnections: 200
-#    maxPerRouteConnections: 30
-#
-#  ignoredServices: '*'
-#
-#  prefix: /api
-#  stripPrefix: false
-#
-#  routes:
-#    user-service:
-#      path: /user-service/**
-#      serviceId: user-service
-
 
 ---
 spring:

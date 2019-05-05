@@ -561,15 +561,6 @@ TL;DR (commented, only shown in source file)
 
 1. RabbitMQ integration (AmqpTemplate / AmqpAdmin)
 
-spring-boot-starter-amqp
-
-spring.rabbitmq.host=localhost
-spring.rabbitmq.port=5672
-spring.rabbitmq.username=admin
-spring.rabbitmq.password=secret
-spring.rabbitmq.template.retry.enabled=true
-spring.rabbitmq.template.retry.initial-interval=2s
-
 @RabbitListener(queues = "someQueue") // containerFactory="myFactory"
 public void processMessage(String content) {
 

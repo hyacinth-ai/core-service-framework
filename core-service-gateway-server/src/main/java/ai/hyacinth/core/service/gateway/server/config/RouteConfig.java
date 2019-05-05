@@ -192,7 +192,7 @@ public class RouteConfig {
   }
 
   private void resetHeaders(HttpHeaders headers) {
-    headers.remove(ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE);
+    headers.remove(ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE);
     headers.remove(HttpHeaders.AUTHORIZATION);
     headers.remove(HttpHeaders.COOKIE);
     headers.remove(HttpHeaders.SET_COOKIE);
@@ -204,7 +204,7 @@ public class RouteConfig {
         .mutate()
         .headers(
             headers -> {
-              headers.set(ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE, principleId);
+              headers.set(ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE, principleId);
             })
         .build();
   }
@@ -282,7 +282,7 @@ public class RouteConfig {
   }
 
   private static final String PRINCIPAL_PLACEHOLDER_VAR =
-      "${" + ServiceApiConstants.HEADER_NAME_AUTHENTICATED_PRINCIPLE + "}";
+      "${" + ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE + "}";
 
   private GatewayFilter rewriteRequestParams(final Map<String, String> requestParameters) {
     return (exchange, chain) -> {

@@ -1,5 +1,7 @@
 // plugins {
 // id 'org.springframework.boot' version '2.1.3.RELEASE'
+// id "com.jfrog.bintray" version "1.+"
+// id "org.flywaydb.flyway" version "5.2.4"
 // }
 
 // repositories {
@@ -20,14 +22,14 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE'
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0"
         classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
-        classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4" // id "org.flywaydb.flyway" version "5.2.4"
-        // classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+        classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4"
     }
 }
 
 task("dotDependencies") {
     doLast {
-        def file = new File("project-dependencies.dot")
+        def file = new File("${project.projectDir}/project-dependencies.dot")
         file.delete()
         file << "digraph {\n"
         file << "splines=ortho\n"
@@ -44,7 +46,6 @@ task("dotDependencies") {
     }
 }
 
-
 task("buildAll") {
     dependsOn(
         subprojects
@@ -55,14 +56,12 @@ task("buildAll") {
 
 subprojects {
 
-    version = '1.0.0' // default version
-
     apply plugin: 'java'
     apply plugin: 'idea'
-    apply plugin: 'maven'
-    apply plugin: 'groovy'
-
-    // apply plugin: 'checkstyle'
+    apply plugin: 'maven-publish'
+    // apply plugin: 'signing'
+    // apply plugin: 'groovy'
+    // apply plugin: 'maven'
     // apply plugin: org.sonarqube.gradle.SonarQubePlugin
 
     apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
@@ -70,6 +69,7 @@ subprojects {
     apply plugin: com.gorylenko.GitPropertiesPlugin
     apply plugin: com.github.sherter.googlejavaformatgradleplugin.GoogleJavaFormatPlugin
     apply plugin: org.flywaydb.gradle.FlywayPlugin
+    apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 
     ext {
         set('springCloudVersion', 'Greenwich.SR1')
@@ -118,11 +118,27 @@ subprojects {
         options.compilerArgs += ['-parameters', '-Xlint:unchecked']
     }
 
+    jar { enabled = true }
+
+    javadoc {
+        if(JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allJava // allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
     flyway {
         cleanDisabled = true
     }
-
-    jar { enabled = true }
 
     bootJar {
         classifier = 'boot'
@@ -139,28 +155,76 @@ subprojects {
 
     generateGitProperties { enabled = false }
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: "https://my.maven.test.com/repository/releases/") {
-                    authentication(userName: "user", password: "password")
+    if (project.findProperty('PUBLISHING_ENABLED') != null) {
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                    artifact tasks.sourcesJar
+                    artifact tasks.javadocJar
+                    if (project.name.endsWith('server')) {
+                        artifact tasks.bootJar
+                    }
+                    // groupId project.group
+                    // artifactId project.name
+                    // version project.version
+                    pom {
+                        name = "${project.group}:${project.name}"
+                        description = project.description ?: ""
+                        url = project.PUBLISHING_SCM
+                        licenses {
+                            license {
+                                name = project.PUBLISHING_LICENSE
+                                url = project.PUBLISHING_LICENSE_URL
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = project.PUBLISHING_DEVELOPER_ID
+                                name = project.PUBLISHING_DEVELOPER_NAME
+                                email = project.PUBLISHING_DEVELOPER_EMAIL
+                            }
+                        }
+                        scm {
+                            connection = project.PUBLISHING_SCM
+                            developerConnection = project.PUBLISHING_SCM
+                            url = project.PUBLISHING_SCM
+                        }
+                    }
                 }
             }
+
+            // repositories {
+            //     maven {
+            //         url 'https://repo.example.com'
+            //     }
+            // }
+        }
+
+        // uploadArchives {
+        //     repositories {
+        //         mavenDeployer {
+        //             repository(url: "https://my.maven.test.com/repository/releases/") {
+        //                 authentication(userName: "user", password: "password")
+        //             }
+        //         }
+        //     }
+        // }
+
+        bintray {
+            user = project.BINTRAY_USER
+            key = project.BINTRAY_API_KEY
+            pkg {
+                repo = project.BINTRAY_REPO
+                name = "${project.group}:${project.name}"
+                licenses = [project.PUBLISHING_LICENSE]
+                vcsUrl = project.PUBLISHING_SCM
+                userOrg =  project.BINTRAY_ORG
+            }
+            publications = ['mavenJava']
         }
     }
-
-//    publishing {
-//        publications {
-//            bootJava(MavenPublication) {
-//                artifact bootJar
-//            }
-//        }
-//        repositories {
-//            maven {
-//                url 'https://repo.example.com'
-//            }
-//        }
-//    }
 
     if (project.name.endsWith('service') || project.name.endsWith('server')) {
         defaultTasks 'bootJar'
@@ -171,13 +235,14 @@ subprojects {
         }
 
         generateGitProperties { enabled = new File('.git').exists() }
-
     }
 
     if (project.name.endsWith('service')) {
         springBoot {
             buildInfo {
-                properties { additional = System.properties }
+                properties {
+                    // additional = System.properties
+                }
             }
         }
     }

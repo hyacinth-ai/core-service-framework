@@ -4,13 +4,13 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     registry-fetch-interval-seconds: 20 # 30 default
     initialInstanceInfoReplicationIntervalSeconds: 20 # 40 default
-#    instanceInfoReplicationIntervalSeconds: 30 # 30 default
+    # instanceInfoReplicationIntervalSeconds: 30 # 30 default
     instance:
       preferIpAddress: true
-      lease-renewal-interval-in-seconds: 20 # 30 default
-      lease-expiration-duration-in-seconds: 60 # 90 default
-      #    status-page-url-path: /actuator/info
-      #    health-check-url-path: /actuator/health
+      # lease-renewal-interval-in-seconds: 20 # 30 default
+      # lease-expiration-duration-in-seconds: 60 # 90 default
+      # status-page-url-path: /actuator/info
+      # health-check-url-path: /actuator/health
     healthcheck:
       enabled: false # false default
 

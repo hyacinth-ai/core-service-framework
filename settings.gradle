@@ -1,4 +1,4 @@
-rootProject.name = 'core-service'
+rootProject.name = 'core-service-framework'
 
 include 'core-service-module'
 include 'core-service-web-common-lib'
