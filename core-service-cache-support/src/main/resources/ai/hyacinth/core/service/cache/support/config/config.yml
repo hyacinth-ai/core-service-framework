@@ -1,14 +1,28 @@
 spring:
-  redis:
-    url: redis://redis:alice-secret@192.168.99.100:6379
-
+#  profiles: caffeine-cache
   cache:
-    type: redis # simple, none
+    type: caffeine
+    caffeine:
+      spec: maximumSize=200,expireAfterAccess=10m
+
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+#      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+---
+spring:
+  profiles: redis-cache
+  cache:
+    type: redis
     redis:
       cache-null-values: true # Allow caching null values.
       use-key-prefix: true # Whether to use the key prefix when writing to Redis.
-      time-to-live: 60m # Entry expiration. By default the entries never expire.
-#      key-prefix:  # Key prefix is based on the cache name. Leave it as default.
+      time-to-live: 10m # Entry expiration. By default the entries never expire.
+      # key-prefix:  # Key prefix is based on the cache name. Leave it as default.
+
+  redis:
+    url: redis://localhost:6379 # please-set-redis-url # redis://redis:alice-secret@docker.hyacinth.services:6379
 
 #spring.redis.cluster.max-redirects= # Maximum number of redirects to follow when executing commands across the cluster.
 #spring.redis.cluster.nodes= # Comma-separated list of "host:port" pairs to bootstrap from.

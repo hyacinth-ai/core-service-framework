@@ -1,9 +1,12 @@
 package ai.hyacinth.core.service.module.loader;
 
+import java.util.Collections;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.boot.env.YamlPropertySourceLoader;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -11,10 +14,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-
 @Slf4j
+@Order
 public class ConfigLoaderPostProcessor implements EnvironmentPostProcessor {
+
+  private static final String DOCUMENT_PROFILES_PROPERTY = "spring.profiles";
 
   private String configLocation;
 
@@ -32,15 +36,21 @@ public class ConfigLoaderPostProcessor implements EnvironmentPostProcessor {
     ResourceLoader resourceLoader = new DefaultResourceLoader();
     Resource resource = resourceLoader.getResource(configLocation);
     YamlPropertySourceLoader sourceLoader = new YamlPropertySourceLoader();
-    //        String name = UUID.randomUUID().toString(); //defaultCfg
-    final String name = configLocation;
+    final String name = String.format("ServiceModuleConfiguration [%s]", configLocation);
     try {
       List<PropertySource<?>> yalPropertiesList = sourceLoader.load(name, resource);
-      if (yalPropertiesList != null) {
+      if (yalPropertiesList != null && yalPropertiesList.size() > 0) {
+        Collections.reverse(yalPropertiesList);
         for (PropertySource propertySource : yalPropertiesList) {
           if (matchActiveProfile(
-              propertySource.getProperty("spring.profiles"), environment.getActiveProfiles())) {
-            environment.getPropertySources().addLast(propertySource);
+              propertySource.getProperty(DOCUMENT_PROFILES_PROPERTY),
+              environment.getActiveProfiles(),
+              environment.getDefaultProfiles())) {
+            if (!environment.getPropertySources().contains(propertySource.getName())) {
+              environment.getPropertySources().addLast(propertySource);
+            }
+          } else {
+            log.info("profile not match. skip loading {}", propertySource);
           }
         }
       }
@@ -50,11 +60,15 @@ public class ConfigLoaderPostProcessor implements EnvironmentPostProcessor {
     }
   }
 
-  private boolean matchActiveProfile(Object property, String[] activeProfiles) {
+  private boolean matchActiveProfile(
+      Object property, String[] activeProfiles, String defaultProfiles[]) {
+    if (activeProfiles.length == 0) {
+      return false;
+    }
     if (property == null) {
-      return true; // no restriction
+      return true; // document has no restriction
     } else {
-      String docProfile = property.toString().trim();
+      String docProfile = property.toString();
       for (String activeProfile : activeProfiles) {
         if (docProfile.equals(activeProfile)) {
           return true;

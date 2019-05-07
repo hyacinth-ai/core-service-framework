@@ -39,3 +39,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+
+---
+spring:
+  profiles: development
+  jpa:
+    hibernate:
+      ddl-auto: update
+

@@ -1,9 +1,9 @@
 package ai.hyacinth.core.service.examples.debug.web;
 
 import ai.hyacinth.core.service.bus.support.service.BusService;
-import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.core.service.examples.debug.dto.ApiCall;
 import ai.hyacinth.core.service.examples.debug.service.DebugService;
+import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +35,7 @@ public class DebugController {
   }
 
   @PostMapping("/echo")
-  public Map<?, ?> echo(
-      @RequestBody(required = false) Map<?, ?> requestBody) {
+  public Map<?, ?> echo(@RequestBody(required = false) Map<?, ?> requestBody) {
     return requestBody;
   }
 
@@ -44,7 +43,7 @@ public class DebugController {
   public String event(@RequestBody(required = false) Map<?, ?> eventPayload) {
     busService.publish(BusService.ALL_SERVICES, "debug", eventPayload);
     busService.publish(BusService.ALL_SERVICES, "test", new TestBean("object"));
-    return "ok";
+    return "sent";
   }
 
   @RequestMapping(value = {"/call", "/call/**", "/**"})
