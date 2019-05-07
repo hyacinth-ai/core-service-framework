@@ -228,33 +228,35 @@ spring:
 
 ### Cache
 
-`Redis` is default cache provider with dependency `core-service-cache-support` configured as:
+Add `core-service-cache-support` as dependency and import `CacheConfig`.
+
+`Caffeine` is default cache provider (in-memory). Create cache by setting cache names.
 
 ```yaml
-spring.cache.type: redis
+spring.cache.cache-name=cache-name-1,cache-name-2,piDecimals
 ```
 
-Overriding redis properties is required before activating thie cache:
+Java code example:
+
+```java
+@Cacheable("piDecimals")
+public String getPi(int decimals) {
+  // ...
+}
+```
+
+`Redis` cache can be activated by using SpringBoot profile `redis-cache` and overriding redis properties like:
 
 ```yaml
 spring:
   redis:
-    url: redis://redis:alice-secret@192.168.99.100:6379
-```
-
-Java code example for using spring-cache:
-
-```java
-@Cacheable("piDecimals")
-String getPi(int i) {
-  // ...
-}
+    url: redis://redis:alice-secret@docker.hyacinth.services:6379
 ```
 
 > NOTE:
 >
 > According to `org.springframework.boot.autoconfigure.cache.RedisCacheManager`, the default configuration is using JDK serializer.
-That means the returning object that is thrown into cache should implement `java.io.Serializable`.
+> That means the returning object should implement `java.io.Serializable`.
 
 ### Web Request Validation
 

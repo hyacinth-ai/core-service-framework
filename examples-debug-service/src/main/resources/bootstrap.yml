@@ -1,6 +1,7 @@
 spring:
   profiles:
-    active: development
+    active:
+      - development
   application:
     name: debug-service
     version: 1.0
@@ -12,8 +13,22 @@ spring:
     password: alice-secret
     requested-heartbeat: 35s
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-    enabled: true
+  cache:
+    cache-names: cache1,cache2,callHistory
+
+  eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://localhost:8761/eureka/
+      enabled: true
+---
+spring:
+  profiles: production
+
+prod.testkey: 123
+
+---
+spring:
+  profiles: development
+
+dev.testkey: 456
