@@ -23,13 +23,14 @@
   * [File Uploading](#file-uploading)
   * [SSL Server](#ssl-server)
   * [HTTP/2](#http2)
-  * [JWT](#jwt)
-  * [Rate Limiter](#rate-limiter)
+  * [JWT on Gateway](#jwt-on-gateway)
+  * [API Rate Limiter on Gateway](#api-rate-limiter-on-gateway)
   * [H2 In-Memory Database](#h2-in-memory-database)
   * [Generate JPA SQL Script](#generate-jpa-sql-script)
   * [Flyway Database Migration on Startup](#flyway-database-migration-on-startup)
-  * [Flyway Database Migration](#flyway-database-migration)
-  * [Spring Cloud Bus and ServiceBus Event](#spring-cloud-bus-and-servicebus-event)
+  * [Flyway Database Migration by Gradle](#flyway-database-migration-by-gradle)
+  * [Spring Cloud Bus and Bus-Event](#spring-cloud-bus-and-bus-event)
+  * [Service Admin Server](#service-admin-server)
 * [Test URL Examples](#test-url-examples)
   * [Using *httpie*](#using-httpie)
 * [Todo for First Release](#todo-for-first-release)
@@ -38,7 +39,7 @@
 
 ## Overview
 
-Based on latest Spring Cloud version, *Core Service Framework* is a collection of tools and code snippets to quickly implement micro-service architecture.
+Based on latest Spring Cloud version, *Core Service Framework* is a collection of tools and code snippets as several modules to help quickly implement micro-service architecture.
 Feel free to use it as the start of your project or copy/paste what you like from this repo.
 
 License: Apache License 2.0
@@ -69,9 +70,9 @@ License: Apache License 2.0
 * Jackson JSON Mapper
 * Swagger
 * Gradle
-* git, curl, *httpie*, openssl
-* MySQL, Redis
-* RabbitMQ
+* git & git-flow
+* curl, *httpie*, openssl
+* MySQL, Redis, RabbitMQ
 * JWT
 * Maven repository
 
