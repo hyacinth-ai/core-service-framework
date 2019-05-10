@@ -7,7 +7,6 @@ import ai.hyacinth.core.service.trigger.server.dto.TriggerQueryRequest;
 import ai.hyacinth.core.service.trigger.server.dto.TriggerUpdateRequest;
 import java.util.List;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 public interface TriggerService {
   @NonNull
@@ -16,10 +15,8 @@ public interface TriggerService {
   @NonNull
   TriggerInfo createTrigger(TriggerCreationRequest createRequest);
 
-  @Nullable
   TriggerInfo findTriggerById(Long id);
 
-  @Nullable
   TriggerInfo findTriggerByServiceAndName(String service, String name);
 
   @NonNull

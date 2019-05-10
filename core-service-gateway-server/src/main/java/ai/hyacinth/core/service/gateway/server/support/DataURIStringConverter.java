@@ -1,12 +1,9 @@
 package ai.hyacinth.core.service.gateway.server.support;
 
 import java.util.Base64;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalConverter;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 //@Component
 //@ConfigurationPropertiesBinding

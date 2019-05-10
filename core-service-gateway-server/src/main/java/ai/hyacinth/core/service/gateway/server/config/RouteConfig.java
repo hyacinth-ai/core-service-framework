@@ -39,7 +39,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -211,7 +210,7 @@ public class RouteConfig {
 
   @SuppressWarnings("unchecked")
   private GatewayFilter rewriteRequestBody(
-      final Map<String, Object> requestBody, @Nullable String requestBodyJson) {
+      final Map<String, Object> requestBody, String requestBodyJson) {
     return (exchange, chain) -> {
       if (requestBody.size() > 0 || requestBodyJson != null) {
         MediaType mediaType = exchange.getRequest().getHeaders().getContentType();

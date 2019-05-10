@@ -249,22 +249,20 @@ subprojects {
         }
     }
 
-    if (project.name.endsWith('service')) {
-        springBoot {
-            buildInfo {
-                properties {
-                    // additional = System.properties
-                }
-            }
-        }
-    }
-
     if (project.name.endsWith('service') || project.name.endsWith('server')) {
         defaultTasks 'bootJar'
 
         bootJar {
             classifier = 'boot'
             enabled = true
+        }
+
+        springBoot {
+            buildInfo {
+                properties {
+                    // additional = System.properties
+                }
+            }
         }
 
         generateGitProperties { enabled = new File('.git').exists() }
@@ -283,6 +281,6 @@ subprojects {
         compile 'org.slf4j:log4j-over-slf4j'
         compile 'javax.xml.bind:jaxb-api'
         compile 'org.glassfish.jaxb:jaxb-runtime'
-        compile 'com.google.code.findbugs:jsr305'
+        // compile 'com.google.code.findbugs:jsr305'
     }
 }

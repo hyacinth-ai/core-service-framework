@@ -1,11 +1,11 @@
 package ai.hyacinth.core.service.bus.support.event;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.cloud.bus.event.RemoteApplicationEvent;
-import org.springframework.lang.Nullable;
 
 @Data
 @NoArgsConstructor
@@ -19,10 +19,10 @@ public class BusEvent<PayloadClass> extends RemoteApplicationEvent {
   public BusEvent(
       Object source,
       String originService,
-      @Nullable String destinationService,
+      @NotNull String destinationService,
       String eventType,
-      @Nullable PayloadClass payload,
-      @Nullable String payloadType) {
+      @NotNull PayloadClass payload,
+      @NotNull String payloadType) {
     super(source, originService, destinationService);
     this.eventType = eventType;
     this.payload = payload;
