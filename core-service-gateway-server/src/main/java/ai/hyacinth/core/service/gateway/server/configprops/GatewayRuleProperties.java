@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.Nullable;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +16,7 @@ public class GatewayRuleProperties {
   /** predicate */
   @NotNull private String path;
 
-  @Nullable private HttpMethod method; // empty means no restriction
+  private HttpMethod method; // empty means no restriction
 
   private GatewayRateLimiterProperties rateLimiter = new GatewayRateLimiterProperties();
 

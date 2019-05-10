@@ -2,8 +2,7 @@ package ai.hyacinth.core.service.web.common.payload;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationResult<PrincipalType> implements Serializable {
   private static final long serialVersionUID = -214526789160927487L;
-
-  private List<String> authorities;
-  private PrincipalType principal;
+  @NotNull private List<String> authorities;
+  @NotNull private PrincipalType principal;
 }

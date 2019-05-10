@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':core-service-web-common-lib')
-    
+    compile project(':core-service-web-common')
+
     compile project(':core-service-config-support')
     compile project(':core-service-logging-support')
     compile project(':core-service-discovery-support')
