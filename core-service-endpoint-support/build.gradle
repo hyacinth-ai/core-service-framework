@@ -2,8 +2,8 @@ dependencies {
     compile project(':core-service-web-support')
     compile project(':core-service-swagger-support')
     compile project(':core-service-logging-support')
-    
-    compile project(':core-service-web-common-lib')
+
+    compile project(':core-service-web-common')
 
     compile 'org.springframework.cloud:spring-cloud-commons'
 }
