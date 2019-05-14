@@ -542,19 +542,41 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 
 * Documentation for modules introduced (Config class)
 
-* Domain register
-
-* Publish to maven or jcenter
-
 ## Roadmap Points
 
 TL;DR (commented, only shown in source file)
 
 <!--
 
+* Publish to maven or jcenter
+
+RabbitExchangeQueueProvisioner:172
+
+2. Logstash + ElasticSearch + Grafana
+
+30. ELK Stack
+
+console: "[%date{ISO8601}] [%r] [%clr(%-5level)] [%thread] [%logger] [%F:%L] [${PID:- }] [${spring.zipkin.service.name:${spring.application.name:-}}] [${spring.application.instance:-}] [%X] [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] --- %msg MULTIEXCEPTION %replace(%rEx){'\n','\u2028'}%nopex%n"
+
+
+${PID}: The current process ID.
+${LOG_FILE}: Whether logging.file was set in Boot’s external configuration.
+${LOG_PATH}: Whether logging.path (representing a directory for log files to live in) was set in Boot’s external configuration.
+${LOG_EXCEPTION_CONVERSION_WORD}: Whether logging.exception-conversion-word was set in Boot’s external configuration.
+
+ [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]
+
 1. Promethues + Grafana
 
-0. Job trigger server
+AVRO schema
+
+32. Single Sign On
+
+33. SSO/OAuth2
+
+29. OAuth2 for WX
+
+0. Job trigger server (support event)
 
 1. Gateway features:
 
@@ -567,7 +589,7 @@ TL;DR (commented, only shown in source file)
 @RabbitListener(queues = "someQueue") // containerFactory="myFactory"
 public void processMessage(String content) {
 
-11. Login challenge
+11. Login challenge (reCaptcha)
 
 1. Gateway Feature
 
@@ -578,10 +600,6 @@ public void processMessage(String content) {
   Dangerous header removing: X-Forwarded-For
 
   Difference between access denied payload / login required payload
-
-29. OAuth2 for WX
-
-30. ELK Stack
 
 17. Saga
 
@@ -816,15 +834,11 @@ public class SwaggerWebFilterServlet extends HttpServlet {
 
 org.springframework.orm.hibernate5.SpringBeanContainer
 
-30. Online chart
+30. Online chart App
 
 31. Spring Cloud Contract
 
-32. Single Sign On
-
-33. SSO/OAuth2
-
-RemoveNonProxyHeaders
+34. RemoveNonProxyHeaders
 
 -->
 

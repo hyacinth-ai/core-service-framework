@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+  <springProperty scope="context" name="springApplicationName" source="spring.application.name"/>
+  <springProperty scope="context" name="springApplicationInstance" source="spring.application.instance"/>
+
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <!--
+  <appender name="flatfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>%d{yyyy-MM-dd}.${LOG_FILE}</fileNamePattern>
+      <maxHistory>3</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+  -->
+
+  <appender name="logstash" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>%d{yyyy-MM-dd}.${LOG_FILE}</fileNamePattern>
+      <maxHistory>3</maxHistory>
+      <totalSizeCap>500MB</totalSizeCap>
+    </rollingPolicy>
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <fieldName>timestamp</fieldName>
+        </timestamp>
+        <logLevel/>
+        <message/>
+        <loggerName/>
+        <threadName/>
+        <callerData/>
+        <stackTrace/>
+        <throwableClassName/>
+        <throwableRootCauseClassName/>
+        <mdc/>
+        <sequence/>
+        <pattern>
+          <pattern>
+          {
+            "application": "${springApplicationName:-}",
+            "instance": "${springApplicationInstance:-}",
+            "relative": "#asLong{%r}",
+            "pid": "${PID:-}"
+          }
+          </pattern>
+        </pattern>
+        <timestamp>
+          <timeZone>UTC</timeZone>
+        </timestamp>
+        <version/>
+      </providers>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="console"/>
+    <appender-ref ref="logstash"/>
+<!--    <appender-ref ref="flatfile"/>-->
+  </root>
+</configuration>
