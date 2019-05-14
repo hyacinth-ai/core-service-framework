@@ -3,3 +3,7 @@ spring:
     bus:
       trace:
         enabled: true
+
+  rabbitmq:
+    requested-heartbeat: 10s
+    connection-timeout: 10s

@@ -21,6 +21,10 @@ public class ServiceApiException extends RuntimeException {
     this(httpStatus, errorResponse, null);
   }
 
+  public ServiceApiException(ServiceApiErrorCode errorCode, Throwable throwable) {
+    this(errorCode.getHttpStatusCode(), createErrorResponse(errorCode, null), throwable);
+  }
+
   public ServiceApiException(ServiceApiErrorCode errorCode, Object data) {
     this(errorCode.getHttpStatusCode(), createErrorResponse(errorCode, data), null);
   }

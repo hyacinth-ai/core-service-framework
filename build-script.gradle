@@ -118,6 +118,7 @@ subprojects {
             dependency 'io.jsonwebtoken:jjwt-impl:0.10.6'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.10.6'
             dependency 'de.codecentric:spring-boot-admin-starter-server:2.1.4'
+            dependency 'net.logstash.logback:logstash-logback-encoder:5.3'
         }
     }
 
@@ -281,6 +282,5 @@ subprojects {
         compile 'org.slf4j:log4j-over-slf4j'
         compile 'javax.xml.bind:jaxb-api'
         compile 'org.glassfish.jaxb:jaxb-runtime'
-        // compile 'com.google.code.findbugs:jsr305'
     }
 }

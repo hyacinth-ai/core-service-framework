@@ -7,4 +7,12 @@ spring:
     console:
       enabled: true
 
-  # default h2 embed-db url: jdbc:h2:mem:testdb
+logging:
+  level:
+    ai:
+      hyacinth:
+        core:
+          service:
+            examples:
+              debug:
+                web: DEBUG

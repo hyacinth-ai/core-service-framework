@@ -44,6 +44,7 @@ spring:
 #        - 10.0
 #     useOnlySiteLocalInterfaces: true
 
+
 feign:
   client:
     config:

@@ -1,16 +1,20 @@
 spring:
+  application:
+    instance: ${random.uuid}
   output:
     ansi:
-      enabled: detect
+      enabled: never
+  main:
+    banner-mode: "off"
 
 logging:
   pattern:
-    console: "[%date{ISO8601}] [%clr(%-5level)] [%thread] [%logger] [%F:%L] [${PID:- }] [${spring.zipkin.service.name:${spring.application.name:-}},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] --- %msg%n"
+    console: "[%date{ISO8601}] [%r] [%clr(%level)] [%thread] [%logger] [%F:%L] [${PID:- }] [${spring.zipkin.service.name:${spring.application.name:-}}] [${spring.application.instance:-}] [%X] --- %msg%n"
     file: ${logging.pattern.console}
   level:
     root: INFO
-#  file: ./log/${spring.application.name}.log
+  file: ${spring.application.name}.log.jsonl
 
-logging.file:
-  max-history: 10
-  max-size: 20MB
+#file:
+#  max-history: 3
+#  max-size: 50MB

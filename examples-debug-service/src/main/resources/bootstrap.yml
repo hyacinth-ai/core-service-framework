@@ -11,8 +11,6 @@ spring:
     port: 5672
     username: alice
     password: alice-secret
-    requested-heartbeat: 35s
-
   cache:
     cache-names: cache1,cache2,callHistory
 
