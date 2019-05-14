@@ -1,6 +1,7 @@
 package ai.hyacinth.core.service.trigger.server.dto;
 
 import ai.hyacinth.core.service.trigger.server.dto.type.ServiceTriggerMethodType;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +29,10 @@ public class TriggerCreationRequest {
 
   private Map<String, Object> params;
 
+  @ApiModelProperty("Quartz cron expression. Try '0 0/2 * ? * * *' for every 2 minutes.")
   @NotNull private String cron;
+
+  @ApiModelProperty("Not used now.")
   private Duration timeout;
 
   @Builder.Default @NotNull private Boolean enabled = Boolean.TRUE;

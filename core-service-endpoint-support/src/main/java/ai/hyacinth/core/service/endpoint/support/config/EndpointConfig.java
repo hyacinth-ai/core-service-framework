@@ -21,9 +21,4 @@ public class EndpointConfig {
   RestTemplate loadBalancedRestTemplate() {
     return new RestTemplate();
   }
-
-  //  @Bean
-  //  RestTemplate restTemplate() {
-  //    return new RestTemplate();
-  //  }
 }

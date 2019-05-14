@@ -38,3 +38,5 @@ build/
 
 /project-dependencies.dot
 /temp.txt
+
+*.log.jsonl
