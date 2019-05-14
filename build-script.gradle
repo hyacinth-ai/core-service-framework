@@ -119,6 +119,7 @@ subprojects {
             dependency 'io.jsonwebtoken:jjwt-jackson:0.10.6'
             dependency 'de.codecentric:spring-boot-admin-starter-server:2.1.4'
             dependency 'net.logstash.logback:logstash-logback-encoder:5.3'
+            // dependency 'javax.servlet:javax.servlet-api:3.1.0'
         }
     }
 
