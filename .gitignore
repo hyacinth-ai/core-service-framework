@@ -40,3 +40,5 @@ build/
 /temp.txt
 
 *.log.jsonl
+
+/env.sh
