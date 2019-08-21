@@ -110,10 +110,16 @@ spring:
     version: 1.0
 ```
 
-Suggest that `spring.profiles.active` is set according to a default value for easy development.
+Suggest that `spring.profiles.active` is set to a concrete execution environment value for easy development:
 
-> If NO spring-cloud related modules (discovery, config) are loaded, for example, a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
-> Therefore, it's better to always set a application name in `application.yml` at the same time.
+* `development`
+* `production`
+* `testing`
+
+and override it on deployment.
+
+> If there's no spring-cloud related modules (discovery, config) loaded, for example, in a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
+> Therefore, it's better to always set the application name in `application.yml` also.
 
 ### Config Server
 
@@ -577,6 +583,14 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 TL;DR (commented, only shown in source file)
 
 <!--
+
+1. Bug: Profile loading for fallback "default"
+
+  docProfile=null
+  activeProfiles=[]
+  defaultProfiles=["default"]
+
+  should load the doc but observed not.
 
 1. Promethues + Grafana
 
