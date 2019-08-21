@@ -97,6 +97,24 @@ gradle buildAll
 
 Refer to `geenerate-dep.sh` under `tools`.
 
+### Typical Configuration
+
+The property `spring.application.name` should be set on `bootstrap.yml` or `application.yml` like this:
+
+```yaml
+spring:
+  profiles:
+    active: development
+  application:
+    name: food-service
+    version: 1.0
+```
+
+Suggest that `spring.profiles.active` is set according to a default value for easy development.
+
+> If NO spring-cloud related modules (discovery, config) are loaded, for example, a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
+> Therefore, it's better to always set a application name in `application.yml` at the same time.
+
 ### Config Server
 
 Run `core-service-config-server` with overriding following properties:
