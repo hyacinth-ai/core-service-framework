@@ -27,8 +27,8 @@ public class TriggerController {
 
   @PostMapping(value = "/triggers")
   public TriggerInfo createTrigger(
-      @Validated @RequestBody TriggerCreationRequest registrationRequest) {
-    return triggerService.createTrigger(registrationRequest);
+      @Validated @RequestBody TriggerCreationRequest createRequest) {
+    return triggerService.createTrigger(createRequest);
   }
 
   @GetMapping(value = "/triggers")

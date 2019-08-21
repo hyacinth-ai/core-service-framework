@@ -16,6 +16,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -190,11 +192,26 @@ public class RouteConfig {
             .flatMap(chain::filter);
   }
 
+
+  private final List<String> RESET_HEADER_NAMES = Arrays.asList(// security
+      ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE,
+      HttpHeaders.AUTHORIZATION,
+      HttpHeaders.COOKIE,
+      HttpHeaders.SET_COOKIE,
+
+      // non-proxy
+      HttpHeaders.CONNECTION,
+      HttpHeaders.TRANSFER_ENCODING,
+      HttpHeaders.TRAILER,
+      HttpHeaders.UPGRADE,
+
+      // others
+      "Keep-Alive",
+      "Proxy-Connection");
+
+
   private void resetHeaders(HttpHeaders headers) {
-    headers.remove(ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE);
-    headers.remove(HttpHeaders.AUTHORIZATION);
-    headers.remove(HttpHeaders.COOKIE);
-    headers.remove(HttpHeaders.SET_COOKIE);
+    RESET_HEADER_NAMES.forEach(headers::remove);
   }
 
   private ServerHttpRequest setPrincipleHeader(ServerWebExchange exchange, String principleId) {

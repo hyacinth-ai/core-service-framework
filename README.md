@@ -97,6 +97,24 @@ gradle buildAll
 
 Refer to `geenerate-dep.sh` under `tools`.
 
+### Typical Configuration
+
+The property `spring.application.name` should be set on `bootstrap.yml` or `application.yml` like this:
+
+```yaml
+spring:
+  profiles:
+    active: development
+  application:
+    name: food-service
+    version: 1.0
+```
+
+Suggest that `spring.profiles.active` is set according to a default value for easy development.
+
+> If NO spring-cloud related modules (discovery, config) are loaded, for example, a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
+> Therefore, it's better to always set a application name in `application.yml` at the same time.
+
 ### Config Server
 
 Run `core-service-config-server` with overriding following properties:
@@ -198,6 +216,16 @@ Triggering endpoint `/actuator/refresh` causes configuration (yaml, properties) 
 `@RefreshScope` can also be applied on the beans which need re-initialization after rebinding of configuration properties.
 
 > `core-service-gateway-server` module is a working example that shows the ability of dynamic re-building api routes from the configurations pulled from config server via `core-service-config-support`.
+
+### Service Endpoint
+
+Implement a concrete service by adding dependency module `core-service-endpoint-support` which includes following basic features:
+
+* Basic transit dependency to implement a SpringMVC-based service on Spring Boot platform.
+* Most `actuator` endpoints including `Prometheus` are enabled.
+* Exception and error code conversion. Refer to class `ServiceApiException` and `ServiceControllerExceptionHandler`.
+* Swagger support. Access swagger console by `http://<service-address>:<port>/swagger-ui.html`.
+* Logging support. Use Slf4j to log on console and to a json-format file. The default file name is `${spring.application.name}.log.jsonl` which could be overridden by property `logging.file`.
 
 ### Distributed Tracing (Sleuth)
 
@@ -542,41 +570,59 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 
 * Documentation for modules introduced (Config class)
 
+* Document for Job trigger server
+
 ## Roadmap Points
 
 TL;DR (commented, only shown in source file)
 
 <!--
 
-* Publish to maven or jcenter
+1. Promethues + Grafana
+
+30. Online chart App
+
+2. AVRO schema
+
+11. Login challenge (reCaptcha)
+
+17. Saga
+
+spring state machine
+
+State (name, entering, do, getDoingStatus, undo, getUndoingStatus, exiting)
+configuration-items: async query interval
+
+(DONE, ASYNC_STATUS, ABORT, REVERT, REVIEW_REQUIRED)
+
+13. Elastic Search
+
+    compile 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.0.1'
+
+https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.0/java-rest-high-document-index.html
+
+1. Spring Cloud Bug
 
 RabbitExchangeQueueProvisioner:172
 
-2. Logstash + ElasticSearch + Grafana
+1. Trigger service support EventBus
 
-30. ELK Stack
+2. Logging Mark
 
 console: "[%date{ISO8601}] [%r] [%clr(%-5level)] [%thread] [%logger] [%F:%L] [${PID:- }] [${spring.zipkin.service.name:${spring.application.name:-}}] [${spring.application.instance:-}] [%X] [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] --- %msg MULTIEXCEPTION %replace(%rEx){'\n','\u2028'}%nopex%n"
-
 
 ${PID}: The current process ID.
 ${LOG_FILE}: Whether logging.file was set in Boot’s external configuration.
 ${LOG_PATH}: Whether logging.path (representing a directory for log files to live in) was set in Boot’s external configuration.
 ${LOG_EXCEPTION_CONVERSION_WORD}: Whether logging.exception-conversion-word was set in Boot’s external configuration.
 
- [%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]
-
-1. Promethues + Grafana
-
-AVRO schema
+[%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]
 
 32. Single Sign On
 
 33. SSO/OAuth2
 
 29. OAuth2 for WX
-
-0. Job trigger server (support event)
 
 1. Gateway features:
 
@@ -589,8 +635,6 @@ AVRO schema
 @RabbitListener(queues = "someQueue") // containerFactory="myFactory"
 public void processMessage(String content) {
 
-11. Login challenge (reCaptcha)
-
 1. Gateway Feature
 
   Response-to-Session Mapping
@@ -601,16 +645,7 @@ public void processMessage(String content) {
 
   Difference between access denied payload / login required payload
 
-17. Saga
-
-spring state machine
-
-State (name, entering, do, getDoingStatus, undo, getUndoingStatus, exiting)
-configuration-items: async query interval
-
-(DONE, ASYNC_STATUS, ABORT, REVERT, REVIEW_REQUIRED)
-
-15. Nginx default configuration
+15. Nginx default configuration (Replaced by Traefik)
 
 42. @KafkaListener(topics = "someTopic") @EnableKafkaStreams
 
@@ -747,10 +782,6 @@ d for days
 
 20. spring.profiles.active && spring.profiles.include: ...
 
-21. Logback
-
-    logback-spring.xml, logback-spring.groovy, logback.xml, or logback.groovy
-
 22. HttpMessageConverters / @JsonComponent
 
 23. META-INF/resources/index.html,favicon.ico
@@ -830,15 +861,11 @@ public class SwaggerWebFilterServlet extends HttpServlet {
 
 @ServletComponentScan(basePackageClasses = {SwaggerWebFilterServlet.class})
 
-27. Converter
+27. Hibernate Property Converter
 
-org.springframework.orm.hibernate5.SpringBeanContainer
-
-30. Online chart App
+Inject object automatically via org.springframework.orm.hibernate5.SpringBeanContainer
 
 31. Spring Cloud Contract
-
-34. RemoveNonProxyHeaders
 
 -->
 
