@@ -100,9 +100,15 @@ public class ServiceControllerExceptionHandler {
 
   private ServiceApiErrorResponse fillErrorAttributes(
       ServiceApiErrorResponse errorResponse, HttpServletRequest servletRequest) {
-    errorResponse.setPath(servletRequest == null ? "" : servletRequest.getRequestURI());
-    errorResponse.setTimestamp(new Date());
-    errorResponse.setService(applicationName);
+    if (errorResponse.getPath() == null) {
+      errorResponse.setPath(servletRequest == null ? "" : servletRequest.getRequestURI());
+    }
+    if (errorResponse.getTimestamp() == null) {
+      errorResponse.setTimestamp(new Date());
+    }
+    if (errorResponse.getService() == null) {
+      errorResponse.setService(applicationName);
+    }
     return errorResponse;
   }
 }
