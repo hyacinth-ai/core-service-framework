@@ -1,9 +1,9 @@
 spring:
-#  profiles: caffeine-cache
+  #  profiles: caffeine-cache
   cache:
     type: caffeine
     caffeine:
-      spec: maximumSize=200,expireAfterAccess=10m
+      spec: maximumSize=100,expireAfterAccess=10m
 
 #  autoconfigure:
 #    exclude:

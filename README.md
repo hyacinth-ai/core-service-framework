@@ -233,6 +233,24 @@ Implement a concrete service by adding dependency module `core-service-endpoint-
 * Swagger support. Access swagger console by `http://<service-address>:<port>/swagger-ui.html`.
 * Logging support. Use Slf4j to log on console and to a json-format file. The default file name is `${spring.application.name}.log.jsonl` which could be overridden by property `logging.file`.
 
+### Error Response
+
+If a `ServiceApiException` is raised, it is finally converted into a json format like:
+
+```json
+{
+    "code": "E80000",
+    "data": "No converter found",
+    "message": "UNKNOWN_ERROR",
+    "path": "/api/dataset",
+    "service": "main-service",
+    "status": "error",
+    "timestamp": "2019-09-18T01:19:50.466+0000"
+}
+```
+
+This format could be parsed by `core-support-api-support` module and converted back into a local corresponding exception during remote call.
+
 ### Distributed Tracing (Sleuth)
 
 Use module `core-service-tracing-support`.
@@ -265,13 +283,22 @@ spring:
 
 Add `core-service-cache-support` as dependency and import `CacheConfig`.
 
-`Caffeine` is default cache provider (in-memory). Create cache by setting cache names.
+Create cache by setting cache names:
 
 ```yaml
 spring.cache.cache-name=cache-name-1,cache-name-2,piDecimals
 ```
 
-Java code example:
+`Caffeine` is default (in-memory) cache provider. Here's the default configuration.
+
+```yaml
+spring:
+  cache:
+    caffeine:
+      spec: maximumSize=100,expireAfterAccess=10m
+```
+
+Code example:
 
 ```java
 @Cacheable("piDecimals")
@@ -316,6 +343,19 @@ Validation error processing is implemented in web support module. Error response
 ```
 
 ### File Uploading
+
+Default multipart configuration in `core-service-web-support` module:
+
+```yaml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+      file-size-threshold: 1MB
+```
+
+Code example:
 
 ```java
 @PostMapping("/users/{userId}/portrait")

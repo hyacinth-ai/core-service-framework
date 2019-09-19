@@ -22,7 +22,7 @@ public class ServiceApiErrorDecoder implements ErrorDecoder {
           objectMapper.readValue(response.body().asInputStream(), ServiceApiErrorResponse.class);
       return new ServiceApiException(response.status(), errorResponse);
     } catch (Exception parseError) {
-      logger.warn("incompatible error payload");
+      logger.warn("error payload parsing error. maybe incompatible error response.", parseError);
       return new ServiceApiException();
     }
   }
