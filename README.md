@@ -110,10 +110,16 @@ spring:
     version: 1.0
 ```
 
-Suggest that `spring.profiles.active` is set according to a default value for easy development.
+Suggest that `spring.profiles.active` is set to a concrete execution environment value for easy development:
 
-> If NO spring-cloud related modules (discovery, config) are loaded, for example, a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
-> Therefore, it's better to always set a application name in `application.yml` at the same time.
+* `development`
+* `production`
+* `testing`
+
+and override it on deployment.
+
+> If there's no spring-cloud related modules (discovery, config) loaded, for example, in a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
+> Therefore, it's better to always set the application name in `application.yml` also.
 
 ### Config Server
 
@@ -227,6 +233,24 @@ Implement a concrete service by adding dependency module `core-service-endpoint-
 * Swagger support. Access swagger console by `http://<service-address>:<port>/swagger-ui.html`.
 * Logging support. Use Slf4j to log on console and to a json-format file. The default file name is `${spring.application.name}.log.jsonl` which could be overridden by property `logging.file`.
 
+### Error Response
+
+If a `ServiceApiException` is raised, it is finally converted into a json format like:
+
+```json
+{
+    "code": "E80000",
+    "data": "No converter found",
+    "message": "UNKNOWN_ERROR",
+    "path": "/api/dataset",
+    "service": "main-service",
+    "status": "error",
+    "timestamp": "2019-09-18T01:19:50.466+0000"
+}
+```
+
+This format could be parsed by `core-support-api-support` module and converted back into a local corresponding exception during remote call.
+
 ### Distributed Tracing (Sleuth)
 
 Use module `core-service-tracing-support`.
@@ -259,13 +283,22 @@ spring:
 
 Add `core-service-cache-support` as dependency and import `CacheConfig`.
 
-`Caffeine` is default cache provider (in-memory). Create cache by setting cache names.
+Create cache by setting cache names:
 
 ```yaml
 spring.cache.cache-name=cache-name-1,cache-name-2,piDecimals
 ```
 
-Java code example:
+`Caffeine` is default (in-memory) cache provider. Here's the default configuration.
+
+```yaml
+spring:
+  cache:
+    caffeine:
+      spec: maximumSize=100,expireAfterAccess=10m
+```
+
+Code example:
 
 ```java
 @Cacheable("piDecimals")
@@ -310,6 +343,19 @@ Validation error processing is implemented in web support module. Error response
 ```
 
 ### File Uploading
+
+Default multipart configuration in `core-service-web-support` module:
+
+```yaml
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+      file-size-threshold: 1MB
+```
+
+Code example:
 
 ```java
 @PostMapping("/users/{userId}/portrait")
@@ -577,6 +623,14 @@ http -v ':9090/user-service/api/users/whoami' 'Authorization: Bearer eyJ0eXAiOiJ
 TL;DR (commented, only shown in source file)
 
 <!--
+
+1. Bug: Profile loading for fallback "default"
+
+  docProfile=null
+  activeProfiles=[]
+  defaultProfiles=["default"]
+
+  should load the doc but observed not.
 
 1. Promethues + Grafana
 

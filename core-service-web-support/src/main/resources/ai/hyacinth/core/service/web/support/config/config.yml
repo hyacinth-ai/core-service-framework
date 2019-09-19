@@ -3,7 +3,7 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 10MB
-      file-size-threshold: 5MB
+      file-size-threshold: 1MB
   #  mvc:
   #    static-path-pattern: /resources/**
 
