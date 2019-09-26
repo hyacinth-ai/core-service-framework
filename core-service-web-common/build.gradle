@@ -3,4 +3,5 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
     compile 'javax.validation:validation-api'
+    compile 'org.springframework:spring-web'
 }
