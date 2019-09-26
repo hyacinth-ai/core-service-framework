@@ -2,17 +2,15 @@ package ai.hyacinth.core.service.api.support.config;
 
 import ai.hyacinth.core.service.web.common.ServiceApiErrorResponse;
 import ai.hyacinth.core.service.web.common.ServiceApiException;
+import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Slf4j
 public class ServiceApiErrorDecoder implements ErrorDecoder {
-
-  private static Logger logger = LoggerFactory.getLogger(ServiceApiErrorDecoder.class);
-
   @Autowired private ObjectMapper objectMapper;
 
   @Override
@@ -22,8 +20,8 @@ public class ServiceApiErrorDecoder implements ErrorDecoder {
           objectMapper.readValue(response.body().asInputStream(), ServiceApiErrorResponse.class);
       return new ServiceApiException(response.status(), errorResponse);
     } catch (Exception parseError) {
-      logger.warn("error payload parsing error. maybe incompatible error response.", parseError);
-      return new ServiceApiException();
+      log.warn("API calling error occurs but error payload is incompatible to parse.", parseError);
+      return new ServiceApiException(CommonServiceErrorCode.UNSUPPORTED_MEDIA_TYPE, parseError);
     }
   }
 }

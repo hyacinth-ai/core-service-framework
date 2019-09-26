@@ -1,7 +1,7 @@
 package ai.hyacinth.core.service.examples.debug.web;
 
 import ai.hyacinth.core.service.bus.support.service.BusService;
-import ai.hyacinth.core.service.endpoint.support.error.ServiceApiCommonErrorCode;
+import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
 import ai.hyacinth.core.service.examples.debug.dto.ApiCall;
 import ai.hyacinth.core.service.examples.debug.service.DebugService;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
@@ -51,7 +51,7 @@ public class DebugController {
   @RequestMapping("/exception")
   public String exception() {
     log.debug("expected to throw a exception.");
-    throw new ServiceApiException(ServiceApiCommonErrorCode.NETWORK_ERROR, new UnsupportedOperationException());
+    throw new ServiceApiException(CommonServiceErrorCode.NETWORK_ERROR, new UnsupportedOperationException());
   }
 
 

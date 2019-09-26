@@ -1,6 +1,6 @@
 package ai.hyacinth.core.service.endpoint.support.errorhandler;
 
-import ai.hyacinth.core.service.endpoint.support.error.ServiceApiCommonErrorCode;
+import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,8 +40,8 @@ public class ServiceApiErrorAttributes implements ErrorAttributes {
         attrs.put("code", "E90" + httpStatusCode);
         attrs.put("message", httpStatus.get().name());
       } else {
-        attrs.put("code", ServiceApiCommonErrorCode.UNKNOWN_ERROR.getCode());
-        attrs.put("message", ServiceApiCommonErrorCode.UNKNOWN_ERROR.getMessage());
+        attrs.put("code", CommonServiceErrorCode.UNKNOWN_ERROR.getCode());
+        attrs.put("message", CommonServiceErrorCode.UNKNOWN_ERROR.getMessage());
       }
       attrs.put("data", Collections.singletonMap("originalErrorAttributes", originalError));
       attrs.put("status", "error");

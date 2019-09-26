@@ -1,5 +1,9 @@
 package ai.hyacinth.core.service.web.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 public interface ServiceApiErrorCode {
   String getCode();
 
@@ -7,7 +11,18 @@ public interface ServiceApiErrorCode {
     return toString();
   }
 
-  default int getHttpStatusCode() {
-    return 400; // BAD REQUEST
+  int getHttpStatusCode();
+
+  @Data
+  @AllArgsConstructor
+  @NoArgsConstructor
+  class SimpleServiceApiErrorCodeImpl implements ServiceApiErrorCode {
+    protected String code;
+    protected String message;
+    protected int httpStatusCode;
+  }
+
+  static ServiceApiErrorCode of(String code, String message, int httpStatusCode) {
+    return new SimpleServiceApiErrorCodeImpl(code, message, httpStatusCode);
   }
 }
