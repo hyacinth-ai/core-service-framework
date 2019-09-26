@@ -1,7 +1,7 @@
 allprojects {
     group 'ai.hyacinth.framework'
     description "Core Service Framework Component"
-    version = '0.5.3'
+    version = '0.5.4'
 }
 
 apply from: './build-script.gradle'
