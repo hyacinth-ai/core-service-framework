@@ -1,6 +1,6 @@
 package ai.hyacinth.core.service.examples.user.web;
 
-import ai.hyacinth.core.service.endpoint.support.error.ServiceApiCommonErrorCode;
+import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
 import ai.hyacinth.core.service.examples.user.api.UserApi;
 import ai.hyacinth.core.service.examples.user.dto.UserAuthenticationRequest;
 import ai.hyacinth.core.service.examples.user.dto.UserCreationRequest;
@@ -90,7 +90,7 @@ public class UserController implements UserApi {
       content = file.getBytes();
     } catch (IOException e) {
       throw new ServiceApiException(
-          ServiceApiCommonErrorCode.NETWORK_ERROR, "cannot read portrait content");
+          CommonServiceErrorCode.NETWORK_ERROR, "cannot read portrait content");
     }
     log.info("set user portrait, {} {} = {}", file, originalFilename, fileSize);
     return userService.setUserPortrait(userId, content);
