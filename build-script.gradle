@@ -240,6 +240,16 @@ subprojects {
                 publications = ['mavenJava']
             }
         }
+
+        if (project.PUBLISHING_TARGET == "local") {
+            uploadArchives {
+                repositories {
+                    mavenDeployer {
+                        repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+                    }
+                }
+            }
+        }
     }
 
     if (project.name.endsWith('service') || project.name.endsWith('server')) {
