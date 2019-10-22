@@ -10,6 +10,8 @@
 * [Build from Source](#build-from-source)
 * [Modules Reference](#modules-reference)
   * [Dependency Graph of Subprojects](#dependency-graph-of-subprojects)
+  * [Typical Configuration](#typical-configuration)
+  * [Async-Job](#async-job)
   * [Config Server](#config-server)
   * [Config Client](#config-client)
   * [Service Discovery Server (Eureka Server)](#service-discovery-server-eureka-server)
@@ -17,6 +19,8 @@
     * [Peer Mode](#peer-mode)
   * [Service Discovery Support (Eureka Client)](#service-discovery-support-eureka-client)
   * [Dynamic Configuration Reloading](#dynamic-configuration-reloading)
+  * [Service Endpoint](#service-endpoint)
+  * [Error Response](#error-response)
   * [Distributed Tracing (Sleuth)](#distributed-tracing-sleuth)
   * [Cache](#cache)
   * [Web Request Validation](#web-request-validation)
@@ -26,6 +30,8 @@
   * [JWT on Gateway](#jwt-on-gateway)
   * [API Rate Limiter on Gateway](#api-rate-limiter-on-gateway)
   * [H2 In-Memory Database](#h2-in-memory-database)
+  * [MySQL Database](#mysql-database)
+  * [Using `JsonNode` as domain property](#using-jsonnode-as-domain-property)
   * [Generate JPA SQL Script](#generate-jpa-sql-script)
   * [Flyway Database Migration on Startup](#flyway-database-migration-on-startup)
   * [Flyway Database Migration by Gradle](#flyway-database-migration-by-gradle)
@@ -499,6 +505,8 @@ spring:
       hibernate.dialect: org.hibernate.dialect.MySQL57Dialect
       hibernate.dialect.storage_engine: innodb
 ```
+
+The recommended table creation DDL suffix is: `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci`
 
 ### Using `JsonNode` as domain property
 
