@@ -119,7 +119,20 @@ Suggest that `spring.profiles.active` is set to a concrete execution environment
 and override it on deployment.
 
 > If there's no spring-cloud related modules (discovery, config) loaded, for example, in a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
-> Therefore, it's better to always set the application name in `application.yml` also.
+> Therefore, it's better to always set the application name in `application.yml` as well.
+
+### Async-Job
+
+Enable async job scheduling by adding `@EnableAsync` and `@EnableScheduling` to the application configuration class.
+
+Schedule a job with `@Scheduled` annotation.
+
+```java
+  @Scheduled(fixedRateString = "PT2M", initialDelayString = "PT30S")
+  public void syncDeploymentStatus() {
+    // ...
+  }
+```
 
 ### Config Server
 
@@ -235,21 +248,23 @@ Implement a concrete service by adding dependency module `core-service-endpoint-
 
 ### Error Response
 
-If a `ServiceApiException` is raised, it is finally converted into a json format like:
+If a `ServiceApiException` is raised, it is finally converted into a json format like
 
 ```json
 {
+    "message": "UNKNOWN_ERROR",
     "code": "E80000",
     "data": "No converter found",
-    "message": "UNKNOWN_ERROR",
+    "status": "error",
     "path": "/api/dataset",
     "service": "main-service",
-    "status": "error",
     "timestamp": "2019-09-18T01:19:50.466+0000"
 }
 ```
 
-This format could be parsed by `core-support-api-support` module and converted back into a local corresponding exception during remote call.
+The fields `status`, `path`, `service`, `timestamp` are auto-generated. `message`, `code`, `data` are based on the exception thrown.
+
+This format could be parsed by `core-support-api-support` module and converted back into a local corresponding exception during remote call in the downstream service if possible.
 
 ### Distributed Tracing (Sleuth)
 
@@ -465,6 +480,38 @@ Only *authenticated* user is restricted. It has no effect on public API (*anonym
 With `core-service-jpa-support`, if no specific JDBC datasource is configured, `h2` is used as default database. H2 database console can be accessed via `http://host:port/h2-console`.
 
 Try using in-memory h2 jdbc-url `jdbc:h2:mem:testdb` (user: `sa`, password: *empty (no password)*) when log into the console.
+
+### MySQL Database
+
+A typical modern MySQL datasource configuration is like this:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/db?characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL57Dialect
+      hibernate.dialect.storage_engine: innodb
+```
+
+### Using `JsonNode` as domain property
+
+Example:
+
+```java
+  @Type(type = "json-node")
+  @Column(columnDefinition = "text")
+  @Basic(fetch = FetchType.LAZY)
+  private JsonNode taskDoc;
+```
+
+> If the database supports "JSON" type, for example, MySQL or PostgreSQL, use "json" as `columnDefinition`, "jsonb" as argument of `@Type`.
 
 ### Generate JPA SQL Script
 

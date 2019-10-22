@@ -207,13 +207,21 @@ subprojects {
             }
 
             repositories {
-                maven {
-                    def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2" // "$buildDir/repos/releases"
-                    def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots" // "$buildDir/repos/snapshots"
-                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-                    credentials {
-                        username = project.OSSRH_USERNAME
-                        password = project.OSSRH_PASSWORD
+                if (project.PUBLISHING_TARGET == "local") {
+                    maven {
+                        name = 'local'
+                        url = 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+                    }
+                }
+                if (project.PUBLISHING_TARGET == "sonatype") {
+                    maven {
+                        def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2" // "$buildDir/repos/releases"
+                        def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots" // "$buildDir/repos/snapshots"
+                        url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                        credentials {
+                            username = project.OSSRH_USERNAME
+                            password = project.OSSRH_PASSWORD
+                        }
                     }
                 }
             }

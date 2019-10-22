@@ -49,7 +49,7 @@ public class ServiceControllerExceptionHandler {
     Map<String, Object> errorDetails = new LinkedHashMap<>();
     errorDetails.put("parameter", ex.getParameterName());
     return toResponseEntity(
-        new ServiceApiException(CommonServiceErrorCode.REQUEST_VALIDATION_FAILED, errorDetails),
+        new ServiceApiException(CommonServiceErrorCode.REQUEST_ERROR, errorDetails),
         servletRequest);
   }
 
@@ -73,14 +73,8 @@ public class ServiceControllerExceptionHandler {
     }
 
     return toResponseEntity(
-        new ServiceApiException(CommonServiceErrorCode.REQUEST_VALIDATION_FAILED, errorDetails),
+        new ServiceApiException(CommonServiceErrorCode.REQUEST_ERROR, errorDetails),
         servletRequest);
-  }
-
-  private ResponseEntity<ServiceApiErrorResponse> toResponseEntity(
-      ServiceApiException ex, HttpServletRequest servletRequest) {
-    return ResponseEntity.status(ex.getHttpStatusCode())
-        .body(fillErrorAttributes(ex.getErrorResponse(), servletRequest));
   }
 
   @ExceptionHandler(Exception.class)
@@ -91,6 +85,12 @@ public class ServiceControllerExceptionHandler {
     return toResponseEntity(
         new ServiceApiException(CommonServiceErrorCode.UNKNOWN_ERROR, errorDetails),
         servletRequest);
+  }
+
+  private ResponseEntity<ServiceApiErrorResponse> toResponseEntity(
+      ServiceApiException ex, HttpServletRequest servletRequest) {
+    return ResponseEntity.status(ex.getHttpStatusCode())
+        .body(fillErrorAttributes(ex.getErrorResponse(), servletRequest));
   }
 
   @Value("${spring.application.name}")
