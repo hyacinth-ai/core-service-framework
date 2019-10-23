@@ -1,6 +1,8 @@
 # Core Service Framework
 
-<!-- toc -->
+
+<!-- vim-markdown-toc GitLab -->
+
 * [Overview](#overview)
 * [Development](#development)
   * [Code Standard](#code-standard)
@@ -41,7 +43,8 @@
   * [Using *httpie*](#using-httpie)
 * [Todo for First Release](#todo-for-first-release)
 * [Roadmap Points](#roadmap-points)
-<!-- toc end -->
+
+<!-- vim-markdown-toc -->
 
 ## Overview
 
@@ -506,7 +509,11 @@ spring:
       hibernate.dialect.storage_engine: innodb
 ```
 
-The recommended table creation DDL suffix is: `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci`
+The recommended table creation DDL suffix is: `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`. It can also achieved in  database level.
+
+```sql
+CREATE SCHEMA `hyacinth_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+```
 
 ### Using `JsonNode` as domain property
 
@@ -556,17 +563,19 @@ spring.flyway.baseline-version: 1
 > Startup migration is not suggested for production due to different user/pass, priviledges
 > used between `admin` who executes DDL and `user` who execute DML.
 >
-> Database migration could be an independent job before starting a service. Read below.
+> Database migration could be an separate job before starting a service. Read below.
 
 ### Flyway Database Migration by Gradle
 
-Use `gradle` tasks.
+Use `gradle`.
 
 ```bash
 export FLYWAY_URL="jdbc:mysql://user:pass@db-host:3306/database?characterEncoding=UTF-8&useSSL=false"
 
 gradle flywayinfo
+
 # gradle -Pflyway.user=user -Pflyway.password=password -Pflyway.url=... flywayvalidate
+
 gradle flywaymigrate
 
 # for non-empty database
