@@ -2,7 +2,7 @@ dependencies {
     compile project(':core-service-module')
 
     compile 'org.springframework.boot:spring-boot-starter-cache'
-    
-    compile 'org.springframework.boot:spring-boot-starter-data-redis' // distribute cache
+
+//    compile 'org.springframework.boot:spring-boot-starter-data-redis' // distribute cache
     compile 'com.github.ben-manes.caffeine:caffeine' // local cache
 }
