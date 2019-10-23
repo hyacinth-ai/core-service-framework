@@ -1,6 +1,8 @@
 # Core Service Framework
 
-<!-- toc -->
+
+<!-- vim-markdown-toc GitLab -->
+
 * [Overview](#overview)
 * [Development](#development)
   * [Code Standard](#code-standard)
@@ -10,6 +12,8 @@
 * [Build from Source](#build-from-source)
 * [Modules Reference](#modules-reference)
   * [Dependency Graph of Subprojects](#dependency-graph-of-subprojects)
+  * [Typical Configuration](#typical-configuration)
+  * [Async-Job](#async-job)
   * [Config Server](#config-server)
   * [Config Client](#config-client)
   * [Service Discovery Server (Eureka Server)](#service-discovery-server-eureka-server)
@@ -17,6 +21,8 @@
     * [Peer Mode](#peer-mode)
   * [Service Discovery Support (Eureka Client)](#service-discovery-support-eureka-client)
   * [Dynamic Configuration Reloading](#dynamic-configuration-reloading)
+  * [Service Endpoint](#service-endpoint)
+  * [Error Response](#error-response)
   * [Distributed Tracing (Sleuth)](#distributed-tracing-sleuth)
   * [Cache](#cache)
   * [Web Request Validation](#web-request-validation)
@@ -26,6 +32,8 @@
   * [JWT on Gateway](#jwt-on-gateway)
   * [API Rate Limiter on Gateway](#api-rate-limiter-on-gateway)
   * [H2 In-Memory Database](#h2-in-memory-database)
+  * [MySQL Database](#mysql-database)
+  * [Using `JsonNode` as domain property](#using-jsonnode-as-domain-property)
   * [Generate JPA SQL Script](#generate-jpa-sql-script)
   * [Flyway Database Migration on Startup](#flyway-database-migration-on-startup)
   * [Flyway Database Migration by Gradle](#flyway-database-migration-by-gradle)
@@ -35,7 +43,8 @@
   * [Using *httpie*](#using-httpie)
 * [Todo for First Release](#todo-for-first-release)
 * [Roadmap Points](#roadmap-points)
-<!-- toc end -->
+
+<!-- vim-markdown-toc -->
 
 ## Overview
 
@@ -298,13 +307,9 @@ spring:
 
 Add `core-service-cache-support` as dependency and import `CacheConfig`.
 
-Create cache by setting cache names:
+`Caffeine` is a in-memory cache provider so `Serializable` is not mandatory on the cached object.
 
-```yaml
-spring.cache.cache-name=cache-name-1,cache-name-2,piDecimals
-```
-
-`Caffeine` is default (in-memory) cache provider. Here's the default configuration.
+Here's the default configuration.
 
 ```yaml
 spring:
@@ -313,7 +318,13 @@ spring:
       spec: maximumSize=100,expireAfterAccess=10m
 ```
 
-Code example:
+Create cache by setting cache names:
+
+```yaml
+spring.cache.cache-name=cache-name-1,cache-name-2,piDecimals
+```
+
+Code example of using cache:
 
 ```java
 @Cacheable("piDecimals")
@@ -321,6 +332,11 @@ public String getPi(int decimals) {
   // ...
 }
 ```
+
+> Generally, only one `CacheManager` instance is configured in application context.
+> Remove dependency of this module if other type of cache is configured.
+
+<!--
 
 `Redis` cache can be activated by using SpringBoot profile `redis-cache` and overriding redis properties like:
 
@@ -334,6 +350,8 @@ spring:
 >
 > According to `org.springframework.boot.autoconfigure.cache.RedisCacheManager`, the default configuration is using JDK serializer.
 > That means the returning object should implement `java.io.Serializable`.
+
+-->
 
 ### Web Request Validation
 
@@ -500,6 +518,12 @@ spring:
       hibernate.dialect.storage_engine: innodb
 ```
 
+The recommended table creation DDL suffix is: `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`. It can also achieved in  database level.
+
+```sql
+CREATE SCHEMA `hyacinth_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+```
+
 ### Using `JsonNode` as domain property
 
 Example:
@@ -548,17 +572,19 @@ spring.flyway.baseline-version: 1
 > Startup migration is not suggested for production due to different user/pass, priviledges
 > used between `admin` who executes DDL and `user` who execute DML.
 >
-> Database migration could be an independent job before starting a service. Read below.
+> Database migration could be an separate job before starting a service. Read below.
 
 ### Flyway Database Migration by Gradle
 
-Use `gradle` tasks.
+Use `gradle`.
 
 ```bash
 export FLYWAY_URL="jdbc:mysql://user:pass@db-host:3306/database?characterEncoding=UTF-8&useSSL=false"
 
 gradle flywayinfo
+
 # gradle -Pflyway.user=user -Pflyway.password=password -Pflyway.url=... flywayvalidate
+
 gradle flywaymigrate
 
 # for non-empty database
