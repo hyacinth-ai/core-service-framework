@@ -13,8 +13,9 @@ logging:
     file: ${logging.pattern.console}
   level:
     root: INFO
-  file: ${spring.application.name}.log.jsonl
+  file:
+    max-history: 3
+    max-size: 100MB
 
-#file:
-#  max-history: 3
-#  max-size: 50MB
+logging.file: ${spring.application.name}.log.jsonl
+logging.path: .
