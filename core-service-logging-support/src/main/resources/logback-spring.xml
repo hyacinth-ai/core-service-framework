@@ -30,9 +30,9 @@
 
   <appender name="logstash" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>%d{yyyy-MM-dd}.${LOG_FILE}</fileNamePattern>
-      <maxHistory>3</maxHistory>
-      <totalSizeCap>500MB</totalSizeCap>
+      <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}.${LOG_FILE}</fileNamePattern>
+      <maxHistory>${LOG_FILE_MAX_HISTORY}</maxHistory>
+      <totalSizeCap>${LOG_FILE_MAX_SIZE}</totalSizeCap>
     </rollingPolicy>
     <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
       <providers>
