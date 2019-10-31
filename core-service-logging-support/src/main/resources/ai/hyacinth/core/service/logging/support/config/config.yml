@@ -13,6 +13,8 @@ logging:
     file: ${logging.pattern.console}
   level:
     root: INFO
+    org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
+    "org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker": WARN
   file:
     max-history: 3
     max-size: 100MB
