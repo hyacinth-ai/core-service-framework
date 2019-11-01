@@ -1,11 +1,10 @@
 package ai.hyacinth.core.service.examples.debug.web;
 
-import ai.hyacinth.core.service.bus.support.service.BusService;
-import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
 import ai.hyacinth.core.service.examples.debug.dto.ApiCall;
 import ai.hyacinth.core.service.examples.debug.service.DebugService;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.core.service.web.common.ServiceApiException;
+import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ServiceApiConstants.API_PREFIX)
 public class DebugController {
   @Autowired private DebugService debugService;
-  @Autowired private BusService busService;
+  //  @Autowired private BusService busService;
 
   @GetMapping("/history")
   public List<ApiCall> history() {
@@ -43,17 +42,17 @@ public class DebugController {
 
   @PostMapping("/event")
   public String event(@RequestBody(required = false) Map<?, ?> eventPayload) {
-    busService.publish(BusService.ALL_SERVICES, "debug", eventPayload);
-    busService.publish(BusService.ALL_SERVICES, "test", new TestBean("object"));
+    //    busService.publish(BusService.ALL_SERVICES, "debug", eventPayload);
+    //    busService.publish(BusService.ALL_SERVICES, "test", new TestBean("object"));
     return "sent";
   }
 
   @RequestMapping("/exception")
   public String exception() {
     log.debug("expected to throw a exception.");
-    throw new ServiceApiException(CommonServiceErrorCode.NETWORK_ERROR, new UnsupportedOperationException());
+    throw new ServiceApiException(
+        CommonServiceErrorCode.NETWORK_ERROR, new UnsupportedOperationException());
   }
-
 
   @RequestMapping(value = {"/call", "/call/**", "/**"})
   public ApiCall call(

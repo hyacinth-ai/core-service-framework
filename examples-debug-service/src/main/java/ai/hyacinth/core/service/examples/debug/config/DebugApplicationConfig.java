@@ -1,10 +1,6 @@
 package ai.hyacinth.core.service.examples.debug.config;
 
-// import ai.hyacinth.core.service.bus.support.config.BusConfig;
-
-import ai.hyacinth.core.service.bus.support.config.BusConfig;
 import ai.hyacinth.core.service.cache.support.config.CacheConfig;
-import ai.hyacinth.core.service.discovery.support.config.DiscoveryConfig;
 import ai.hyacinth.core.service.endpoint.support.config.EndpointConfig;
 import ai.hyacinth.core.service.examples.debug.domain.ApiCallHistory;
 import ai.hyacinth.core.service.examples.debug.repo.ApiCallHistoryRepo;
@@ -24,9 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Import({
   EndpointConfig.class,
   JpaConfig.class,
-  DiscoveryConfig.class,
   CacheConfig.class,
-  BusConfig.class
 }) // support modules
 @Slf4j
 public class DebugApplicationConfig {}
