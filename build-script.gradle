@@ -73,6 +73,19 @@ task("bintrayUploadAll") {
     )
 }
 
+task("bumpVersion") {
+    doFirst {
+        def v = version.split('\\.')
+        if (v.length == 3) {
+            def ov = version
+            v[2] = ((v[2] as int) + 1) as String
+            def nv = v.join('.')
+            file('version.txt').setText(nv)
+            print("Bump from ${ov} to ${nv}")
+        }
+    }
+}
+
 subprojects {
 
     apply plugin: 'java'
@@ -89,7 +102,7 @@ subprojects {
     apply plugin: com.github.sherter.googlejavaformatgradleplugin.GoogleJavaFormatPlugin
     apply plugin: org.flywaydb.gradle.FlywayPlugin
     apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
-
+    
     ext {
         set('springCloudVersion', 'Greenwich.SR3')
     }
