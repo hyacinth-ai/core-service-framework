@@ -1,0 +1,9 @@
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 30000
+        loggerLevel: basic
+  hystrix:
+    enabled: false
