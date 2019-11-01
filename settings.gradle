@@ -22,4 +22,3 @@ include 'core-service-discovery-server'
 include 'core-service-admin-server'
 
 include 'examples-debug-service'
-
