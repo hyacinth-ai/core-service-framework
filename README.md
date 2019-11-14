@@ -119,7 +119,7 @@ spring:
     version: 1.0
 ```
 
-Suggest that `spring.profiles.active` is set to a concrete execution environment value for easy development:
+Suggest that `spring.profiles.active` be set to a concrete execution environment value for easy development:
 
 * `development`
 * `production`
@@ -127,7 +127,7 @@ Suggest that `spring.profiles.active` is set to a concrete execution environment
 
 and override it on deployment.
 
-> If there's no spring-cloud related modules (discovery, config) loaded, for example, in a pure spring-boot MVC service, the `bootstrap.yml` won't be used at all.
+> If there's no spring-cloud related modules (discovery, config) loaded, for example, in a pure spring-boot MVC service, the `bootstrap.yml` won't be loaded at all.
 > Therefore, it's better to always set the application name in `application.yml` as well.
 
 ### Async-Job
@@ -569,14 +569,14 @@ spring.flyway.baseline-on-migrate: true
 spring.flyway.baseline-version: 1
 ```
 
-> Startup migration is not suggested for production due to different user/pass, priviledges
+> Startup migration is not recommended in production environment due to different user/pass, priviledges
 > used between `admin` who executes DDL and `user` who execute DML.
 >
 > Database migration could be an separate job before starting a service. Read below.
 
 ### Flyway Database Migration by Gradle
 
-Use `gradle`.
+Use `gradle`. The simplest way:
 
 ```bash
 export FLYWAY_URL="jdbc:mysql://user:pass@db-host:3306/database?characterEncoding=UTF-8&useSSL=false"
