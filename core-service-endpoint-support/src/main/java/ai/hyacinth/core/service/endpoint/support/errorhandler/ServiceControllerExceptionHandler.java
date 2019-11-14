@@ -4,6 +4,7 @@ import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.core.service.web.common.ServiceApiErrorResponse;
 import ai.hyacinth.core.service.web.common.ServiceApiException;
 import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -43,13 +45,21 @@ public class ServiceControllerExceptionHandler {
         new ServiceApiException(CommonServiceErrorCode.METHOD_NOT_ALLOWED), servletRequest);
   }
 
-  @ExceptionHandler(MissingServletRequestParameterException.class)
+  @ExceptionHandler({ MissingServletRequestParameterException.class })
   public ResponseEntity<ServiceApiErrorResponse> handle(
       MissingServletRequestParameterException ex, HttpServletRequest servletRequest) {
     Map<String, Object> errorDetails = new LinkedHashMap<>();
     errorDetails.put("parameter", ex.getParameterName());
     return toResponseEntity(
         new ServiceApiException(CommonServiceErrorCode.REQUEST_ERROR, errorDetails),
+        servletRequest);
+  }
+
+  @ExceptionHandler({ HttpMessageNotReadableException.class })
+  public ResponseEntity<ServiceApiErrorResponse> handle(
+      HttpMessageNotReadableException ex, HttpServletRequest servletRequest) {
+    return toResponseEntity(
+        new ServiceApiException(CommonServiceErrorCode.REQUEST_ERROR, Collections.emptyMap()),
         servletRequest);
   }
 

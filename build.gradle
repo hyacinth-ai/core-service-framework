@@ -1,7 +1,9 @@
+version = file('version.txt').text.trim()
+
 allprojects {
     group 'ai.hyacinth.framework'
     description "Core Service Framework Component"
-    version = '0.5.8'
+    version = rootProject.version
 }
 
 apply from: './build-script.gradle'

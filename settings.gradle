@@ -22,7 +22,3 @@ include 'core-service-discovery-server'
 include 'core-service-admin-server'
 
 include 'examples-debug-service'
-include 'examples-user-service'
-include 'examples-user-service-api'
-include 'examples-order-service'
-

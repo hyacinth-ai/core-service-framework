@@ -18,7 +18,7 @@ public enum CommonServiceErrorCode implements ServiceApiErrorCode {
   UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "E90415"),
 
   UNKNOWN_ERROR(HttpStatus.BAD_REQUEST, "E80000"),
-  REQUEST_ERROR(HttpStatus.BAD_REQUEST, "E80100"),
+  REQUEST_ERROR(HttpStatus.BAD_REQUEST, "E80100"), // incorrect request parameter or payload
   NETWORK_ERROR(HttpStatus.BAD_REQUEST, "E80200"),
   INTERNAL_ERROR(HttpStatus.BAD_REQUEST, "E80300"),
   ;

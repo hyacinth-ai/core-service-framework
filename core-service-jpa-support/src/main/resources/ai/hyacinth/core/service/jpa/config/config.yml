@@ -21,6 +21,9 @@ spring:
               action: none # drop-and-create, create, drop
               create-target: "V1__${spring.application.name}.create.sql"
               drop-target: "V1__${spring.application.name}.drop.sql"
+      hibernate.hbm2ddl.delimiter: ;
+#      hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
+#      hibernate.dialect.storage_engine: innodb
 
   datasource:
     initialization-mode: never
