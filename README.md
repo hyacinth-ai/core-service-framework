@@ -250,10 +250,54 @@ Triggering endpoint `/actuator/refresh` causes configuration (yaml, properties) 
 Implement a concrete service by adding dependency module `core-service-endpoint-support` which includes following basic features:
 
 * Basic transit dependency to implement a SpringMVC-based service on Spring Boot platform.
-* Most `actuator` endpoints including `Prometheus` are enabled.
+* Most `actuator` endpoints including `Prometheus` are enabled at `/actuator/prometheus`.
 * Exception and error code conversion. Refer to class `ServiceApiException` and `ServiceControllerExceptionHandler`.
 * Swagger support. Access swagger console by `http://<service-address>:<port>/swagger-ui.html`.
 * Logging support. Use Slf4j to log on console and to a json-format file. The default file name is `${spring.application.name}.log.jsonl` which could be overridden by property `logging.file`.
+
+### JsonView Support
+
+Define view inferface.
+
+```java
+public class DatasetSummaryView {
+  public interface Normal {}
+  public interface WithHeatmap extends Normal {}
+}
+```
+
+Annotate a property in DTO.
+
+```java
+class Pojo {
+  // ...
+  @JsonView(DatasetSummaryView.WithHeatmap.class)
+  private String corrHeatmap;
+}
+```
+
+Set the view interface on API method within a Controller class.
+
+```java
+  @JsonView(DatasetSummaryView.WithHeatmap.class)
+  @GetMapping("/summary")
+  Pojo getSummary() {
+    // ...
+  }
+```
+
+If a property is not annotated by `@JsonView`, it is not returned as default.
+
+This behavior can be changed by defining a config bean as follow.
+
+```java
+  @Bean
+  public Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean() {
+    Jackson2ObjectMapperFactoryBean factory = new Jackson2ObjectMapperFactoryBean();
+    factory.setDefaultViewInclusion(true);
+    return factory;
+  }
+```
 
 ### Error Response
 

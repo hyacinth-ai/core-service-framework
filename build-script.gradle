@@ -16,11 +16,12 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.9.RELEASE'
 
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0"
-
         classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
-
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
-        classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4"
+        classpath "gradle.plugin.org.flywaydb:gradle-plugin-publishing:6.0.8"
+
+
+        // classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.2.4"
     }
 }
 
