@@ -19,5 +19,5 @@ logging:
     max-history: 3
     max-size: 100MB
 
-logging.file: ${spring.application.name}.log.jsonl
-logging.path: .
+logging.file.name: ${spring.application.name}.log.jsonl
+logging.file.path: .

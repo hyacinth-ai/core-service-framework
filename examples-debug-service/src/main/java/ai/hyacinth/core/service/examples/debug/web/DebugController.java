@@ -5,18 +5,31 @@ import ai.hyacinth.core.service.examples.debug.service.DebugService;
 import ai.hyacinth.core.service.web.common.ServiceApiConstants;
 import ai.hyacinth.core.service.web.common.ServiceApiException;
 import ai.hyacinth.core.service.web.common.error.CommonServiceErrorCode;
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @Slf4j
 @RestController
@@ -25,9 +38,14 @@ public class DebugController {
   @Autowired private DebugService debugService;
   //  @Autowired private BusService busService;
 
-  @GetMapping("/history")
-  public List<ApiCall> history() {
-    return debugService.findCallHistory();
+  @GetMapping("/bench")
+  public String bench() {
+    return "1";
+  }
+
+  @GetMapping("/ping")
+  public String ping() {
+    return "pong";
   }
 
   @GetMapping("/echo")
@@ -38,6 +56,44 @@ public class DebugController {
   @PostMapping("/echo")
   public Map<?, ?> echo(@RequestBody(required = false) Map<?, ?> requestBody) {
     return requestBody;
+  }
+
+  @GetMapping({"/addr", "/address"})
+  public Map<?, ?> address() {
+    Map<String, List<String>> addressList = new HashMap<>();
+    try {
+      Enumeration<NetworkInterface> eni = NetworkInterface.getNetworkInterfaces();
+      while (eni.hasMoreElements()) {
+        NetworkInterface ni = eni.nextElement();
+        //        if (ni.isLoopback()) {
+        //          continue;
+        //        }
+        addressList.put(
+            ni.getDisplayName(),
+            ni.getInterfaceAddresses().stream()
+                //                .filter(e -> !e.getAddress().isLoopbackAddress())
+                .map(InterfaceAddress::toString)
+                .collect(Collectors.toList()));
+      }
+    } catch (SocketException e) {
+    }
+
+    Map<String, String> host = new HashMap<>();
+    try {
+      InetAddress ia = null;
+      ia = InetAddress.getLocalHost();
+      String hostName = ia.getHostName();
+      String hostAddr = ia.getHostAddress();
+      host.put("hostname", hostName);
+      host.put("address", hostAddr);
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
+
+    HashMap<String, Object> result = new HashMap<>();
+    result.put("addressList", addressList);
+    result.put("localhost", host);
+    return result;
   }
 
   @PostMapping("/event")
@@ -66,8 +122,25 @@ public class DebugController {
     apiCall.setRequestHeaders(httpHeaders);
     apiCall.setRequestTime(new Date());
     apiCall.setRequestBody(requestBody);
-    log.info("Api call received: {}", apiCall);
+    log.debug("Api call received: {}", apiCall);
     debugService.recordCallHistory(apiCall);
     return apiCall;
+  }
+
+  @GetMapping("/history")
+  public List<ApiCall> history() {
+    return debugService.findCallHistory();
+  }
+
+  //  @Autowired
+  //  private ConversionService conversionService;
+
+  @GetMapping("/data")
+  public StreamingResponseBody data(@RequestParam String size) {
+    final DataSize result = DataSize.parse(size);
+    return (output) -> {
+      byte[] content = ByteBuffer.allocate((int) result.toBytes()).array();
+      output.write(content);
+    };
   }
 }

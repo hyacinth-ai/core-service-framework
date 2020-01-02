@@ -89,7 +89,7 @@ public class TriggerClientServiceImpl implements TriggerClientService {
         .body(
             sti.getParams() == null
                 ? BodyInserters.empty()
-                : BodyInserters.fromObject(sti.getParams()))
+                : BodyInserters.fromValue(sti.getParams()))
         .retrieve()
         .bodyToMono(String.class)
         .block();

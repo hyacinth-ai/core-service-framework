@@ -871,6 +871,22 @@ public String retrieve(@PathVariable String name, @PathVariable String profile,
 
 5. 20.5.1 Running the Remote Client Application
 
+7. read Spring Framework Doc
+
+BeanWrapper, PropertyEditor, ConverterService, ByteArrayStream, SpelExpressionParser
+
+spring.main.lazy-initialization=true
+org.springframework.context.ApplicationListener=com.example.project.MyListener
+SpringApplication.addListeners(…​)
+
+    @Autowired
+    public MyBean(ApplicationArguments args) {
+
+  ApplicationRunner / CommandLineRunner
+ExitCodeGenerator
+
+local.server.port
+
 6. META-INF/spring.factories
 org.springframework.context.ApplicationListener=com.example.project.MyListener
 
@@ -878,8 +894,6 @@ org.springframework.context.ApplicationListener=com.example.project.MyListener
 
 8. @Autowired public MyBean(ApplicationArguments args)
 implements CommandLineRunner
-
-9. ExitCodeGenerator
 
 10. MBean: spring.application.admin.enabled=true
 
@@ -952,6 +966,11 @@ d for days
 19. @Profile("production") @Configuration
 
 20. spring.profiles.active && spring.profiles.include: ...
+
+21. message i18n
+
+spring.messages.basename=messages,config.i18n.messages
+spring.messages.fallback-to-system-locale=false
 
 22. HttpMessageConverters / @JsonComponent
 
