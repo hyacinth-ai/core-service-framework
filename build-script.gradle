@@ -13,7 +13,7 @@ buildscript {
         // maven { url 'https://repo.spring.io/milestone' }
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.2.1.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.2.3.RELEASE'
 
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.2.0"
         classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
@@ -150,12 +150,12 @@ subprojects {
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allJava // allSource
     }
 
     task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc.destinationDir
     }
 
@@ -170,8 +170,8 @@ subprojects {
 
     wrapper {
         description 'creates gradle wrapper in order to execute ./gradlew <task>'
-        gradleVersion = '5.4'
-        distributionUrl= 'https://services.gradle.org/distributions/gradle-5.4-all.zip'
+        gradleVersion = '6.1'
+        distributionUrl= 'https://services.gradle.org/distributions/gradle-6.1-all.zip'
     }
 
     bootRun { systemProperties System.properties }
