@@ -1,6 +1,4 @@
 dependencies {
     compile project(':core-service-logging-support')
-    
     compile 'org.springframework.cloud:spring-cloud-config-server'
-    testCompile 'org.springframework.cloud:spring-cloud-starter-config'
 }
