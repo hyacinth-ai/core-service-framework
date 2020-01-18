@@ -16,7 +16,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,8 @@ public class RouteConfig {
   public RouteLocator customRouteLocator(
       RouteLocatorBuilder builder, GatewayServerProperties gatewayConfig) {
 
-    final SimpleRateLimiter globalRateLimiter = buildRateLimiter(gatewayConfig.getRateLimiter(), true);
+    final SimpleRateLimiter globalRateLimiter =
+        buildRateLimiter(gatewayConfig.getRateLimiter(), true);
 
     Builder routes = builder.routes();
     gatewayConfig.getRules().stream()
@@ -90,18 +90,21 @@ public class RouteConfig {
                         .path(rule.getPath())
                         .filters(
                             f -> {
-                              final SimpleRateLimiter ruleRateLimiter = buildRateLimiter(rule.getRateLimiter(), false);
+                              final SimpleRateLimiter ruleRateLimiter =
+                                  buildRateLimiter(rule.getRateLimiter(), false);
                               if (ruleRateLimiter != null) {
-                                f.requestRateLimiter((config) -> {
-                                  config.setRateLimiter(ruleRateLimiter);
-                                });
+                                f.requestRateLimiter(
+                                    (config) -> {
+                                      config.setRateLimiter(ruleRateLimiter);
+                                    });
                               }
 
                               if (globalRateLimiter != null) {
-                                f.requestRateLimiter((config) -> {
-                                  config.setRateLimiter(globalRateLimiter);
-                                  config.setDenyEmptyKey(false);
-                                });
+                                f.requestRateLimiter(
+                                    (config) -> {
+                                      config.setRateLimiter(globalRateLimiter);
+                                      config.setDenyEmptyKey(false);
+                                    });
                               }
 
                               f.filter(rewriteRequestPath(rule.getUri()));
@@ -129,7 +132,8 @@ public class RouteConfig {
     return routes.build();
   }
 
-  private SimpleRateLimiter buildRateLimiter(GatewayRateLimiterProperties rateLimiterProperties, boolean global) {
+  private SimpleRateLimiter buildRateLimiter(
+      GatewayRateLimiterProperties rateLimiterProperties, boolean global) {
     SimpleRateLimiter rateLimiter = null;
     if (rateLimiterProperties.getReplenishRate() != null) {
       rateLimiter = applicationContext.getBean(SimpleRateLimiter.class);
@@ -192,23 +196,23 @@ public class RouteConfig {
             .flatMap(chain::filter);
   }
 
+  private final List<String> RESET_HEADER_NAMES =
+      Arrays.asList( // security
+          ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE,
 
-  private final List<String> RESET_HEADER_NAMES = Arrays.asList(// security
-      ServiceApiConstants.HTTP_HEADER_AUTHENTICATED_PRINCIPLE,
-      HttpHeaders.AUTHORIZATION,
-      HttpHeaders.COOKIE,
-      HttpHeaders.SET_COOKIE,
+          HttpHeaders.AUTHORIZATION,
+          HttpHeaders.COOKIE,
+          HttpHeaders.SET_COOKIE,
 
-      // non-proxy
-      HttpHeaders.CONNECTION,
-      HttpHeaders.TRANSFER_ENCODING,
-      HttpHeaders.TRAILER,
-      HttpHeaders.UPGRADE,
+          // non-proxy
+          HttpHeaders.CONNECTION,
+          HttpHeaders.TRANSFER_ENCODING,
+          HttpHeaders.TRAILER,
+          HttpHeaders.UPGRADE,
 
-      // others
-      "Keep-Alive",
-      "Proxy-Connection");
-
+          // others
+          "Keep-Alive",
+          "Proxy-Connection");
 
   private void resetHeaders(HttpHeaders headers) {
     RESET_HEADER_NAMES.forEach(headers::remove);

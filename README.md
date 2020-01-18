@@ -741,6 +741,46 @@ TL;DR (commented, only shown in source file)
 
 <!--
 
+0. oauth-2 spring boot
+
+1. new dtrace
+
+  https://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/2.2.0.RELEASE/reference/html/#only-sleuth-log-correlation
+
+2. spring batch
+
+for create jobs
+
+1. refactor repo - examples only 
+
+  TestCase. refactor the code. or move out the examples as testcase.
+
+2. Spring cloud docs refresh
+
+1. Gateway Server. check X-Principle from response to set in Session. @Principle
+
+refer to @AuthenticatedPrinciple. use Http Header protocol
+
+3. Standard pagable attributes and framework, doc only
+
+https://stackoverflow.com/questions/27032433/set-default-page-size-for-jpa-pageable-object
+https://www.baeldung.com/spring-data-web-support
+
+Pageable, Page<T>
+?sort=name&sort=email,asc
+
+5. Pattern in ServiceImpl: extractDomain, validateState, validateStatus,...
+
+6. Pattern in FileController: sendFile()
+
+4. ETag optimization for all domain-object view:
+
+  All by microservice: Input ETag -> Check by Service-Level -> Http Not_Modified / Http Database
+  By Reverse Proxy: Send ETag always. Cache by reverse-proxy to send Not_modified. Does not even forward proxy to service level.
+  Cache-Control, Expires
+
+private CircuitBreakerFactory cbFactory;
+
 1. Bug: Profile loading for fallback "default"
 
   docProfile=null

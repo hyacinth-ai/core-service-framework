@@ -19,7 +19,7 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.3.RELEASE"
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
+//        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.2.0"
 //        classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
@@ -50,6 +50,24 @@ task("dotDependencies") {
 //    dependsOn allprojects.collect { "$it.path:dependencies" }
 //}
 
+//task("debugAll") {
+//    println(
+//            subprojects
+//                    .collect({ it.name })
+//                    .findAll({ it.startsWith('core-service') })
+//                    .collect({ it + ':bintrayUpload' })
+//    )
+//}
+
+//task("publishAll") {
+//    dependsOn(
+//        subprojects
+//            .collect({ it.name })
+//            .findAll({ it.startsWith('core-service') })
+//            .collect({ it + ':publish' })
+//    )
+//}
+
 task("buildAll") {
     dependsOn(
         subprojects
@@ -58,16 +76,7 @@ task("buildAll") {
     )
 }
 
-task("publishAll") {
-    dependsOn(
-        subprojects
-            .collect({ it.name })
-            .findAll({ it.startsWith('core-service') })
-            .collect({ it + ':publish' })
-    )
-}
-
-task("bintrayUploadAll") {
+task("publishBintray") {
     dependsOn(
         subprojects
             .collect({ it.name })
@@ -102,7 +111,7 @@ subprojects {
     // apply plugin: com.github.sherter.googlejavaformatgradleplugin.GoogleJavaFormatPlugin
 
     apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
-    apply plugin: io.spring.gradle.dependencymanagement.DependencyManagementPlugin
+//    apply plugin: io.spring.gradle.dependencymanagement.DependencyManagementPlugin
     apply plugin: com.gorylenko.GitPropertiesPlugin
     apply plugin: org.flywaydb.gradle.FlywayPlugin
     apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
@@ -293,15 +302,7 @@ subprojects {
     }
 
     dependencies {
-        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-        implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
-
-        implementation 'org.projectlombok:lombok'
-        implementation 'org.slf4j:log4j-over-slf4j'
-        implementation 'javax.xml.bind:jaxb-api'
-        implementation 'org.glassfish.jaxb:jaxb-runtime'
-
-        annotationProcessor "org.projectlombok:lombok"
+        annotationProcessor "org.projectlombok:lombok:1.18.10"
 
         constraints {
             implementation 'org.projectlombok:lombok:1.18.10'
@@ -317,6 +318,14 @@ subprojects {
             implementation 'net.logstash.logback:logstash-logback-encoder:5.3'
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
         }
+
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+
+        implementation 'org.projectlombok:lombok'
+        implementation 'org.slf4j:log4j-over-slf4j'
+        implementation 'javax.xml.bind:jaxb-api'
+        implementation 'org.glassfish.jaxb:jaxb-runtime'
     }
 
 //    dependencies {
