@@ -8,7 +8,7 @@
 // maven { url 'https://repo.spring.io/milestone' }
 
 ext {
-    set('springBootVersion', '2.2.3.RELEASE')
+    set('springBootVersion', '2.2.4.RELEASE')
     set('springCloudVersion', 'Hoxton.RELEASE')
 }
 
@@ -19,11 +19,11 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.3.RELEASE"
-//        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.2.0"
-//        classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath "gradle.plugin.org.flywaydb:gradle-plugin-publishing:6.1.1"
+//        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
+//        classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
     }
 }
 
@@ -76,7 +76,7 @@ task("buildAll") {
     )
 }
 
-task("publishBintray") {
+task("uploadAllToBintray") {
     dependsOn(
         subprojects
             .collect({ it.name })
@@ -111,10 +111,11 @@ subprojects {
     // apply plugin: com.github.sherter.googlejavaformatgradleplugin.GoogleJavaFormatPlugin
 
     apply plugin: org.springframework.boot.gradle.plugin.SpringBootPlugin
-//    apply plugin: io.spring.gradle.dependencymanagement.DependencyManagementPlugin
     apply plugin: com.gorylenko.GitPropertiesPlugin
     apply plugin: org.flywaydb.gradle.FlywayPlugin
     apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+
+//    apply plugin: io.spring.gradle.dependencymanagement.DependencyManagementPlugin
 
 //    dependencyManagement {
 //        imports {
@@ -134,6 +135,16 @@ subprojects {
 //            dependency 'net.logstash.logback:logstash-logback-encoder:5.3'
 //            // dependency 'javax.servlet:javax.servlet-api:4.0.1'
 //        }
+//    }
+
+//    dependencies {
+//        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//        implementation 'org.springframework.boot:spring-boot-starter-web'
+//        implementation 'org.springframework.cloud:spring-cloud-config-server'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+//        implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //    }
 
     repositories {
@@ -292,7 +303,7 @@ subprojects {
 
         dependencies {
             implementation 'org.springframework.boot:spring-boot-devtools'
-        } 
+        }
     } else {
         defaultTasks 'jar'
     }
@@ -328,13 +339,4 @@ subprojects {
         implementation 'org.glassfish.jaxb:jaxb-runtime'
     }
 
-//    dependencies {
-//        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//        implementation 'org.springframework.boot:spring-boot-starter-web'
-//        implementation 'org.springframework.cloud:spring-cloud-config-server'
-//        implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-//        implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-//        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    }
 }

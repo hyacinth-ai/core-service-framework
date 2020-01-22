@@ -1,4 +1,4 @@
 dependencies {
-    compile project(':core-service-logging-support')
-    compile 'org.springframework.cloud:spring-cloud-config-server'
+    implementation project(':core-service-logging-support')
+    implementation 'org.springframework.cloud:spring-cloud-config-server'
 }
