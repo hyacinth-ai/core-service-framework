@@ -1,4 +1,4 @@
-package ai.hyacinth.core.service.examples.debug.web;
+package ai.hyacinth.core.service.examples.debug.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

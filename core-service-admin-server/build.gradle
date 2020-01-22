@@ -1,8 +1,8 @@
 dependencies {
-    compile project(':core-service-logging-support')
-    compile project(':core-service-discovery-support')
-    compile project(':core-service-web-support')
+    implementation project(':core-service-logging-support')
+    implementation project(':core-service-discovery-support')
+    implementation project(':core-service-web-support')
 
-    compile 'org.springframework.boot:spring-boot-starter-mail'
-    compile 'de.codecentric:spring-boot-admin-starter-server'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'de.codecentric:spring-boot-admin-starter-server'
 }

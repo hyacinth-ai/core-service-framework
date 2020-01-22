@@ -250,10 +250,54 @@ Triggering endpoint `/actuator/refresh` causes configuration (yaml, properties) 
 Implement a concrete service by adding dependency module `core-service-endpoint-support` which includes following basic features:
 
 * Basic transit dependency to implement a SpringMVC-based service on Spring Boot platform.
-* Most `actuator` endpoints including `Prometheus` are enabled.
+* Most `actuator` endpoints including `Prometheus` are enabled at `/actuator/prometheus`.
 * Exception and error code conversion. Refer to class `ServiceApiException` and `ServiceControllerExceptionHandler`.
 * Swagger support. Access swagger console by `http://<service-address>:<port>/swagger-ui.html`.
 * Logging support. Use Slf4j to log on console and to a json-format file. The default file name is `${spring.application.name}.log.jsonl` which could be overridden by property `logging.file`.
+
+### JsonView Support
+
+Define view inferface.
+
+```java
+public class DatasetSummaryView {
+  public interface Normal {}
+  public interface WithHeatmap extends Normal {}
+}
+```
+
+Annotate a property in DTO.
+
+```java
+class Pojo {
+  // ...
+  @JsonView(DatasetSummaryView.WithHeatmap.class)
+  private String corrHeatmap;
+}
+```
+
+Set the view interface on API method within a Controller class.
+
+```java
+  @JsonView(DatasetSummaryView.WithHeatmap.class)
+  @GetMapping("/summary")
+  Pojo getSummary() {
+    // ...
+  }
+```
+
+If a property is not annotated by `@JsonView`, it is not returned as default.
+
+This behavior can be changed by defining a config bean as follow.
+
+```java
+  @Bean
+  public Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean() {
+    Jackson2ObjectMapperFactoryBean factory = new Jackson2ObjectMapperFactoryBean();
+    factory.setDefaultViewInclusion(true);
+    return factory;
+  }
+```
 
 ### Error Response
 
@@ -697,6 +741,46 @@ TL;DR (commented, only shown in source file)
 
 <!--
 
+0. oauth-2 spring boot
+
+1. new dtrace
+
+  https://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/2.2.0.RELEASE/reference/html/#only-sleuth-log-correlation
+
+2. spring batch
+
+for create jobs
+
+1. refactor repo - examples only 
+
+  TestCase. refactor the code. or move out the examples as testcase.
+
+2. Spring cloud docs refresh
+
+1. Gateway Server. check X-Principle from response to set in Session. @Principle
+
+refer to @AuthenticatedPrinciple. use Http Header protocol
+
+3. Standard pagable attributes and framework, doc only
+
+https://stackoverflow.com/questions/27032433/set-default-page-size-for-jpa-pageable-object
+https://www.baeldung.com/spring-data-web-support
+
+Pageable, Page<T>
+?sort=name&sort=email,asc
+
+5. Pattern in ServiceImpl: extractDomain, validateState, validateStatus,...
+
+6. Pattern in FileController: sendFile()
+
+4. ETag optimization for all domain-object view:
+
+  All by microservice: Input ETag -> Check by Service-Level -> Http Not_Modified / Http Database
+  By Reverse Proxy: Send ETag always. Cache by reverse-proxy to send Not_modified. Does not even forward proxy to service level.
+  Cache-Control, Expires
+
+private CircuitBreakerFactory cbFactory;
+
 1. Bug: Profile loading for fallback "default"
 
   docProfile=null
@@ -827,6 +911,22 @@ public String retrieve(@PathVariable String name, @PathVariable String profile,
 
 5. 20.5.1 Running the Remote Client Application
 
+7. read Spring Framework Doc
+
+BeanWrapper, PropertyEditor, ConverterService, ByteArrayStream, SpelExpressionParser
+
+spring.main.lazy-initialization=true
+org.springframework.context.ApplicationListener=com.example.project.MyListener
+SpringApplication.addListeners(…​)
+
+    @Autowired
+    public MyBean(ApplicationArguments args) {
+
+  ApplicationRunner / CommandLineRunner
+ExitCodeGenerator
+
+local.server.port
+
 6. META-INF/spring.factories
 org.springframework.context.ApplicationListener=com.example.project.MyListener
 
@@ -834,8 +934,6 @@ org.springframework.context.ApplicationListener=com.example.project.MyListener
 
 8. @Autowired public MyBean(ApplicationArguments args)
 implements CommandLineRunner
-
-9. ExitCodeGenerator
 
 10. MBean: spring.application.admin.enabled=true
 
@@ -908,6 +1006,11 @@ d for days
 19. @Profile("production") @Configuration
 
 20. spring.profiles.active && spring.profiles.include: ...
+
+21. message i18n
+
+spring.messages.basename=messages,config.i18n.messages
+spring.messages.fallback-to-system-locale=false
 
 22. HttpMessageConverters / @JsonComponent
 

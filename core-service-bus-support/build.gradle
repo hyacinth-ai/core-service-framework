@@ -1,4 +1,4 @@
 dependencies {
-    compile project(':core-service-module')
-    compile 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+    implementation project(':core-service-module')
+    implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 }

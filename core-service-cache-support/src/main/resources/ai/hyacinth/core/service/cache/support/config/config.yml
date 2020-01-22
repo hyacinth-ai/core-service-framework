@@ -1,10 +1,10 @@
 spring:
-#  profiles: caffeine-cache
+  #  profiles: caffeine-cache
   cache:
     type: caffeine
     caffeine:
       spec: maximumSize=100,expireAfterAccess=10m
-
+    cache-names: default-caffeine-cache
 #  autoconfigure:
 #    exclude:
 #      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration

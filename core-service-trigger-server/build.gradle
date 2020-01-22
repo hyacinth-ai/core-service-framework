@@ -1,10 +1,10 @@
 dependencies {
-    compile project(':core-service-endpoint-support')
-    compile project(':core-service-discovery-support')
-    compile project(':core-service-jpa-support')
+    implementation project(':core-service-endpoint-support')
+    implementation project(':core-service-jpa-support')
 //    compile project(':core-service-bus-support')
+    implementation project(':core-service-discovery-support')
 
-    compile 'org.springframework.boot:spring-boot-starter-quartz'
-    compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    compile 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
 }

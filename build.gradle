@@ -2,7 +2,7 @@ version = file('version.txt').text.trim()
 
 allprojects {
     group 'ai.hyacinth.framework'
-    description "Core Service Framework Component"
+    description "Core Service Framework"
     version = rootProject.version
 }
 

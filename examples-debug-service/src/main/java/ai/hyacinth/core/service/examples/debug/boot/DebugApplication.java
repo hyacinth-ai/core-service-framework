@@ -4,6 +4,7 @@ import ai.hyacinth.core.service.examples.debug.config.DebugApplicationConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +26,8 @@ public class DebugApplication {
   public static void main(String[] args) {
     new SpringApplicationBuilder(DebugApplication.class)
         .web(WebApplicationType.SERVLET)
+        .lazyInitialization(true)
+        .bannerMode(Banner.Mode.OFF)
         .run(args);
   }
-
 }

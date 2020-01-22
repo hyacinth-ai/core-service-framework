@@ -1,11 +1,10 @@
 dependencies {
-    compile project(':core-service-module')
-    compile project(':core-service-web-common')
+    implementation project(':core-service-module')
+    implementation project(':core-service-web-common')
 
-    compile 'org.springframework.boot:spring-boot-starter-validation'
-    compile 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-    compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
-    compile 'io.swagger:swagger-annotations'
+    implementation 'io.swagger:swagger-annotations'
 }

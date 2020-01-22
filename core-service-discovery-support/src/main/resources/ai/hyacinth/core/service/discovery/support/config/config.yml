@@ -14,6 +14,23 @@ eureka:
     healthcheck:
       enabled: false # false default
 
+spring:
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+      retry:
+        enabled: false
+    inetutils:
+      ignoredInterfaces:
+        - docker0
+        - veth.*
+      preferredNetworks:
+        - 192.168
+        - 172.16
+        - 10.0
+#     useOnlySiteLocalInterfaces: true
+
 #logging:
 #  com:
 #    netflix:
@@ -25,21 +42,7 @@ eureka:
 # eureka.instance.metadataMap.zone = zone1
 # eureka.client.preferSameZoneEureka = true
 
-ribbon:
-  ReadTimeout: 30000
-  SocketTimeout: 10000
+#ribbon:
+#  ReadTimeout: 30000
+#  SocketTimeout: 10000
 
-spring:
-  cloud:
-    loadbalancer:
-      retry:
-        enabled: false
-
-#    inetutils:
-#      ignoredInterfaces:
-#        - docker0
-#        - veth.*
-#      preferredNetworks:
-#        - 192.168
-#        - 10.0
-#     useOnlySiteLocalInterfaces: true

@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 // @Component
 // @Primary
 public class SimpleKeyResolver implements KeyResolver {
-  private static String ANONYMOUS = "ANONYMOUS";
+  private static final String ANONYMOUS = "ANONYMOUS";
 
   public static boolean isAnonymous(String key) {
     return key != null && key.startsWith(SimpleKeyResolver.ANONYMOUS);

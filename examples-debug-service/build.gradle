@@ -1,8 +1,12 @@
 dependencies {
-    compile project(':core-service-endpoint-support')
-    compile project(':core-service-jpa-support')
-    compile project(':core-service-cache-support')
-    compile project(':core-service-api-support')
+    implementation project(':core-service-endpoint-support')
+    implementation project(':core-service-jpa-support')
+    implementation project(':core-service-cache-support')
+    implementation project(':core-service-api-support')
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+    testImplementation 'org.springframework:spring-webflux'
 
 //    compile project(':core-service-bus-support')
 //    compile project(':core-service-discovery-support')
