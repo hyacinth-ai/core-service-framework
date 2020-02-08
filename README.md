@@ -1,6 +1,5 @@
 # Core Service Framework
 
-
 <!-- vim-markdown-toc GitLab -->
 
 * [Overview](#overview)

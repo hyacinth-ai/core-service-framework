@@ -1,7 +1,7 @@
 dependencies {
-    implementation project(':core-service-module')
+    api project(':core-service-module')
 
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'com.github.ben-manes.caffeine:caffeine' // local cache
+    api 'org.springframework.boot:spring-boot-starter-cache'
+    api 'com.github.ben-manes.caffeine:caffeine' // local cache
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // distribute cache
 }

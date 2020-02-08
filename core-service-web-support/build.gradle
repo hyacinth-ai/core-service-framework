@@ -1,8 +1,9 @@
 dependencies {
-    compile project(':core-service-module')
+    api project(':core-service-module')
 
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-validation'
-    compile 'org.springframework.boot:spring-boot-starter-actuator'
-    compile 'io.micrometer:micrometer-registry-prometheus'
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+
+    api 'org.springframework.boot:spring-boot-starter-actuator'
+    api 'io.micrometer:micrometer-registry-prometheus'
 }

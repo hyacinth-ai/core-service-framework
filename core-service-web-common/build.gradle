@@ -1,7 +1,8 @@
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-annotations'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
-    implementation 'javax.validation:validation-api'
-    implementation 'org.springframework:spring-web'
+    api 'com.fasterxml.jackson.core:jackson-databind'
+    api 'com.fasterxml.jackson.core:jackson-annotations'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    api 'javax.validation:validation-api'
+    api 'org.springframework:spring-web'
 }
