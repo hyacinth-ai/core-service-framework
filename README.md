@@ -751,11 +751,9 @@ TL;DR (commented, only shown in source file)
 
 for create jobs
 
-1. refactor repo - examples only 
+1. refactor repo - examples only
 
   TestCase. refactor the code. or move out the examples as testcase.
-
-2. Spring cloud docs refresh
 
 1. Gateway Server. check X-Principle from response to set in Session. @Principle
 

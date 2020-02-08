@@ -7,24 +7,24 @@
 // }
 // maven { url 'https://repo.spring.io/milestone' }
 
-ext {
-    set('springBootVersion', '2.2.4.RELEASE')
-    set('springCloudVersion', 'Hoxton.RELEASE')
-}
-
 buildscript {
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
         mavenCentral()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.3.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE"
         classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.2.0"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath "gradle.plugin.org.flywaydb:gradle-plugin-publishing:6.1.1"
 //        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
 //        classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8"
     }
+}
+
+ext {
+    set('springBootVersion', '2.2.2.RELEASE')
+    set('springCloudVersion', 'Hoxton.SR1')
 }
 
 task("dotDependencies") {
