@@ -2,7 +2,6 @@ dependencies {
     implementation project(':core-service-endpoint-support')
     implementation project(':core-service-jpa-support')
     implementation project(':core-service-discovery-support')
-//    compile project(':core-service-bus-support')
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

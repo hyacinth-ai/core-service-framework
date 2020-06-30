@@ -6,11 +6,11 @@ dependencies {
     api 'org.springframework:spring-aspects'
     api 'org.hibernate:hibernate-entitymanager'
     api 'org.hibernate:hibernate-core'
-    api 'mysql:mysql-connector-java'
     api 'org.flywaydb:flyway-core'
+    api 'mysql:mysql-connector-java'
     api 'com.h2database:h2'
     api 'org.hibernate:hibernate-envers'
-    api 'com.vladmihalcea:hibernate-types-52'
+    api 'com.vladmihalcea:hibernate-types-52:2.8.0'
     api 'com.fasterxml.jackson.core:jackson-core'
     api 'com.fasterxml.jackson.core:jackson-databind'
 }

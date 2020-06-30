@@ -1,0 +1,5 @@
+allprojects {
+    group 'ai.hyacinth.framework'
+    description "Core Service Framework"
+    version = '0.5.28'
+}
