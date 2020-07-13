@@ -1,7 +1,6 @@
 dependencies {
     implementation project(':core-service-endpoint-support')
     implementation project(':core-service-jpa-support')
-//    compile project(':core-service-bus-support')
     implementation project(':core-service-discovery-support')
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'

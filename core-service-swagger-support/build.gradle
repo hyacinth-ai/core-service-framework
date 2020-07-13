@@ -1,7 +1,7 @@
 dependencies {
-    compile project(':core-service-module')
+    api project(':core-service-module')
 
-    compile 'io.springfox:springfox-swagger2'
-    compile 'io.springfox:springfox-swagger-ui'
-    compile 'org.springframework.boot:spring-boot-actuator-autoconfigure'
+    api 'io.springfox:springfox-swagger2'
+    api 'io.springfox:springfox-swagger-ui'
+    api 'org.springframework.boot:spring-boot-actuator-autoconfigure'
 }

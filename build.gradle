@@ -1,9 +1,245 @@
-version = file('version.txt').text.trim()
-
-allprojects {
-    group 'ai.hyacinth.framework'
-    description "Core Service Framework"
-    version = rootProject.version
+plugins {
+    id 'org.springframework.boot' version "2.3.1.RELEASE"
+    id "com.jfrog.bintray" version "1.8.5"
+    id "org.flywaydb.flyway" version "6.5.0" apply false
+    id "com.gorylenko.gradle-git-properties" version "2.2.2"
 }
 
-apply from: './build-script.gradle'
+ext {
+    set('springBootVersion', "2.3.1.RELEASE")
+    set('springCloudVersion', 'Hoxton.SR5')
+}
+
+task("dotDependencies") {
+    doLast {
+        def file = new File("${project.projectDir}/project-dependencies.dot")
+        file.delete()
+        file << "digraph {\n"
+        file << "splines=ortho\n"
+        file << "ratio=0.6\n"
+
+        rootProject.childProjects.each { item ->
+            def from = item.value
+            file << "\"${from.name}\"\n"
+            from.configurations.compile.dependencies
+                    .matching { it in ProjectDependency }
+                    .each { to -> file << ("\"${from.name}\" -> \"${to.name}\"\n") }
+        }
+        file << "}\n"
+    }
+}
+
+task("buildAll") {
+    dependsOn(
+        subprojects
+            .collect({ sp -> ":${sp.name}" })
+            .collect({ it + ':' + ((it.endsWith('server') || it.endsWith('service')) ? 'bootJar' : 'jar')})
+    )
+}
+
+task("publishAllToBintray") {
+    dependsOn(
+        subprojects
+            .collect({ it.name })
+            .findAll({ it.startsWith('core-service') })
+            .collect({ it + ':bintrayUpload' })
+    )
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: "org.springframework.boot"
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+    apply plugin: "org.flywaydb.flyway"
+
+    repositories {
+        maven { url 'https://repo.spring.io/libs-milestone' }
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+
+    tasks.withType(JavaCompile) {
+        options.fork = true
+        options.compilerArgs += ['-parameters', '-Xlint:unchecked']
+    }
+
+    jar { enabled = true }
+
+    javadoc {
+        options.addBooleanOption('html5', true)
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allJava
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    flyway {
+        cleanDisabled = true
+    }
+
+    bootRun { systemProperties System.properties }
+
+    generateGitProperties { enabled = false }
+
+    if (project.findProperty('PUBLISHING_ENABLED') != null) {
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                    artifact tasks.sourcesJar
+                    artifact tasks.javadocJar
+                    if (project.name.endsWith('server')) {
+                        // artifact tasks.bootJar
+                    }
+                    // groupId project.group
+                    // artifactId project.name
+                    // version project.version
+                    pom {
+                        name = "${project.group}:${project.name}"
+                        description = project.description ?: "${project.group}:${project.name}"
+                        url = project.PUBLISHING_SCM
+                        licenses {
+                            license {
+                                name = project.PUBLISHING_LICENSE
+                                url = project.PUBLISHING_LICENSE_URL
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = project.PUBLISHING_DEVELOPER_ID
+                                name = project.PUBLISHING_DEVELOPER_NAME
+                                email = project.PUBLISHING_DEVELOPER_EMAIL
+                            }
+                        }
+                        scm {
+                            connection = project.PUBLISHING_SCM
+                            developerConnection = project.PUBLISHING_SCM
+                            url = project.PUBLISHING_SCM
+                        }
+                    }
+                }
+            }
+
+            repositories {
+                if (project.PUBLISHING_TARGET == "local") {
+                    maven {
+                        name = 'local'
+                        url = 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+                    }
+                }
+                if (project.PUBLISHING_TARGET == "sonatype") {
+                    maven {
+                        def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2" // "$buildDir/repos/releases"
+                        def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots" // "$buildDir/repos/snapshots"
+                        url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                        credentials {
+                            username = project.OSSRH_USERNAME
+                            password = project.OSSRH_PASSWORD
+                        }
+                    }
+                }
+            }
+        }
+
+        if (project.PUBLISHING_TARGET.equals("sonatype")) {
+            signing {
+                sign publishing.publications.mavenJava
+            }
+        }
+
+        if (project.PUBLISHING_TARGET.equals("bintray")) {
+            bintray {
+                user = project.BINTRAY_USER
+                key = project.BINTRAY_API_KEY
+                publish = Boolean.parseBoolean(project.BINTRAY_PUBLISH)
+                pkg {
+                    repo = project.BINTRAY_REPO
+                    name = project.BINTRAY_PKG_NAME ?: "${project.group}:${project.name}"
+                    licenses = [project.PUBLISHING_LICENSE]
+                    vcsUrl = project.PUBLISHING_SCM
+                    userOrg =  project.BINTRAY_ORG
+                }
+                publications = ['mavenJava']
+            }
+        }
+    }
+
+    if (project.name.endsWith('service') || project.name.endsWith('server')) {
+        defaultTasks 'bootJar'
+
+        bootJar {
+            classifier = 'boot'
+            enabled = true
+        }
+
+        springBoot {
+            buildInfo {
+                properties {
+                    // additional = System.properties
+                }
+            }
+        }
+
+        generateGitProperties { enabled = new File('.git').exists() }
+
+        dependencies {
+            // implementation 'org.springframework.boot:spring-boot-devtools'
+        }
+    } else {
+        defaultTasks 'jar'
+
+        bootJar {
+            classifier = 'boot'
+            enabled = false
+        }
+    }
+
+    configurations.all {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
+
+    dependencies {
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+
+        annotationProcessor "org.projectlombok:lombok:1.18.12"
+
+        constraints {
+            implementation 'org.projectlombok:lombok:1.18.12'
+            implementation 'io.swagger:swagger-annotations:1.6.1'
+            implementation 'io.swagger.core.v3:swagger-annotations:2.1.3'
+            implementation 'io.springfox:springfox-swagger2:2.10.5'
+            implementation 'io.springfox:springfox-swagger-ui:2.10.5'
+            implementation 'net.logstash.logback:logstash-logback-encoder:6.4'
+            implementation 'javax.servlet:javax.servlet-api:4.0.1'
+            implementation 'com.google.code.findbugs:jsr305:3.0.2'
+            implementation 'commons-io:commons-io:2.7'
+        }
+
+        implementation 'org.projectlombok:lombok'
+        implementation 'org.slf4j:log4j-over-slf4j'
+        implementation 'javax.xml.bind:jaxb-api'
+        implementation 'org.glassfish.jaxb:jaxb-runtime'
+    }
+}
+
+wrapper {
+    description 'creates gradle wrapper in order to execute ./gradlew <task>'
+    gradleVersion = '6.5'
+    distributionUrl= 'https://services.gradle.org/distributions/gradle-6.5-all.zip'
+}
+
+apply from: './projects.gradle'

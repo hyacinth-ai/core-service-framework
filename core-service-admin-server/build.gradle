@@ -4,5 +4,5 @@ dependencies {
     implementation project(':core-service-web-support')
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'de.codecentric:spring-boot-admin-starter-server'
+    implementation 'de.codecentric:spring-boot-admin-starter-server:2.2.3'
 }

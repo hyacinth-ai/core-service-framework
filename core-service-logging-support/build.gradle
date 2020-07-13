@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':core-service-module')
-    compile 'org.springframework.boot:spring-boot-starter-logging'
-    compile 'net.logstash.logback:logstash-logback-encoder'
+    implementation project(':core-service-module')
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'net.logstash.logback:logstash-logback-encoder'
 }

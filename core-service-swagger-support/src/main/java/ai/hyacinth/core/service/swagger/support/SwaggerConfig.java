@@ -1,6 +1,5 @@
 package ai.hyacinth.core.service.swagger.support;
 
-import com.google.common.base.Predicates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -11,11 +10,11 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @Configuration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@EnableSwagger2
+@EnableSwagger2WebMvc
 public class SwaggerConfig {
 
   @Value("${spring.application.name}")
@@ -33,10 +32,9 @@ public class SwaggerConfig {
         .apiInfo(createApiInfo())
         .select()
         .apis(
-            //                RequestHandlerSelectors.basePackage("com.appsdeveloperblog.app.ws")
-            Predicates.and(
-                Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")),
-                Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.cloud"))))
+            RequestHandlerSelectors.basePackage("org.springframework.boot")
+                .or(RequestHandlerSelectors.basePackage("org.springframework.cloud"))
+                .negate())
         .paths(PathSelectors.any())
         .build();
   }

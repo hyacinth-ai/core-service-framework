@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':core-service-module')
+    api project(':core-service-module')
 
-    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    api 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    api 'org.springframework.cloud:spring-cloud-starter-zipkin'
 }

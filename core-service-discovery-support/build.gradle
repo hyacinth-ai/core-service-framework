@@ -1,5 +1,6 @@
 dependencies {
-    compile project(':core-service-module')
-    compile 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    compile 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+    api project(':core-service-module')
+    
+    api 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    api 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 }
